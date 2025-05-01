@@ -19,15 +19,42 @@
 .search
     grid-column: content-start / content-end
     grid-row: 2 / 3
+    &__button
+        position: relative
+        left: 50%
+        transform: translateX(-50%)
+.search-content
+    // grid-column: content-start / content-end
+    // grid-row: 2 / 3
     display: flex 
+    margin-bottom: 1.2rem
+
 .search-block
     padding: 1rem
-    width: 48%
+    width: 50%
     &__title
         font-size: 3.2rem
         margin-bottom: 1.2rem
     &__query
-        width: 80%
-        height: 2.5rem
-    &__label
+        width: 100%
+        height: 3.5rem
+        border-radius: 1rem
+        margin-top: 1rem 
+        margin-bottom: 1rem 
+        font-size: 2rem
+        padding-left: 1rem
+    &__label-query
+        font-size: 2.6rem
+   
+    
+    &__select
+        margin-top: .4rem
+    &__label-category
         font-size: 1.6rem
+    &__checkbox
+        margin-left: 10rem    
+    &__label-checkbox
+        font-size: 2rem
+
+.border-right
+    border-right: 1px solid gray
