@@ -2,9 +2,22 @@
     margin: 0
     pading: 0
     box-sizing: border-box
+    //border: 1px solid red !important
 html
     font-size: 62.5%
+@mixin respond($breakpoint)
+    @if $breakpoint == phone
+        @media only screen and (max-width: 430px) //758
+            @content
+
+    @if $breakpoint == tab-port
+        @media only screen and (max-width: 1024px)// 834
+            @content
+
+    @if $breakpoint == big-screen
+        @media only screen and (min-width: 1340px)
+            @content
 .container
     display: grid
-    grid-template-columns: [full-start] 1fr  [content-start] minmax(48rem, 136rem) [content-end] 1fr [full-end]
-    grid-template-rows: 7rem 20rem
+    grid-template-columns: [full-start] 1fr  [content-start] minmax(44rem, 136rem) [content-end] 1fr [full-end]
+    grid-template-rows: 7rem 30rem max-content
