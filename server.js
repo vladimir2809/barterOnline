@@ -41,3 +41,7 @@ const pool = new Pool({
     // } )
     res.render('index');
   })
+  app.get("/newBarter/",function(req,res){
+
+      res.render('newBarter');
+  })

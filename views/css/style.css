@@ -12,8 +12,14 @@ html {
 .container {
   display: grid;
   grid-template-columns: [full-start] 1fr [content-start] minmax(43rem, 136rem) [content-end] 1fr [full-end];
-  grid-template-rows: 9rem -webkit-max-content -webkit-max-content;
-  grid-template-rows: 9rem max-content max-content;
+  grid-template-rows: -webkit-max-content -webkit-max-content;
+  grid-template-rows: max-content max-content;
+}
+
+.header-container {
+  display: grid;
+  grid-template-columns: [full-start] 1fr [content-start] minmax(43rem, 136rem) [content-end] 1fr [full-end];
+  grid-template-rows: 8rem;
 }
 
 .header {
@@ -227,4 +233,12 @@ html {
 }
 .stuff__paragraph {
   font-size: 1.4rem;
+}
+
+.link-newBarter {
+  font-size: 4rem;
+}
+
+.newBarter {
+  grid-column: content-start/content-end;
 }
