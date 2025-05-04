@@ -1,5 +1,6 @@
 const express=require('express');
 const app=express();
+const expressHandlebars =require('express-handlebars');
 const {Pool} = require('pg');
 const pool = new Pool({
     user: "myuser",
@@ -15,12 +16,28 @@ const pool = new Pool({
       console.log('Connected to the database:', res.rows);
     }
   })
+
+  const handlebars = expressHandlebars.create({
+    defaultLayout: 'main', 
+    extname: 'hbs'
+  });
+
+
+  app.engine('hbs', handlebars.engine);
+  app.set('view engine', 'hbs');
+
+
   app.listen(80, function(){
     console.log('running');
    // console.log(__dirname);
   });
+  app.use(express.static(__dirname + '/views/'))
+
+
+
   app.get("/",function(req,res){
-    pool.query("SELECT * FROM piople;", (err, resDB) =>{
-        res.send(resDB.rows);
-    } )
+    // pool.query("SELECT * FROM piople;", (err, resDB) =>{
+    //     res.send(resDB.rows);
+    // } )
+    res.render('index');
   })

@@ -1,0 +1,68 @@
+.result
+    grid-column: content-start / content-end
+    grid-row: 3 / 4
+    //padding: 2rem
+    display: grid
+    //grid-template-columns: repeat(2, 64rem))
+    grid-template-columns: repeat(auto-fill, minmax(44rem, 64rem))
+
+    grid-template-rows: min-content//repeat(auto-fit, min-content)//30rem//min-content
+    justify-content: center
+    gap: 2rem
+    padding: 1rem
+    @include respond(phone)
+        //grid-template-columns: repeat(auto-fit, minmax(64rem, 64rem))
+        grid-template-columns: 29rem
+        grid-template-rows: min-content
+.result-item
+    display: grid
+    // width: 63rem
+    // height: 30rem
+    // grid-template-columns: 27rem 8rem 27rem
+    // grid-template-rows: 29rem
+    grid-template-columns: 45% 10% 45%
+    grid-template-rows: min-content//29rem
+    justify-content: center
+    align-content: center
+    border: 1px solid green//gray
+    @include respond(phone)
+        grid-template-columns: 29rem
+        //grid-template-rows: 27rem 8rem 27rem 
+        // grid-template-columns: min-content
+         grid-template-rows: 45% 10% 45% 
+    &__exchange-icon
+        grid-column: 2 / 3
+        grid-row: 1 / 2
+        align-self: center
+        width: 6.2rem
+        height: 6.2rem
+        @include respond(phone)
+            grid-column: 1 / 2
+            grid-row: 2 / 3
+            justify-self: center
+            transform: rotateZ(90deg)
+.stuff-get
+    grid-column: 1 / 2
+    grid-row: 1 / 2
+    @include respond(phone)
+        grid-column: 1 / 2
+        grid-row: 3 / 4
+.stuff-give
+    grid-column: 3 / 4
+    grid-row: 1 / 2
+    @include respond(phone)
+        grid-column: 1 / 2
+        grid-row: 1 / 2
+.stuff
+    // width: 30rem
+    // height: 27rem
+    padding: 1rem
+    border: 1px solid gray
+    &__intension
+        font-size: 1.8rem
+        width: 100%
+    &__img
+        width: 100%
+        height: 18rem
+    &__paragraph
+        font-size: 1.4rem
