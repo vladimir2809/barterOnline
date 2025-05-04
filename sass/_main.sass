@@ -4,8 +4,14 @@
     padding: 1rem
     display: flex
     justify-content: space-between
+    align-items: center
     border-bottom: 1px solid blue//gray
     //background-color: red
+    &__logoAndCity
+    &__city
+        font-size: 2.2rem
+        color: blue
+        cursor: pointer
 .avatar
     &__image
         width: 5rem
@@ -20,6 +26,7 @@
     grid-column: content-start / content-end
     grid-row: 2 / 3
     border-bottom: 1px solid red//gray
+    padding-bottom: 1rem
     &__button
         position: relative
         left: 50%
@@ -27,12 +34,31 @@
 .search-content
     // grid-column: content-start / content-end
     // grid-row: 2 / 3
-    display: flex 
+    display: grid
+    grid-template-columns: 50% 50%
+    grid-template-rows: 100%
     margin-bottom: 1.2rem
-
+    @include respond(phone)
+        grid-template-columns: 100%
+        grid-template-rows: 25rem 22rem
+.search-give
+    grid-column: 1 / 2
+    grid-row: 1 / 2
+    border-right: 1px solid gray
+    @include respond(phone)
+        grid-column: 1 / 2
+        grid-row: 1 / 2
+        border-right: none
+        border-bottom: 1px solid gray
+.search-get
+    grid-column: 2 / 3
+    grid-row: 1 / 2
+    @include respond(phone)
+        grid-column: 1 / 2
+        grid-row: 2 / 3
 .search-block
     padding: 1rem
-    width: 50%
+    //width: 50%
     &__title
         font-size: 3.2rem
         margin-bottom: 1.2rem
@@ -50,16 +76,17 @@
    
     
     &__select
-        margin-top: .4rem
+        margin-top: 1rem
         margin-bottom: 2rem
     &__label-category
         font-size: 1.6rem
+        // margin-bottom: 2rem
     &__checkbox
         // margin-left: 10rem    
     &__label-checkbox
         font-size: 2rem
-    &_border-right
-        border-right: 1px solid gray
+    // &_border-right
+    //     border-right: 1px solid gray
 // .result
 //     grid-column: content-start / content-end
 //     grid-row: 3 / 4

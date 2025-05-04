@@ -6,7 +6,7 @@
     //grid-template-columns: repeat(2, 64rem))
     grid-template-columns: repeat(auto-fill, minmax(44rem, 64rem))
 
-    grid-template-rows: repeat(auto-fit, min-content)//30rem//min-content
+    grid-template-rows: min-content//repeat(auto-fit, min-content)//30rem//min-content
     justify-content: center
     gap: 2rem
     padding: 1rem
@@ -40,18 +40,19 @@
             grid-column: 1 / 2
             grid-row: 2 / 3
             justify-self: center
+            transform: rotateZ(90deg)
 .stuff-get
     grid-column: 1 / 2
     grid-row: 1 / 2
     @include respond(phone)
         grid-column: 1 / 2
-        grid-row: 1 / 2
+        grid-row: 3 / 4
 .stuff-give
     grid-column: 3 / 4
     grid-row: 1 / 2
     @include respond(phone)
         grid-column: 1 / 2
-        grid-row: 3 / 4
+        grid-row: 1 / 2
 .stuff
     // width: 30rem
     // height: 27rem
