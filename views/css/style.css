@@ -16,12 +16,6 @@ html {
   grid-template-rows: max-content max-content;
 }
 
-.header-container {
-  display: grid;
-  grid-template-columns: [full-start] 1fr [content-start] minmax(43rem, 136rem) [content-end] 1fr [full-end];
-  grid-template-rows: 8rem;
-}
-
 .header {
   grid-column: content-start/content-end;
   grid-row: 1/2;
@@ -241,4 +235,56 @@ html {
 
 .newBarter {
   grid-column: content-start/content-end;
+  display: grid;
+  grid-template-columns: 1fr minmax(43rem, 80rem) 1fr;
+}
+.newBarter__title {
+  grid-column: 2/3;
+  font-size: 3.6rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.newBarter-give {
+  margin-bottom: 2rem;
+}
+
+.new-stuff {
+  grid-column: 2/3;
+}
+.new-stuff__title {
+  text-align: center;
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+}
+.new-stuff__form {
+  width: 100%;
+  padding: 0 1rem;
+}
+.new-stuff__form > * {
+  margin-bottom: 1rem;
+}
+.new-stuff__form > label {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+.new-stuff__name {
+  width: 100%;
+}
+.new-stuff__label-name {
+  font-size: 1.6rem;
+}
+.new-stuff__img-preload {
+  width: 100%;
+}
+.new-stuff__div-description {
+  width: 100%;
+}
+.new-stuff__description {
+  width: 100%;
+  height: 15rem;
+  font-size: 1.6rem;
+  border: 1px solid black;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }

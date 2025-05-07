@@ -1,4 +1,77 @@
 <div class="newBarter">
 
     <h1 class="newBarter__title">Создание нового бартера</h1>
+    <div class="newBarter-give new-stuff">
+        <h3 class="new-stuff__title">Хочу отдать</h3>
+        <form action="" class="new-stuff__form">
+            <label for="new-stuff__give-name" class="new-stuff__label-name">Название</label>
+            <br>
+            <input type="text" id="new-stuff__give-name" class="new-stuff__name">
+            <br>
+            <label for="category-load-give" class="new-stuff__label-category">Выберите категорию</label>
+            <br>
+            <select name="category-load-give" id="category-load-give" class="new-stuff__category">
+                <option value="1" class="search-block__option" selected>Все категории</option>
+                <option value="2" class="search-block__option">квартиры</option>
+                <option value="2" class="search-block__option">машины</option>
+                <option value="2" class="search-block__option">компьютеры</option>
+                <option value="2" class="search-block__option">одежда</option>
+            </select>
+            <br>
+            <label for="new-stuff__give-loadImg">Загрузите изображение</label>
+            <br>
+            <input type="file" id="give-loadImg" 
+                 class="new-stuff__load-img"
+                 name="give-loadImg"
+                 accept="image/png, image/jpeg" />
+            <br>
+            <img src="img/default.jpg" id="img-give-preload" alt="" class="new-stuff__img-preload">
+            <br>
+            <label for="enter-give-description" class="new-stuff__label-descriptin">Введите описание</label>
+            <br>
+            <div contenteditable="true" class="new-stuff__description" style="min-height:40px; max-height:200px; overflow:auto;">
+                <input type="hidden" name="textareaContent" id="new-stuff__description-input">
+                Разместите редактируемый текст здесь
+            </div>  
+        </form>
+    </div>
+
+    <div class="newBarter-get new-stuff">
+        <h3 class="new-stuff__title">Хочу получить</h3>
+        <form action="" class="new-stuff__form">
+           
+            <input type="checkbox" id="new-stuff__get-checkbox" class="new-stuff__checkbox-free">
+            <label for="new-stuff__get-checkbox" class="new-stuff__label-checkbox">Отдаю даром, ни чего не хочу получить</label>
+            <br>
+            <label for="new-stuff__get-name" class="new-stuff__label-name">Название</label>
+            <br>
+            <input type="text" id="new-stuff__get-name" class="new-stuff__name">
+            <br>
+            <label for="category-load-get" class="new-stuff__label-category">Выберите категорию</label>
+            <br>
+            <select name="category-load-get" id="category-load-get" class="new-stuff__category">
+                <option value="1" class="search-block__option" selected>Все категории</option>
+                <option value="2" class="search-block__option">квартиры</option>
+                <option value="2" class="search-block__option">машины</option>
+                <option value="2" class="search-block__option">компьютеры</option>
+                <option value="2" class="search-block__option">одежда</option>
+            </select>
+            <br>
+            <label for="new-stuff__get-loadImg">Загрузите изображение</label>
+            <br>
+            <input type="file" id="get-loadImg" 
+                 class="new-stuff__load-img"
+                 name="get-loadImg"
+                 accept="image/png, image/jpeg" />
+            <br>
+            <img src="img/default.jpg" alt="" class="new-stuff__img-preload">
+            <br>
+            <label for="enter-get-description" class="new-stuff__label-descriptin">Введите описание</label>
+            <br>
+            <div contenteditable="true" id="enter-get-description" class="new-stuff__description" style="min-height:40px; max-height:200px; overflow:auto;">
+                <input type="hidden" name="textareaContent" id="new-stuff__description-input">
+                Разместите редактируемый текст здесь
+            </div>  
+        </form>
+    </div>
 </div>
