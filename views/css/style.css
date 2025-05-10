@@ -275,7 +275,8 @@ html {
   font-size: 1.6rem;
 }
 .new-stuff__img-preload {
-  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
 .new-stuff__div-description {
   width: 100%;
