@@ -8,20 +8,26 @@
         font-size: 3.6rem
         text-align: center
         margin-bottom: 2rem
+    & form
+        grid-column: 2 / 3
+    &__submit
+        display: block
+        margin: 0 auto
 .newBarter-give
     margin-bottom: 2rem
 .new-stuff
-    grid-column: 2 / 3
+    // grid-column: 2 / 3
     &__title
         text-align: center
         font-size: 2.4rem
         margin-bottom: 1rem
-    &__form
+    &__container
+        // grid-column: 2 / 3
         width: 100%
         padding: 0 1rem
-    &__form>*
+    &__container>*
         margin-bottom: 1rem
-    &__form>label 
+    &__container>label 
         font-size: 1.6rem
         margin-bottom: .5rem
     &__name
@@ -31,7 +37,7 @@
         font-size: 1.6rem
     &__load-img
     &__img-preload
-        max-width: 100%
+        max-width: 30rem//100%
         height: auto
         // max-width: 100%
         // height: 100vh

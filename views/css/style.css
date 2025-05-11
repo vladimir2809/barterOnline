@@ -244,27 +244,31 @@ html {
   text-align: center;
   margin-bottom: 2rem;
 }
+.newBarter form {
+  grid-column: 2/3;
+}
+.newBarter__submit {
+  display: block;
+  margin: 0 auto;
+}
 
 .newBarter-give {
   margin-bottom: 2rem;
 }
 
-.new-stuff {
-  grid-column: 2/3;
-}
 .new-stuff__title {
   text-align: center;
   font-size: 2.4rem;
   margin-bottom: 1rem;
 }
-.new-stuff__form {
+.new-stuff__container {
   width: 100%;
   padding: 0 1rem;
 }
-.new-stuff__form > * {
+.new-stuff__container > * {
   margin-bottom: 1rem;
 }
-.new-stuff__form > label {
+.new-stuff__container > label {
   font-size: 1.6rem;
   margin-bottom: 0.5rem;
 }
@@ -275,7 +279,7 @@ html {
   font-size: 1.6rem;
 }
 .new-stuff__img-preload {
-  max-width: 100%;
+  max-width: 30rem;
   height: auto;
 }
 .new-stuff__div-description {

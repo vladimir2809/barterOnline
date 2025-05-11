@@ -1,22 +1,24 @@
 const express=require('express');
 const app=express();
+var fileUpload = require('express-fileupload');
 const expressHandlebars =require('express-handlebars');
 const {Pool} = require('pg');
 const pool = new Pool({
-    user: "myuser",
-    host: "localhost",
-    database: "mydatabase",
-    password: "qwerty",
-    port: 5432,
-  });
-  pool.query('SELECT NOW()', (err, res) => {
-    if(err) {
-      console.error('Error connecting to the database', err.stack);
-    } else {
+  user: "myuser",
+  host: "localhost",
+  database: "mydatabase",
+  password: "qwerty",
+  port: 5432,
+});
+pool.query('SELECT NOW()', (err, res) => {
+  if(err) {
+    console.error('Error connecting to the database', err.stack);
+  } else {
       console.log('Connected to the database:', res.rows);
     }
   })
-
+  
+  app.use(fileUpload({}));
   const handlebars = expressHandlebars.create({
     defaultLayout: 'main', 
     extname: 'hbs'
@@ -44,4 +46,11 @@ const pool = new Pool({
   app.get("/newBarter/",function(req,res){
 
       res.render('newBarter');
+  })
+  app.post("/upload/",function(req,res){
+    req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
+    console.log(req.files.give_loadImg/*.name*/);
+    // console.log(req.body.newStuff__giveName);
+    res.send('success');
+    //res.render('newBarter');
   })

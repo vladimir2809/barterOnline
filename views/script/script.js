@@ -1,34 +1,39 @@
 var resultNode=null;
 var resultItemNode=null;
-var filesImages=[];
-var previewImages=null; //= document.getElementById('img-give-preload');
+// var filesImages=[];
+// var previewImages=null; //= document.getElementById('img-give-preload');
+var newStuffArr=null;
 window.addEventListener('load',()=>{
     //alert('load end');
     resultNode=document.getElementsByClassName('result')[0];
     resultItemNode=document.getElementsByClassName('result-item')[0];
-
-    filesImages = document.querySelectorAll('.new-stuff input[type=file]');
-    //console.log(filesImages);
+    newStuffArr=document.querySelectorAll('.new-stuff');
+    createEventLoadImage();
+    // filesImages = document.querySelectorAll('.new-stuff input[type=file]');
+    // //console.log(filesImages);
                                    
-    previewImages = document.querySelectorAll('.new-stuff__img-preload');
+    // previewImages = document.querySelectorAll('.new-stuff__img-preload');
     let cloneResultItem=resultItemNode.cloneNode(true);
     resultNode.append(cloneResultItem);
     cloneResultItem=resultItemNode.cloneNode(true);
     resultNode.append(cloneResultItem);
-    previewFile();
+    
+    //previewFile();
     console.log('load funct end');
 });
-setTimeout(function(){
-
-  for (let i=0;i<filesImages.length;i++)
+function createEventLoadImage()
+{
+  for (let i=0;i<newStuffArr.length;i++)
   {
-    filesImages[i].addEventListener('change', function() {
+    let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
+    let filesImages = newStuffArr[i].querySelector('input[type=file]');
+    filesImages.addEventListener('change', function() {
         //console.log(1123);
-        previewFile(previewImages[i], filesImages[i].files[0]);
+        previewFile(previewImages, filesImages.files[0]);
       
-    })
+    });
   }
-},500);
+}
 function previewFile(preview, file) {
     //var preview = document.getElementById('img-give-preload');
     //var file    = document.querySelector('input[type=file]').files[0];
