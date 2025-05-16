@@ -6,7 +6,7 @@ const {Pool} = require('pg');
 const pool = new Pool({
   user: "myuser",
   host: "localhost",
-  database: "mydatabase",
+  database: "barter_online",
   password: "qwerty",
   port: 5432,
 });
@@ -46,6 +46,29 @@ pool.query('SELECT NOW()', (err, res) => {
   app.get("/newBarter/",function(req,res){
 
       res.render('newBarter');
+  })
+  app.get("/test/",function(req,res){
+
+    pool.query(`SELECT * FROM city;`, (err, resDB) =>{
+      if (!err)
+      {
+
+        let result=[];
+        for (let i=1; i < resDB.rows.length; i++)
+        {
+          let value=resDB.rows[i].name;
+          console.log('i='+i,resDB.rows[i]);
+          result.push(`<li>${value}</li>`)
+          //if (i==1001) break;
+        }
+        res.send(result);             
+      }
+      else
+      {
+        console.log(err);
+      }
+      })
+      // res.render('newBarter');
   })
   app.post("/upload/",function(req,res){
     req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
