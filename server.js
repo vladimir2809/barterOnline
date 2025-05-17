@@ -3,6 +3,9 @@ const app=express();
 var fileUpload = require('express-fileupload');
 const expressHandlebars =require('express-handlebars');
 const {Pool} = require('pg');
+
+var categoryList=[];
+var categoryListStr='';
 const pool = new Pool({
   user: "myuser",
   host: "localhost",
@@ -16,6 +19,28 @@ pool.query('SELECT NOW()', (err, res) => {
   } else {
       console.log('Connected to the database:', res.rows);
     }
+    pool.query("SELECT * FROM category", (err, resDB) =>{
+      if (!err)
+      {
+
+        for (let i=0;i<resDB.rows.length;i++)
+        {
+          categoryList.push(resDB.rows[i].name);
+          
+        }
+        console.log(categoryList);
+        categoryListStr = `<option value="1" class="search-block__option" selected>Все категории</option>`
+        for (let i=0;i<categoryList.length;i++)
+        {
+            categoryListStr+=`<option value="${i+2}" class="search-block__option">${categoryList[i]}</option>`
+        }
+        // console.log(categoryListStr);
+      }
+      else
+      {
+        console.log(err);
+      }
+    })
   })
   
   app.use(fileUpload({}));
@@ -31,6 +56,7 @@ pool.query('SELECT NOW()', (err, res) => {
 
   app.listen(80, function(){
     console.log('running');
+
    // console.log(__dirname);
   });
   app.use(express.static(__dirname + '/views/'))
@@ -38,38 +64,33 @@ pool.query('SELECT NOW()', (err, res) => {
 
 
   app.get("/",function(req,res){
-    // pool.query("SELECT * FROM piople;", (err, resDB) =>{
-    //     res.send(resDB.rows);
-    // } )
-    res.render('index');
+    res.render('index',{categoryList: categoryListStr});
   })
   app.get("/newBarter/",function(req,res){
 
-      res.render('newBarter');
+    res.render('newBarter',{categoryList: categoryListStr});
   })
   app.get("/test/",function(req,res){
-
     pool.query(`SELECT * FROM city;`, (err, resDB) =>{
       if (!err)
       {
 
         let result=[];
-        for (let i=1; i < resDB.rows.length; i++)
+        for (let i = 0; i < resDB.rows.length; i++)
         {
           let value=resDB.rows[i].name;
           console.log('i='+i,resDB.rows[i]);
-          result.push(`<li>${value}</li>`)
-          //if (i==1001) break;
+          result+=`<li>${value}</li>`;
         }
-        res.send(result);             
+        res.render('newBarter',{result: result})
+      
       }
       else
       {
         console.log(err);
       }
-      })
-      // res.render('newBarter');
-  })
+    })
+  });
   app.post("/upload/",function(req,res){
     req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
     console.log(req.files.give_loadImg/*.name*/);

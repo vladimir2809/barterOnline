@@ -1,17 +1,4 @@
-{{!-- <div class="container"> --}}
-        {{!-- <div class="header">
-            <div class="header__logoAndCity">
-                <div class="logo">
-                    <h1 class="logo__title">BARTER 
-                    <span class="logo__title-span">ONLINE</span>
-                </h1>
-                </div>
-                <h4 class="header__city">Москва</h4>
-            </div>
-            <div class="avatar">
-                <img src="img/avatar.png" alt="" class="avatar__image">
-            </div>
-        </div> --}}
+
         <div class="search">
             <div class="search-content">
                 <div class="search-block search-give search-block_border-right">
@@ -23,11 +10,7 @@
                         <label for="category-give" class="search-block__label-category">Выберите категорию</label>
                         <br>
                         <select name="category-give" id="category-give" class="search-block__select">
-                            <option value="1" class="search-block__option" selected>Все категории</option>
-                            <option value="2" class="search-block__option">квартиры</option>
-                            <option value="2" class="search-block__option">машины</option>
-                            <option value="2" class="search-block__option">компьютеры</option>
-                            <option value="2" class="search-block__option">одежда</option>
+                            {{{categoryList}}}=
                         </select>
                         <br>
                         <input type="checkbox" id="checkbox-free" class="search-block__checkbox">
@@ -44,11 +27,7 @@
                         <label for="category-get" class="search-block__label-category">Выберите категорию</label>
                         <br>
                         <select name="category-get" id="category-get" class="search-block__select">
-                            <option value="1" class="search-block__option" selected>Все категории</option>
-                            <option value="2" class="search-block__option">квартиры</option>
-                            <option value="2" class="search-block__option">машины</option>
-                            <option value="2" class="search-block__option">компьютеры</option>
-                            <option value="2" class="search-block__option">одежда</option>
+                            {{{categoryList}}}
                         </select>
                     
                     </form>

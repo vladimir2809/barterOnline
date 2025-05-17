@@ -14,11 +14,7 @@
                 <label for="category-load-give" class="new-stuff__label-category">Выберите категорию</label>
                 <br>
                 <select name="category-load-give" id="category-load-give" class="new-stuff__category">
-                    <option value="1" class="search-block__option" selected>Все категории</option>
-                    <option value="2" class="search-block__option">квартиры</option>
-                    <option value="2" class="search-block__option">машины</option>
-                    <option value="2" class="search-block__option">компьютеры</option>
-                    <option value="2" class="search-block__option">одежда</option>
+                    {{{categoryList}}}
                 </select>
                 <br>
                 <label for="new-stuff__give-loadImg">Загрузите изображение</label>
@@ -55,11 +51,7 @@
                 <label for="category-load-get" class="new-stuff__label-category">Выберите категорию</label>
                 <br>
                 <select name="category-load-get" id="category-load-get" class="new-stuff__category">
-                    <option value="1" class="search-block__option" selected>Все категории</option>
-                    <option value="2" class="search-block__option">квартиры</option>
-                    <option value="2" class="search-block__option">машины</option>
-                    <option value="2" class="search-block__option">компьютеры</option>
-                    <option value="2" class="search-block__option">одежда</option>
+                    {{{categoryList}}}
                 </select>
                 <br>
                 <label for="new-stuff__get-loadImg">Загрузите изображение</label>
@@ -82,4 +74,5 @@
         </div>
         <input type="submit" class="newBarter__submit">
     </form>
+    {{{result}}}
 </div>

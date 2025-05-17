@@ -54,6 +54,17 @@ function previewFile(preview, file) {
       preview.src = "";
     }
   }
+  function insertCategoryInSelect(selectDOM,list)
+  {
+    for (i=0; i<list.length;i++)
+    {
+      let elem=document.createElement('option')
+      elem.innerText=list[i];
+      elem.setAttribute('value',i+1);
+      elem.classList.add('search-block__option')
+      selectDOM.appendChild(elem);
+    }
+  }
   function formatByteSize(bytes) // перевод значения памяти в человека понятный вид
   {
       if(bytes < 1024) return bytes + " bytes";
