@@ -13,13 +13,23 @@ window.addEventListener('load',()=>{
     // //console.log(filesImages);
                                    
     // previewImages = document.querySelectorAll('.new-stuff__img-preload');
-    let cloneResultItem=resultItemNode.cloneNode(true);
-    resultNode.append(cloneResultItem);
-    cloneResultItem=resultItemNode.cloneNode(true);
-    resultNode.append(cloneResultItem);
-    
-    //previewFile();
+    console.log(resultItemNode);
+    if (resultItemNode!=undefined)
+    {
+
+      let cloneResultItem=resultItemNode.cloneNode(true);
+      resultNode.append(cloneResultItem);
+      cloneResultItem=resultItemNode.cloneNode(true);
+      resultNode.append(cloneResultItem);
+      
+      //previewFile();
+    }
     console.log('load funct end');
+    //console.log(document.getElementById("header"));
+    document.getElementById("header").addEventListener('click', function(){
+      location.href='/';
+      //alert(4214);
+    });
 });
 function createEventLoadImage()
 {
