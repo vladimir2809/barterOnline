@@ -59,6 +59,7 @@ html {
 }
 
 .main-menu {
+  display: none;
   width: 10rem;
   height: 12rem;
   background-color: #A8A;
@@ -66,6 +67,7 @@ html {
   right: 5.5rem;
   top: 7rem;
   z-index: 100;
+  z-index-display: none;
 }
 .main-menu__container-close {
   display: -webkit-box;

@@ -3,6 +3,7 @@ var resultItemNode=null;
 // var filesImages=[];
 // var previewImages=null; //= document.getElementById('img-give-preload');
 var newStuffArr=null;
+var clickCloseMainMenu=false;
 window.addEventListener('load',()=>{
     //alert('load end');
     resultNode=document.getElementsByClassName('result')[0];
@@ -26,10 +27,32 @@ window.addEventListener('load',()=>{
     }
     console.log('load funct end');
     //console.log(document.getElementById("header"));
-    document.getElementById("logo").addEventListener('click', function(){
+    document.getElementById("logo").addEventListener('click', ()=>{
       location.href='/';
       //alert(4214);
     });
+    document.getElementById("avatar").addEventListener('click', ()=>{
+
+      if (clickCloseMainMenu==false)
+      {
+        document.getElementById("main-menu").style.display="block";
+       
+      }
+      // console.log(clickCloseMainMenu);
+    });                    //close-main-menu
+    document.getElementById("close-main-menu").addEventListener('click', function(e){
+      //e.preventDefault();
+      if (clickCloseMainMenu==false)
+      {
+        document.getElementById("main-menu").style.display="none";
+        clickCloseMainMenu=true;
+        setInterval(()=>{
+          clickCloseMainMenu=false; 
+        },100);
+      }
+      // console.log(clickCloseMainMenu);
+    });
+    
 });
 function createEventLoadImage()
 {
