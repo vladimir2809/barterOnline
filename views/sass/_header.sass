@@ -20,6 +20,7 @@
         cursor: pointer
         width: 10rem
 .avatar
+    cursor: pointer
     &__image
         width: 5rem
         height: 5rem
@@ -31,3 +32,30 @@
         
     &__title-span
         color: blue
+.main-menu
+    width: 10rem
+    height: 12rem
+    background-color: #A8A
+    position: absolute
+    right: 5.5rem
+    top: 7rem
+    z-index: 100
+    &__container-close
+        display: flex
+        justify-content: right
+    &__close
+        font-size: 2rem
+        border: 1px solid red
+        cursor: pointer
+        &:hover
+            border: 1px solid gray
+    &__list
+        padding-left: 0
+        list-style-type: none 
+    &__item
+        font-size: 1.6rem
+        margin-top: 1rem
+        text-align: center
+        cursor: pointer
+        &:hover 
+            color: red

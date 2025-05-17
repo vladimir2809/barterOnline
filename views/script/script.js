@@ -26,7 +26,7 @@ window.addEventListener('load',()=>{
     }
     console.log('load funct end');
     //console.log(document.getElementById("header"));
-    document.getElementById("header").addEventListener('click', function(){
+    document.getElementById("logo").addEventListener('click', function(){
       location.href='/';
       //alert(4214);
     });
