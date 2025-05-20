@@ -70,6 +70,10 @@ pool.query('SELECT NOW()', (err, res) => {
 
     res.render('newBarter',{categoryList: categoryListStr});
   })
+  app.get("/signIn/",function(req,res){
+
+    res.render('signIn');
+  })
   app.get("/test/",function(req,res){
     pool.query(`SELECT * FROM city;`, (err, resDB) =>{
       if (!err)

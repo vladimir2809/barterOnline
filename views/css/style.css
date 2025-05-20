@@ -340,3 +340,8 @@ html {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
+
+.signIn {
+  grid-column: content-start/content-end;
+  grid-row: 2/3;
+}
