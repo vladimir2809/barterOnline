@@ -41,7 +41,8 @@
     right: 5.5rem
     top: 7rem
     z-index: 100
-        display: none
+    @include respond(phone)
+        width: 12rem
     &__container-close
         display: flex
         justify-content: right
