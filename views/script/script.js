@@ -35,6 +35,10 @@ window.addEventListener('load',()=>{
       location.href='/signIn/';
       //alert(4214);
     });
+    document.getElementById("registration_mainMenu").addEventListener('click', ()=>{
+      location.href='/registration/';
+      //alert(4214);
+    });
     document.getElementById("avatar").addEventListener('click', ()=>{
 
       if (clickCloseMainMenu==false)

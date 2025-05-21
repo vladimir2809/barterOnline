@@ -74,6 +74,10 @@ pool.query('SELECT NOW()', (err, res) => {
 
     res.render('signIn');
   })
+  app.get("/registration/",function(req,res){
+
+    res.render('registration');
+  })
   app.get("/test/",function(req,res){
     pool.query(`SELECT * FROM city;`, (err, resDB) =>{
       if (!err)
