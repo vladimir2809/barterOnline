@@ -3,7 +3,9 @@ var resultItemNode=null;
 // var filesImages=[];
 // var previewImages=null; //= document.getElementById('img-give-preload');
 var newStuffArr=null;
+var mainMenu=null;
 var clickCloseMainMenu=false;
+
 window.addEventListener('load',()=>{
     //alert('load end');
     resultNode=document.getElementsByClassName('result')[0];
@@ -15,6 +17,7 @@ window.addEventListener('load',()=>{
                                    
     // previewImages = document.querySelectorAll('.new-stuff__img-preload');
     console.log(resultItemNode);
+    mainMenu=document.getElementById("main-menu")
     if (resultItemNode!=undefined)
     {
 
@@ -31,19 +34,32 @@ window.addEventListener('load',()=>{
       location.href='/';
       //alert(4214);
     });
-    document.getElementById("signIn_mainMenu").addEventListener('click', ()=>{
-      location.href='/signIn/';
-      //alert(4214);
+    document.getElementById("signIn_mainMenu").addEventListener('click', (e)=>{
+      mainMenu.style.display="none";
+
+      clickCloseMainMenu=true;
+      setTimeout(()=>{
+        clickCloseMainMenu=false; 
+        location.href='/signIn/';
+      },200);
+      
+    
+     
     });
     document.getElementById("registration_mainMenu").addEventListener('click', ()=>{
-      location.href='/registration/';
+      mainMenu.style.display="none";
+      clickCloseMainMenu=true;
+      setTimeout(()=>{
+        clickCloseMainMenu=false;
+        location.href='/registration/';
+      },200);
       //alert(4214);
     });
     document.getElementById("avatar").addEventListener('click', ()=>{
 
       if (clickCloseMainMenu==false)
       {
-        document.getElementById("main-menu").style.display="block";
+        mainMenu.style.display="block";
        
       }
       // console.log(clickCloseMainMenu);
@@ -52,9 +68,9 @@ window.addEventListener('load',()=>{
       //e.preventDefault();
       if (clickCloseMainMenu==false)
       {
-        document.getElementById("main-menu").style.display="none";
+        mainMenu.style.display="none";
         clickCloseMainMenu=true;
-        setInterval(()=>{
+        setTimeout(()=>{
           clickCloseMainMenu=false; 
         },100);
       }

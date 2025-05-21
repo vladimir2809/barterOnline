@@ -388,6 +388,7 @@ html {
 .signIn input {
   margin-bottom: 2rem;
   width: 100%;
+  height: 2.5rem;
 }
 .signIn label {
   font-size: 1.6rem;
@@ -411,9 +412,53 @@ html {
   grid-row: 2/3;
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: 80vh;
+  grid-template-rows: 50rem;
   justify-items: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+}
+.registration p {
+  position: relative;
+  background-color: white;
+  top: -3.2rem;
+  width: 11rem;
+  font-size: 2rem;
+}
+@media only screen and (max-width: 1024px) {
+  .registration p {
+    width: 9rem;
+    font-size: 1.6rem;
+    top: -3rem;
+  }
+}
+@media only screen and (max-width: 430px) {
+  .registration p {
+    font-size: 1.6rem;
+    top: -3rem;
+  }
+}
+.registration__form {
+  grid-column: 1/2;
+  grid-row: 1/2;
+  width: 30rem;
+  padding: 2rem;
+  border: 1px solid gray;
+  border-radius: 1rem;
+}
+.registration label {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+.registration input:not(:last-child) {
+  width: 100%;
+  height: 2.5rem;
+  margin-bottom: 1rem;
+}
+.registration__submit {
+  width: 100%;
+  height: 2.5rem;
+  font-size: 1.6rem;
+  text-align: center;
+  margin-top: 1rem;
 }
