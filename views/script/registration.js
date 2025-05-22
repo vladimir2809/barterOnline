@@ -4,6 +4,8 @@ var email=null;
 var password=null;
 var passwordDouble=null;
 var submit=null;
+var submitReady=false;
+var form=null;
 ///document.addEventListener('load',()=>{
     userName=document.getElementById('registrationName');
     userSurname=document.getElementById('registrationSurname');
@@ -11,6 +13,7 @@ var submit=null;
     password=document.getElementById('registrationPassword');
     passwordDouble=document.getElementById('registrationPasswordDouble');
     submit=document.getElementById('registrationSubmit');
+    form=document.getElementById('registrationForm');
     console.log(userName)
 //});
 setInterval(()=>{
@@ -31,10 +34,12 @@ setInterval(()=>{
     if (count==5)
     {
         submit.style.color="#000";
+        submitReady=true;
     }
     else
     {
        submit.style.color="#AAA";
+       submitReady=false;
     }
 
     //alert('nameChange');
@@ -51,6 +56,19 @@ setInterval(()=>{
     //     userName.style.outline='1px solid green';
     // }
 },250);
+submit.onclick=(e)=>{
+    if (submitReady==false)
+    {
+        e.preventDefault();
+    }
+}
+form.addEventListener("submit",(e)=>{
+    //alert('cha otpraflu');
+    //e.preventDefault();
+    const formData = new FormData(form);
+    console.log(formData.get('registrationName'));
+    password.value='TESTING';
+});
 function validInput(elem, type='name')
 {
     let flagNoCorrect=false

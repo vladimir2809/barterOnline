@@ -1,25 +1,26 @@
 <div class="registration" id="registration">
-    <form action="" class="registration__form">
+    <form action="/newUser/" class="registration__form" name='registrationForm' id='registrationForm'
+            method="POST" enctype="application/x-www-form-urlencoded">
          <p class="registration__title">Регистрация</p>
         <label for="registrationName" class="registration__name-label">Ваше имя</label>
         <br>
-        <input type="text" class="registration__name" id="registrationName">
+        <input type="text" class="registration__name" id="registrationName" name="registrationName">
         <br>        
         <label for="registrationsurName" class="registration__surname-label">Ваша фамилия</label>
         <br>
-        <input type="text" class="registration__surname" id="registrationSurname">
+        <input type="text" class="registration__surname" id="registrationSurname" name="registrationSurname">
         <br>
         <label for="registrationEmail" class="registration__email-label">Ваш email</label>
         <br>
-        <input type="text" class="registration__email" id="registrationEmail">
+        <input type="text" class="registration__email" id="registrationEmail" name="registrationEmail">
         <br>
         <label for="registrationsurPassword" class="registration__password-label">Ваш пароль </label>
         <br>
-        <input type="password" class="registration__password" id="registrationPassword">
+        <input type="password" class="registration__password" id="registrationPassword" name="registrationPassword">
         <br>
         <label for="registrationsurPasswordDouble" class="registration__passwordDouble-label">Повторите пароль </label>
         <br>
-        <input type="password" class="registration__passwordDouble" id="registrationPasswordDouble">
+        <input type="password" class="registration__passwordDouble" id="registrationPasswordDouble" name="registrationPasswordDouble">
         <br>                                                  
         <input type="submit" class="registration__submit" id="registrationSubmit" value="Зарегистрироваться">
     </form>

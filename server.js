@@ -44,6 +44,7 @@ pool.query('SELECT NOW()', (err, res) => {
   })
   
   app.use(fileUpload({}));
+  app.use(express.urlencoded({ extended: true }))
   const handlebars = expressHandlebars.create({
     defaultLayout: 'main', 
     extname: 'hbs'
@@ -99,6 +100,10 @@ pool.query('SELECT NOW()', (err, res) => {
       }
     })
   });
+  app.post("/newUser/",(req, res)=>{
+    console.log(req.body);
+    res.send('User New');
+  })
   app.post("/upload/",function(req,res){
     req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
     console.log(req.files.give_loadImg/*.name*/);
