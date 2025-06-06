@@ -113,26 +113,41 @@ pool.query('SELECT NOW()', (err, res) => {
     //   console.log ("CRYPTO YES")
 
     // }
-    let password=(SHA256(req.body.registrationPassword).words.join(','))
-    console.log(password)
-    let query=`
-        INSERT INTO tableuser(name, surname, email, password, role)
-        VALUES ('${req.body.registrationName+''}',
-                '${req.body.registrationSurname+''}',
-                '${req.body.registrationEmail+''}',
-                '${password}',
-                'user');
-    `;
-    pool.query(query, (err, resDB) =>{
+    pool.query(`SELECT count(*) FROM tableuser 
+                WHERE email='${req.body.registrationEmail+''}'`,(err,resDB)=>{
         if (err==undefined)
         {
-          console.log("newUser "+req.body.registrationName)
-        }
-        else
-        {
-          console.log("Error newUser",err);
+          
+            console.log(resDB);
+            if (resDB.rowCount>0)
+            {
+              console.log('user repeat registration');
+            }
         }
     });
+    /*
+      ЗАПРОС НА РЕГИСТРАЦИЮ НОВОГО ПОЛЬЗОВАТЕЛЯ
+    */
+  //   let password=(SHA256(req.body.registrationPassword).words.join(','))
+  //   console.log(password)
+  //   let query=`
+  //       INSERT INTO tableuser(name, surname, email, password, role)
+  //       VALUES ('${req.body.registrationName+''}',
+  //               '${req.body.registrationSurname+''}',
+  //               '${req.body.registrationEmail+''}',
+  //               '${password}',
+  //               'user');
+  //   `;
+  //   pool.query(query, (err, resDB) =>{
+  //       if (err==undefined)
+  //       {
+  //         console.log("newUser "+req.body.registrationName)
+  //       }
+  //       else
+  //       {
+  //         console.log("Error newUser",err);
+  //       }
+  //   });
 
     res.send('User New');
   })
