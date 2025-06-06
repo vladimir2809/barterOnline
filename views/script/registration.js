@@ -6,14 +6,21 @@ var passwordDouble=null;
 var submit=null;
 var submitReady=false;
 var form=null;
+var changePasswordDouble=false;
 ///document.addEventListener('load',()=>{
     userName=document.getElementById('registrationName');
     userSurname=document.getElementById('registrationSurname');
     email=document.getElementById('registrationEmail');
     password=document.getElementById('registrationPassword');
+    password.value='';
     passwordDouble=document.getElementById('registrationPasswordDouble');
+    passwordDouble.value='';
     submit=document.getElementById('registrationSubmit');
     form=document.getElementById('registrationForm');
+    passwordDouble.addEventListener("change", ()=>{
+        changePasswordDouble=true;
+
+    })
     console.log(userName)
 //});
 setInterval(()=>{
@@ -22,14 +29,18 @@ setInterval(()=>{
     count+=validInput(userSurname);
     count+=validInput(email,'email');
     count+=validInput(password,'password');
-    if (password.value !== passwordDouble.value )
+    if (password.value == passwordDouble.value && passwordDouble.value!='')
     {
-        validInput(passwordDouble,'noCorrect');
+        // if (changePasswordDouble==true)
+        // if (passwordDouble.value!='')
+        {   
+            validInput(passwordDouble,'correct');
+            count+=1;
+        }
     }
     else
     {
-        validInput(passwordDouble,'correct');
-        count+=1;
+        validInput(passwordDouble,'noCorrect');
     }
     if (count==5)
     {
@@ -41,7 +52,8 @@ setInterval(()=>{
        submit.style.color="#AAA";
        submitReady=false;
     }
-
+    console.log(password.value);
+    console.log(passwordDouble.value);
     //alert('nameChange');
     // if (userName.value.length<2)
     // {
@@ -67,7 +79,7 @@ form.addEventListener("submit",(e)=>{
     //e.preventDefault();
     const formData = new FormData(form);
     console.log(formData.get('registrationName'));
-    password.value='TESTING';
+    //password.value='TESTING';
 });
 function validInput(elem, type='name')
 {
@@ -98,7 +110,7 @@ function validInput(elem, type='name')
     }
     else if (type=='password')
     {
-        flagNoCorrect= elem.value.length<7 ? true : false;   
+        flagNoCorrect= elem.value.length < 7 ? true : false;   
     }
     else if (type=='noCorrect')
     {

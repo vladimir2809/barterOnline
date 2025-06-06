@@ -3,6 +3,9 @@ const app=express();
 var fileUpload = require('express-fileupload');
 const expressHandlebars =require('express-handlebars');
 const {Pool} = require('pg');
+var  AES  =  require ( "crypto-js/aes" ) ; 
+var  SHA256  =  require ( "crypto-js/sha256" ) ;
+//console.log (SHA256(" Сообщение")) ;
 
 var categoryList=[];
 var categoryListStr='';
@@ -34,6 +37,7 @@ pool.query('SELECT NOW()', (err, res) => {
         {
             categoryListStr+=`<option value="${i+2}" class="search-block__option">${categoryList[i]}</option>`
         }
+        // console.log (SHA256("Сообщение")) ;
         // console.log(categoryListStr);
       }
       else
@@ -102,6 +106,34 @@ pool.query('SELECT NOW()', (err, res) => {
   });
   app.post("/newUser/",(req, res)=>{
     console.log(req.body);
+    //if (SHA256(req.body.registrationPassword+'')===SHA256("1234567") )
+
+    // if (isArraysEqual(SHA256(req.body.registrationPassword),SHA256("1234567")))
+    // {
+    //   console.log ("CRYPTO YES")
+
+    // }
+    let password=(SHA256(req.body.registrationPassword).words.join(','))
+    console.log(password)
+    let query=`
+        INSERT INTO tableuser(name, surname, email, password, role)
+        VALUES ('${req.body.registrationName+''}',
+                '${req.body.registrationSurname+''}',
+                '${req.body.registrationEmail+''}',
+                '${password}',
+                'user');
+    `;
+    pool.query(query, (err, resDB) =>{
+        if (err==undefined)
+        {
+          console.log("newUser "+req.body.registrationName)
+        }
+        else
+        {
+          console.log("Error newUser",err);
+        }
+    });
+
     res.send('User New');
   })
   app.post("/upload/",function(req,res){
@@ -111,3 +143,7 @@ pool.query('SELECT NOW()', (err, res) => {
     res.send('success');
     //res.render('newBarter');
   })
+
+  function isArraysEqual(firstArray, secondArray) {
+    return firstArray.toString() === secondArray.toString();
+  }
