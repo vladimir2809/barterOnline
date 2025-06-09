@@ -1,3 +1,10 @@
+{{#if flagModal}}
+    <script>
+        alert('Пользователь с таким Email уже существует.');
+        window.history.back();
+        //console.log({data});
+    </script>
+{{/if}}
 <div class="registration" id="registration">
     <form action="/newUser/" class="registration__form" name='registrationForm' id='registrationForm'
             method="POST" enctype="application/x-www-form-urlencoded">

@@ -52,8 +52,8 @@ setInterval(()=>{
        submit.style.color="#AAA";
        submitReady=false;
     }
-    console.log(password.value);
-    console.log(passwordDouble.value);
+    // console.log(password.value);
+    // console.log(passwordDouble.value);
     //alert('nameChange');
     // if (userName.value.length<2)
     // {

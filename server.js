@@ -113,43 +113,57 @@ pool.query('SELECT NOW()', (err, res) => {
     //   console.log ("CRYPTO YES")
 
     // }
+    //let flagNewUser=false;
     pool.query(`SELECT count(*) FROM tableuser 
                 WHERE email='${req.body.registrationEmail+''}'`,(err,resDB)=>{
         if (err==undefined)
         {
           
             console.log(resDB);
-            if (resDB.rowCount>0)
+            console.log("resDB.rows[0].count ="+resDB.rows[0].count)
+            if (resDB.rows[0].count != 0)
             {
               console.log('user repeat registration');
+              res.render('registration',{flagModal: true, data: req.body});
+              //return;
+            }
+            else
+            {
+     //         flagNewUser=true;
+                addNewUser ()
             }
         }
     });
     /*
       ЗАПРОС НА РЕГИСТРАЦИЮ НОВОГО ПОЛЬЗОВАТЕЛЯ
     */
-  //   let password=(SHA256(req.body.registrationPassword).words.join(','))
-  //   console.log(password)
-  //   let query=`
-  //       INSERT INTO tableuser(name, surname, email, password, role)
-  //       VALUES ('${req.body.registrationName+''}',
-  //               '${req.body.registrationSurname+''}',
-  //               '${req.body.registrationEmail+''}',
-  //               '${password}',
-  //               'user');
-  //   `;
-  //   pool.query(query, (err, resDB) =>{
-  //       if (err==undefined)
-  //       {
-  //         console.log("newUser "+req.body.registrationName)
-  //       }
-  //       else
-  //       {
-  //         console.log("Error newUser",err);
-  //       }
-  //   });
+   //if (flagNewUser==true)
+   function addNewUser ()
+   {
 
+      //   let password=(SHA256(req.body.registrationPassword).words.join(','))
+      //   console.log(password)
+      //   let query=`
+      //       INSERT INTO tableuser(name, surname, email, password, role)
+      //       VALUES ('${req.body.registrationName+''}',
+      //               '${req.body.registrationSurname+''}',
+      //               '${req.body.registrationEmail+''}',
+      //               '${password}',
+      //               'user');
+      //   `;
+      //   pool.query(query, (err, resDB) =>{
+        //       if (err==undefined)
+        //       {
+          //         console.log("newUser "+req.body.registrationName)
+    //       }
+    //       else
+    //       {
+      //         console.log("Error newUser",err);
+      //       }
+      //   });
+      
     res.send('User New');
+  }
   })
   app.post("/upload/",function(req,res){
     req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
@@ -158,7 +172,7 @@ pool.query('SELECT NOW()', (err, res) => {
     res.send('success');
     //res.render('newBarter');
   })
-
+  
   function isArraysEqual(firstArray, secondArray) {
     return firstArray.toString() === secondArray.toString();
   }
