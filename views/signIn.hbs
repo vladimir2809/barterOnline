@@ -1,14 +1,14 @@
 <div class="signIn">
-
-    <form action="" class="signIn__form" method="POST" enctype="application/x-www-form-urlencoded">
+    <form action="/userIn/" class="signIn__form"  method="POST" enctype="application/x-www-form-urlencoded>
+    {{!-- enctype="application/x-www-form-urlencoded" --}}
         <p class="signIn__title">Добро пожаловать</p>
         <label for="signInLogin" class="signIn__label-login">Введете email</label>
         <br>
-        <input type="text" id="signInLogin" class="signIn__login" placeholder="ваш email">
+        <input type="text" id="signInLogin" name="signInLogin" class="signIn__login" placeholder="ваш email">
         <br>
         <label for="signInPassword" class="signIn__label-password">Введете пароль</label>
         <br>
-        <input type="password" id="signInPassword" class="signIn__password" placeholder="ваш пароль">
+        <input type="password" id="signInPassword" name="signInPassword" class="signIn__password" placeholder="ваш пароль">
         <br>
         
         <input type="submit" class="signIn__submit" value="Войти">

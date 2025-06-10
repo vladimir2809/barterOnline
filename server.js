@@ -138,33 +138,44 @@ pool.query('SELECT NOW()', (err, res) => {
       ЗАПРОС НА РЕГИСТРАЦИЮ НОВОГО ПОЛЬЗОВАТЕЛЯ
     */
    //if (flagNewUser==true)
-   function addNewUser ()
-   {
+    function addNewUser ()
+    {
 
-      //   let password=(SHA256(req.body.registrationPassword).words.join(','))
-      //   console.log(password)
-      //   let query=`
-      //       INSERT INTO tableuser(name, surname, email, password, role)
-      //       VALUES ('${req.body.registrationName+''}',
-      //               '${req.body.registrationSurname+''}',
-      //               '${req.body.registrationEmail+''}',
-      //               '${password}',
-      //               'user');
-      //   `;
-      //   pool.query(query, (err, resDB) =>{
-        //       if (err==undefined)
-        //       {
-          //         console.log("newUser "+req.body.registrationName)
-    //       }
-    //       else
-    //       {
-      //         console.log("Error newUser",err);
+        //   let password=(SHA256(req.body.registrationPassword).words.join(','))
+        //   console.log(password)
+        //   let query=`
+        //       INSERT INTO tableuser(name, surname, email, password, role)
+        //       VALUES ('${req.body.registrationName+''}',
+        //               '${req.body.registrationSurname+''}',
+        //               '${req.body.registrationEmail+''}',
+        //               '${password}',
+        //               'user');
+        //   `;
+        //   pool.query(query, (err, resDB) =>{
+          //       if (err==undefined)
+          //       {
+            //         console.log("newUser "+req.body.registrationName)
       //       }
-      //   });
-      
-    res.send('User New');
-  }
+      //       else
+      //       {
+        //         console.log("Error newUser",err);
+        //       }
+        //   });
+        
+      res.send('User New');
+    }
   })
+  /*
+    Код отвечаюший за вход пользователя
+  */
+  app.post('/userIn/', function(req, res){
+      console.log("Why inner", req.body.signInLogin);
+      pool.query(`SELECT * FROM tableuser
+                  WHERE email='${req.body.signInLogin}'`,(err, resDB)=>{
+          res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+      });
+
+  });
   app.post("/upload/",function(req,res){
     req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
     console.log(req.files.give_loadImg/*.name*/);
