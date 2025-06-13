@@ -5,6 +5,7 @@ const expressHandlebars =require('express-handlebars');
 const {Pool} = require('pg');
 var  AES  =  require ( "crypto-js/aes" ) ; 
 var  SHA256  =  require ( "crypto-js/sha256" ) ;
+const cookieParser=require('cookie-parser');
 //console.log (SHA256(" Сообщение")) ;
 
 var categoryList=[];
@@ -46,9 +47,11 @@ pool.query('SELECT NOW()', (err, res) => {
       }
     })
   })
-  
+  const secretCookie='qwerty';
+
   app.use(fileUpload({}));
   app.use(express.urlencoded({ extended: true }))
+  app.use(cookieParser(secretCookie));
   const handlebars = expressHandlebars.create({
     defaultLayout: 'main', 
     extname: 'hbs'
@@ -70,6 +73,7 @@ pool.query('SELECT NOW()', (err, res) => {
 
   app.get("/",function(req,res){
     res.render('index',{categoryList: categoryListStr});
+    console.log(req.cookies);
   })
   app.get("/newBarter/",function(req,res){
 
@@ -172,7 +176,27 @@ pool.query('SELECT NOW()', (err, res) => {
       console.log("Why inner", req.body.signInLogin);
       pool.query(`SELECT * FROM tableuser
                   WHERE email='${req.body.signInLogin}'`,(err, resDB)=>{
-          res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+          console.log(resDB)
+          let flagError=true;
+          if (resDB.rowCount==1)
+          {
+            let password=(SHA256(req.body.signInPassword).words.join(','))
+            let passwordDB=resDB.rows[0].password;
+            if (password==passwordDB)
+            {
+             
+              flagError=false;
+              res.cookie('user',`${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+              res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+
+            }
+
+          }
+          if (flagError==true)
+          {
+            //res.send(`неверный логин или пароль`);
+            res.render('signIn',{flagSignInError: true})
+          }
       });
 
   });

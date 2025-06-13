@@ -1,5 +1,5 @@
 <div class="signIn">
-    <form action="/userIn/" class="signIn__form"  method="POST" enctype="application/x-www-form-urlencoded>
+    <form action="/userIn/" class="signIn__form"  method="POST" enctype="application/x-www-form-urlencoded">
     {{!-- enctype="application/x-www-form-urlencoded" --}}
         <p class="signIn__title">Добро пожаловать</p>
         <label for="signInLogin" class="signIn__label-login">Введете email</label>
@@ -19,3 +19,10 @@
         </div>
     </form>
 </div>
+{{#if flagSignInError}}
+    <script>
+        window.history.back();
+        alert('Неверный логин или пароль!');
+        //console.log({data});
+    </script>
+{{/if}}
