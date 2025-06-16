@@ -46,6 +46,20 @@ html {
   width: 5rem;
   height: 5rem;
 }
+.avatar__circleBorder {
+  width: 5rem;
+  height: 5rem;
+  border: 1px solid black;
+  border-radius: 50%;
+  background-color: red;
+}
+.avatar__circleBorder span {
+  position: relative;
+  top: 0.8rem;
+  left: 1.3rem;
+  font-size: 3rem;
+  color: white;
+}
 
 .logo {
   font-size: 2rem;

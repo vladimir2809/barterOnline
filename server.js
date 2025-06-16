@@ -10,6 +10,7 @@ const cookieParser=require('cookie-parser');
 
 var categoryList=[];
 var categoryListStr='';
+var dataUser=[];
 const pool = new Pool({
   user: "myuser",
   host: "localhost",
@@ -72,7 +73,8 @@ pool.query('SELECT NOW()', (err, res) => {
 
 
   app.get("/",function(req,res){
-    res.render('index',{categoryList: categoryListStr});
+    let data=dataUser[0][0];
+    res.render('index',{categoryList: categoryListStr, dataUser: data});
     console.log(req.cookies);
   })
   app.get("/newBarter/",function(req,res){
@@ -187,7 +189,12 @@ pool.query('SELECT NOW()', (err, res) => {
              
               flagError=false;
               res.cookie('user',`${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
-              res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+              dataUser[0]=resDB.rows[0].name;
+              route=req.route;
+              //res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+              res.render('index',{categoryList: categoryList, dataUser: dataUser, route:true})
+              // res.writeHead(200, '/index');
+              // res.end();
 
             }
 

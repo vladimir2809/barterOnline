@@ -9,7 +9,18 @@
             <h4 class="header__city">Москва</h4>
         </div>
         <div class="avatar" id="avatar">
-            <img src="/img/avatar.png" alt="" class="avatar__image">
+            {{#if route}}
+                <script>
+                    window.location='/';
+                </script>
+            {{/if}}
+            {{#if dataUser}}
+                <div class="avatar__circleBorder">
+                    <span>{{dataUser}}</span>
+                </div>
+            {{else}}
+                <img src="/img/avatar.png" alt="" class="avatar__image">
+            {{/if}}
             <div class="main-menu" id="main-menu">
                 <div class="main-menu__container-close">
                     <div class="main-menu__close" id="close-main-menu">
