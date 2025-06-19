@@ -55,6 +55,11 @@ window.addEventListener('load',()=>{
       },200);
       //alert(4214);
     });
+    document.getElementById("exit_mainMenu").addEventListener('click', ()=>{
+      mainMenu.style.display="none";
+      location.href='/exitUser/';
+    });
+    
     document.getElementById("avatar").addEventListener('click', ()=>{
 
       if (clickCloseMainMenu==false)

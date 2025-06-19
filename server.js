@@ -73,13 +73,25 @@ pool.query('SELECT NOW()', (err, res) => {
 
 
   app.get("/",function(req,res){
-    let data=dataUser[0][0];
+    initDataUser(req.cookies)
+    console.log(req.cookies)
+    console.log(dataUser[0])
+    let data=null;
+    if (dataUser[0]!=undefined)
+    {
+      data=dataUser[0][0];
+    }
+
     res.render('index',{categoryList: categoryListStr, dataUser: data});
-    console.log(req.cookies);
+    //console.log(req.cookies);
   })
   app.get("/newBarter/",function(req,res){
-
-    res.render('newBarter',{categoryList: categoryListStr});
+    let data=null///*req.cookies[0]*/dataUser[0][0];
+    if (dataUser[0]!=undefined)
+    {
+      data=dataUser[0][0];
+    }
+    res.render('newBarter',{categoryList: categoryListStr, dataUser: data});
   })
   app.get("/signIn/",function(req,res){
 
@@ -88,6 +100,11 @@ pool.query('SELECT NOW()', (err, res) => {
   app.get("/registration/",function(req,res){
 
     res.render('registration');
+  })
+  app.get("/exitUser/",function(req,res){
+    dataUser[0]=undefined;
+    res.clearCookie('user');
+    res.render('index', {flagExit: true});
   })
   app.get("/test/",function(req,res){
     pool.query(`SELECT * FROM city;`, (err, resDB) =>{
@@ -147,26 +164,26 @@ pool.query('SELECT NOW()', (err, res) => {
     function addNewUser ()
     {
 
-        //   let password=(SHA256(req.body.registrationPassword).words.join(','))
-        //   console.log(password)
-        //   let query=`
-        //       INSERT INTO tableuser(name, surname, email, password, role)
-        //       VALUES ('${req.body.registrationName+''}',
-        //               '${req.body.registrationSurname+''}',
-        //               '${req.body.registrationEmail+''}',
-        //               '${password}',
-        //               'user');
-        //   `;
-        //   pool.query(query, (err, resDB) =>{
-          //       if (err==undefined)
-          //       {
-            //         console.log("newUser "+req.body.registrationName)
-      //       }
-      //       else
-      //       {
-        //         console.log("Error newUser",err);
-        //       }
-        //   });
+          let password=(SHA256(req.body.registrationPassword).words.join(','))
+          console.log(password)
+          let query=`
+              INSERT INTO tableuser(name, surname, email, password, role)
+              VALUES ('${req.body.registrationName+''}',
+                      '${req.body.registrationSurname+''}',
+                      '${req.body.registrationEmail+''}',
+                      '${password}',
+                      'user');
+          `;
+          pool.query(query, (err, resDB) =>{
+                if (err==undefined)
+                {
+                    console.log("newUser "+req.body.registrationName)
+            }
+            else
+            {
+                console.log("Error newUser",err);
+              }
+          });
         
       res.send('User New');
     }
@@ -188,7 +205,9 @@ pool.query('SELECT NOW()', (err, res) => {
             {
              
               flagError=false;
-              res.cookie('user',`${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+              res.cookie('user',`${resDB.rows[0].name}  ${resDB.rows[0].surname}`,{
+                        maxAge: 1000 * 60 * 60 * 24 *30,
+              });
               dataUser[0]=resDB.rows[0].name;
               route=req.route;
               //res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
@@ -217,4 +236,8 @@ pool.query('SELECT NOW()', (err, res) => {
   
   function isArraysEqual(firstArray, secondArray) {
     return firstArray.toString() === secondArray.toString();
+  }
+  function initDataUser(cookie)
+  {
+    dataUser[0]=cookie.user;
   }

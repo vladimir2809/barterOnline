@@ -55,8 +55,8 @@ html {
 }
 .avatar__circleBorder span {
   position: relative;
-  top: 0.8rem;
-  left: 1.3rem;
+  top: 0.9rem;
+  left: 1.4rem;
   font-size: 3rem;
   color: white;
 }
@@ -74,13 +74,16 @@ html {
 
 .main-menu {
   display: none;
-  width: 10rem;
-  height: 12rem;
+  width: 18rem;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
   background-color: #A8A;
   position: absolute;
   right: 5.5rem;
   top: 7rem;
   z-index: 100;
+  padding-bottom: 1.5rem;
 }
 @media only screen and (max-width: 430px) {
   .main-menu {
@@ -108,7 +111,7 @@ html {
   list-style-type: none;
 }
 .main-menu__item {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   margin-top: 1rem;
   text-align: center;
   cursor: pointer;
