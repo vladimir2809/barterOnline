@@ -205,7 +205,7 @@ html {
 
 .result {
   grid-column: content-start/content-end;
-  grid-row: 3/4;
+  grid-row: 4/5;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(44rem, 64rem));
   grid-template-rows: -webkit-min-content;
@@ -298,13 +298,18 @@ html {
 }
 
 .link-newBarter {
+  grid-column: content-start/content-end;
+  grid-row: 3/4;
+  justify-self: center;
   font-size: 4rem;
+  padding: 1.5rem 0;
 }
 
 .newBarter {
   grid-column: content-start/content-end;
   display: grid;
   grid-template-columns: 1fr minmax(43rem, 80rem) 1fr;
+  padding: 3rem;
 }
 .newBarter__title {
   grid-column: 2/3;
