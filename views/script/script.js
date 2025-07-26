@@ -81,6 +81,36 @@ window.addEventListener('load',()=>{
       }
       // console.log(clickCloseMainMenu);
     });
+    let stuffDescr=document.getElementsByClassName("new-stuff__description");
+    //console.log(stuffDescr);
+    //for (let prop in stuffDescr )
+    for (let i=0; i<stuffDescr.length; i++)
+    {
+          console.log(i);
+          stuffDescr[i].addEventListener("click", (event)=>{
+            if (stuffDescr[i].innerText=="Разместите редактируемый текст здесь")
+            {
+              stuffDescr[i].innerText='';
+            }
+            //alert("kj");
+          });
+    }
+    // document.getElementsByClassName("new-stuff__description").forEach((element) =>{
+      
+    //   alert("555");
+    //   element.addEventListener("click", (event)=>{
+    //     element.innerText='';
+    //     alert("kj");
+    //   });
+    // });
+      
+    
+    // });
+    // document.getElementsByClassName("new-stuff__description")[0].addEventListener("click", (event)=>{
+    //   //this.this.style.border='1px solid red';
+    //   document.getElementsByClassName("new-stuff__description")[0].innerText='';//style.border='1px solid red';
+    //   //alert("kj")
+    // });
     
 });
 function createEventLoadImage()
@@ -134,3 +164,6 @@ function previewFile(preview, file) {
       else if(bytes < 1073741824) return(bytes / 1048576).toFixed(3) + " MiB";
       else return(bytes / 1073741824).toFixed(3) + " GiB";
   };
+  /*
+    25.07.2025 остановился на том что убирал текст у описания бартера в странице "Создание нового бартера" 
+  */
