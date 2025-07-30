@@ -226,12 +226,50 @@ pool.query('SELECT NOW()', (err, res) => {
       });
 
   });
-  app.post("/upload/",function(req,res){
-    req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
-    console.log(req.files.give_loadImg/*.name*/);
-    // console.log(req.body.newStuff__giveName);
-    res.send('success');
-    //res.render('newBarter');
+  app.post("/saveBarter/",function(req,res){
+    let stuff={
+      name: '',
+      category: null,
+      image: null,
+      desription: '',
+    }
+    let dataForDB={
+      give: stuff,
+      get: stuff,
+    }
+    console.log(req.body);
+    if (req.files!=null)
+    {
+
+      //req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
+      if (req.files.give_loadImg!=undefined)
+      {
+
+       // console.log(req.files.give_loadImg/*.name*/);
+        // console.log(req.body.newStuff__giveName);
+      }
+      else
+      {
+        console.log('not image give');
+      }
+      if (req.files.get_loadImg!=undefined)
+      {
+
+        //console.log(req.files.get_loadImg/*.name*/);
+        // console.log(req.body.newStuff__giveName);
+      }
+      else
+      {
+        console.log('not image get');
+      }
+
+      res.send('success');
+      //res.render('newBarter');
+    }
+    else
+    {
+      res.send('not image file');
+    }
   })
   
   function isArraysEqual(firstArray, secondArray) {

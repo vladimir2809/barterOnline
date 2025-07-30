@@ -1,6 +1,6 @@
 <div class="newBarter">
 
-    <form action="/upload/" class="newBarter__form" method="POST" enctype="multipart/form-data">
+    <form action="/saveBarter/" id="newBarterForm" class="newBarter__form" method="POST" enctype="multipart/form-data">
         <h1 class="newBarter__title">Создание нового бартера</h1>
 
         <div class="newBarter-give new-stuff">
@@ -28,8 +28,12 @@
                 <br>
                 <label for="enter-give-description" class="new-stuff__label-descriptin">Введите описание</label>
                 <br>
-                <div contenteditable="true" class="new-stuff__description" style="min-height:40px; max-height:200px; overflow:auto;">
-                    <input type="hidden" name="textareaContent" class="new-stuff__description-input">
+                <input type="hidden" name="textareaContent-give" class="new-stuff__description-input" 
+                            id="newBarter-give-description-hidden" value="data">
+                <div contenteditable="true" id="newBarter-give-description" class="new-stuff__description"
+                    style="min-height:40px; max-height:200px; overflow:auto;">
+                    {{!-- <input type="hidden" name="textareaContent-give" class="new-stuff__description-input" 
+                            id="newBarter-give-description-hidden" value="data"> --}}
                     Разместите редактируемый текст здесь
                 </div>  
             </div>
@@ -46,7 +50,7 @@
                 <br>
                 <label for="newStuff__getName" class="new-stuff__label-name">Название</label>
                 <br>
-                <input type="text" id="newStuff__getName" class="new-stuff__name">
+                <input type="text" name="newStuff__getName" id="newStuff__getName" class="new-stuff__name">
                 <br>
                 <label for="category-load-get" class="new-stuff__label-category">Выберите категорию</label>
                 <br>
@@ -65,8 +69,12 @@
                 <br>
                 <label for="enter-get-description" class="new-stuff__label-descriptin">Введите описание</label>
                 <br>
-                <div contenteditable="true" id="enter-get-description" class="new-stuff__description" style="min-height:40px; max-height:200px; overflow:auto;">
-                    <input type="hidden" name="textareaContent" class="new-stuff__description-input">
+                <input type="hidden" name="textareaContent-get" id='newBarter-get-description-hidden'
+                        class="new-stuff__description-input">
+                {{!-- id="newBarter-give-description" --}}
+                <div contenteditable="true" name="newBarter-get-description" id="newBarter-get-description" 
+                        class="new-stuff__description" style="min-height:40px; max-height:200px; overflow:auto;">
+                   
                     Разместите редактируемый текст здесь
                 </div>  
             </div>

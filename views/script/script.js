@@ -3,6 +3,7 @@ var resultItemNode=null;
 // var filesImages=[];
 // var previewImages=null; //= document.getElementById('img-give-preload');
 var newStuffArr=null;
+var newBarterForm=null;
 var mainMenu=null;
 var clickCloseMainMenu=false;
 
@@ -11,6 +12,7 @@ window.addEventListener('load',()=>{
     resultNode=document.getElementsByClassName('result')[0];
     resultItemNode=document.getElementsByClassName('result-item')[0];
     newStuffArr=document.querySelectorAll('.new-stuff');
+    newBarterForm=document.getElementById("newBarterForm");
     createEventLoadImage();
     // filesImages = document.querySelectorAll('.new-stuff input[type=file]');
     // //console.log(filesImages);
@@ -59,7 +61,39 @@ window.addEventListener('load',()=>{
       mainMenu.style.display="none";
       location.href='/exitUser/';
     });
-    
+    // let giveDescription=document.getElementById("newBarter-give-description");
+    // let hiddenDescriptionGive=document.getElementById("newBarter-give-description-hidden");
+    newBarterForm.addEventListener('submit',(event)=>{
+      let giveDescription=document.getElementById("newBarter-give-description");
+      let hiddenDescriptionGive=document.getElementById("newBarter-give-description-hidden");
+      let getDescription=document.getElementById("newBarter-get-description");
+      let hiddenDescriptionGet=document.getElementById("newBarter-get-description-hidden");
+      event.preventDefault();
+      //sendData();
+      
+
+      // console.log(hiddenDescriptionGive);
+      // console.log(giveDescription.value);
+      hiddenDescriptionGive.value=giveDescription.innerText;
+      hiddenDescriptionGet.value=getDescription.innerText;
+      newBarterForm.submit();
+    })
+
+    function sendData() 
+    {
+      const editableElement = document.getElementById('newBarter-give-description');
+      const hiddenInput = document.getElementById('newBarter-give-description-hidden');
+      hiddenInput.value = editableElement.innerHTML; // Или editableElement.textContent
+      //  Если нужно отправить данные на сервер, добавьте код отправки формы здесь.
+      //  Например, используя `fetch` или `XMLHttpRequest`.
+      //  Обычно это делается в обработчике события `onsubmit` формы.
+      //  Пример с fetch:
+      fetch('/saveBarter/', {
+          method: 'POST',
+          body: new FormData(document.querySelector('#newBarterForm'))
+      });
+    }
+
     document.getElementById("avatar").addEventListener('click', ()=>{
 
       if (clickCloseMainMenu==false)
@@ -90,7 +124,7 @@ window.addEventListener('load',()=>{
           stuffDescr[i].addEventListener("click", (event)=>{
             if (stuffDescr[i].innerText=="Разместите редактируемый текст здесь")
             {
-              stuffDescr[i].innerText='';
+              stuffDescr[i].innerText='1';
             }
             //alert("kj");
           });
