@@ -1,11 +1,15 @@
 const express=require('express');
 const app=express();
+
 var fileUpload = require('express-fileupload');
+
 const expressHandlebars =require('express-handlebars');
 const {Pool} = require('pg');
 var  AES  =  require ( "crypto-js/aes" ) ; 
 var  SHA256  =  require ( "crypto-js/sha256" ) ;
 const cookieParser=require('cookie-parser');
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 //console.log (SHA256(" Сообщение")) ;
 
 var categoryList=[];
@@ -51,6 +55,7 @@ pool.query('SELECT NOW()', (err, res) => {
   const secretCookie='qwerty';
 
   app.use(fileUpload({}));
+
   app.use(express.urlencoded({ extended: true }))
   app.use(cookieParser(secretCookie));
   const handlebars = expressHandlebars.create({
@@ -226,7 +231,7 @@ pool.query('SELECT NOW()', (err, res) => {
       });
 
   });
-  app.post("/saveBarter/",function(req,res){
+  app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
     let stuff={
       name: '',
       category: null,
@@ -245,8 +250,8 @@ pool.query('SELECT NOW()', (err, res) => {
       if (req.files.give_loadImg!=undefined)
       {
 
-       // console.log(req.files.give_loadImg/*.name*/);
-        // console.log(req.body.newStuff__giveName);
+        console.log(req.files.give_loadImg/*.name*/);
+        //console.log(req.body.newStuff__giveName);
       }
       else
       {
