@@ -138,12 +138,8 @@ window.addEventListener('load',()=>{
           selectColor(getDescription, true);
           //giveDescription.style.border='1px solid red';
         }
-        //count+=validInput(giveDescription,"stringLong");
-
-
-        // count+=validInput(nameGet,"stringSmall");
-        // count+=validInput(hiddenDescriptionGet,"stringLong");
-        if (count==4)
+        let flagBigImg=false;
+        if (count==4 && flagBigImg==false)
         {
           newBarterForm.submit();
 
@@ -153,7 +149,6 @@ window.addEventListener('load',()=>{
           alert("Введете данные");
         }
       })
-      
       function sendData() 
       {
         const editableElement = document.getElementById('newBarter-give-description');
@@ -204,24 +199,7 @@ window.addEventListener('load',()=>{
             }
             //alert("kj");
           });
-    }
-    // document.getElementsByClassName("new-stuff__description").forEach((element) =>{
-      
-    //   alert("555");
-    //   element.addEventListener("click", (event)=>{
-    //     element.innerText='';
-    //     alert("kj");
-    //   });
-    // });
-      
-    
-    // });
-    // document.getElementsByClassName("new-stuff__description")[0].addEventListener("click", (event)=>{
-    //   //this.this.style.border='1px solid red';
-    //   document.getElementsByClassName("new-stuff__description")[0].innerText='';//style.border='1px solid red';
-    //   //alert("kj")
-    // });
-    
+    }    
 });
 function createEventLoadImage()
 {
@@ -231,7 +209,19 @@ function createEventLoadImage()
     let filesImages = newStuffArr[i].querySelector('input[type=file]');
     filesImages.addEventListener('change', function() {
         //console.log(1123);
-        previewFile(previewImages, filesImages.files[0]);
+        if (filesImages.files[0].size <= 1024 * 1024)
+        {
+          //filesImages.value='';
+          previewFile(previewImages, filesImages.files[0]);
+
+        }
+        else
+        {
+          alert('Картинка должна весить меньше 1МБ.');
+          filesImages.value='';
+          previewImages.src='img/default.jpg';
+          //previewFile(previewImages, filesImages.files[0]);
+        }
       
     });
   }
