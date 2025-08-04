@@ -3,8 +3,10 @@ var resultItemNode=null;
 // var filesImages=[];
 // var previewImages=null; //= document.getElementById('img-give-preload');
 var newStuffArr=null;
+//var categoryStuffArr=null;
 var newBarterForm=null;
 var mainMenu=null;
+var flagsChangeStuffImg=[];
 var clickCloseMainMenu=false;
 
 window.addEventListener('load',()=>{
@@ -13,11 +15,9 @@ window.addEventListener('load',()=>{
     resultItemNode=document.getElementsByClassName('result-item')[0];
     newStuffArr=document.querySelectorAll('.new-stuff');
     newBarterForm=document.getElementById("newBarterForm");
+
     createEventLoadImage();
-    // filesImages = document.querySelectorAll('.new-stuff input[type=file]');
-    // //console.log(filesImages);
-                                   
-    // previewImages = document.querySelectorAll('.new-stuff__img-preload');
+
     console.log(resultItemNode);
     mainMenu=document.getElementById("main-menu")
     if (resultItemNode!=undefined)
@@ -61,8 +61,7 @@ window.addEventListener('load',()=>{
       mainMenu.style.display="none";
       location.href='/exitUser/';
     });
-    // let giveDescription=document.getElementById("newBarter-give-description");
-    // let hiddenDescriptionGive=document.getElementById("newBarter-give-description-hidden");
+    // если сейчас активна страница Новый Бартер
     if (newBarterForm!=undefined)
     {
       newBarterForm.addEventListener('submit',(event)=>{
@@ -98,6 +97,8 @@ window.addEventListener('load',()=>{
         {
           hiddenDescriptionGet.value=null;
         }
+
+        // валидация формы новый бартер, что были введениы значения
         let count=0;
         
         count+=validInput(nameGive,"stringSmall");
@@ -114,19 +115,7 @@ window.addEventListener('load',()=>{
           selectColor(giveDescription, true);
           //giveDescription.style.border='1px solid red';
         }
-        // if (validInput(hiddenDescriptionGive,"stringLong")==1)
-        // {
-
-        //   count+=1
-        //   selectColor(giveDescription, false);
-        // }
-        // else
-        // {
-        //   selectColor(giveDescription, true);
-        //   //giveDescription.style.border='1px solid red';
-        // }
-        
-        
+  
         if (validInput(hiddenDescriptionGet,"stringLong")==1)
         {
 
@@ -136,10 +125,8 @@ window.addEventListener('load',()=>{
         else
         {
           selectColor(getDescription, true);
-          //giveDescription.style.border='1px solid red';
         }
-        let flagBigImg=false;
-        if (count==4 && flagBigImg==false)
+        if (count==4)
         {
           newBarterForm.submit();
 
@@ -149,20 +136,32 @@ window.addEventListener('load',()=>{
           alert("Введете данные");
         }
       })
-      function sendData() 
+      // показание картинки по умолчанию при выборе категории
+      for (let i=0;i<newStuffArr.length;i++)
       {
-        const editableElement = document.getElementById('newBarter-give-description');
-        const hiddenInput = document.getElementById('newBarter-give-description-hidden');
-        hiddenInput.value = editableElement.innerHTML; // Или editableElement.textContent
-        //  Если нужно отправить данные на сервер, добавьте код отправки формы здесь.
-        //  Например, используя `fetch` или `XMLHttpRequest`.
-        //  Обычно это делается в обработчике события `onsubmit` формы.
-        //  Пример с fetch:
-        fetch('/saveBarter/', {
-          method: 'POST',
-          body: new FormData(document.querySelector('#newBarterForm'))
+        //let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
+        //let filesImages = newStuffArr[i].querySelector('input[type=file]');
+        let categoryStuff=newStuffArr[i].querySelector('.new-stuff__category');
+        let imgPreloadStuff=newStuffArr[i].querySelector('.new-stuff__img-preload');
+        //alert(categoryStuff);
+        categoryStuff.addEventListener("change", function(){
+          imgPreloadStuff.src="img/category1.png";
         });
       }
+      // function sendData() 
+      // {
+      //   const editableElement = document.getElementById('newBarter-give-description');
+      //   const hiddenInput = document.getElementById('newBarter-give-description-hidden');
+      //   hiddenInput.value = editableElement.innerHTML; // Или editableElement.textContent
+      //   //  Если нужно отправить данные на сервер, добавьте код отправки формы здесь.
+      //   //  Например, используя `fetch` или `XMLHttpRequest`.
+      //   //  Обычно это делается в обработчике события `onsubmit` формы.
+      //   //  Пример с fetch:
+      //   fetch('/saveBarter/', {
+      //     method: 'POST',
+      //     body: new FormData(document.querySelector('#newBarterForm'))
+      //   });
+      // }
     }
     
     document.getElementById("avatar").addEventListener('click', ()=>{
@@ -186,6 +185,7 @@ window.addEventListener('load',()=>{
       }
       // console.log(clickCloseMainMenu);
     });
+    // удаление подписи у иписание нового бартера
     let stuffDescr=document.getElementsByClassName("new-stuff__description");
     //console.log(stuffDescr);
     //for (let prop in stuffDescr )
@@ -201,6 +201,7 @@ window.addEventListener('load',()=>{
           });
     }    
 });
+// событие загрузки изображения в форму а также показ превью
 function createEventLoadImage()
 {
   for (let i=0;i<newStuffArr.length;i++)
@@ -247,6 +248,7 @@ function previewFile(preview, file) {
       preview.src = "";
     }
   }
+  // создание данных категорий для формы новый бартер
   function insertCategoryInSelect(selectDOM,list)
   {
     for (i=0; i<list.length;i++)
