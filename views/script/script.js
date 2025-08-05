@@ -6,8 +6,9 @@ var newStuffArr=null;
 //var categoryStuffArr=null;
 var newBarterForm=null;
 var mainMenu=null;
-var flagsChangeStuffImg=[];
+var flagsChangeStuffImg=[false, false];
 var clickCloseMainMenu=false;
+let countValidForm=0;
 
 window.addEventListener('load',()=>{
     //alert('load end');
@@ -15,6 +16,27 @@ window.addEventListener('load',()=>{
     resultItemNode=document.getElementsByClassName('result-item')[0];
     newStuffArr=document.querySelectorAll('.new-stuff');
     newBarterForm=document.getElementById("newBarterForm");
+
+    var nameGive=document.getElementById("newStuff__giveName");
+    var nameGet=document.getElementById("newStuff__getName");
+
+    var categoryGive=document.getElementById("category-load-give");
+    var categoryGet=document.getElementById("category-load-get");
+
+    var imageGive=document.getElementById("give_loadImg");
+    var imageGet=document.getElementById("get_loadImg");
+
+    
+
+    var giveDescription=document.getElementById("newBarter-give-description");
+    var hiddenDescriptionGive=document.getElementById("newBarter-give-description-hidden");
+
+    var getDescription=document.getElementById("newBarter-get-description");
+    var hiddenDescriptionGet=document.getElementById("newBarter-get-description-hidden");
+
+    var hiddenFlagImgCategoryGive=document.getElementById("flag-img-category-give");
+    var hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
+    
 
     createEventLoadImage();
 
@@ -65,22 +87,22 @@ window.addEventListener('load',()=>{
     if (newBarterForm!=undefined)
     {
       newBarterForm.addEventListener('submit',(event)=>{
-        let nameGive=document.getElementById("newStuff__giveName");
-        let nameGet=document.getElementById("newStuff__getName");
+        // let nameGive=document.getElementById("newStuff__giveName");
+        // let nameGet=document.getElementById("newStuff__getName");
 
-        let categoryGive=document.getElementById("category-load-give");
-        let categoryGet=document.getElementById("category-load-get");
+        // let categoryGive=document.getElementById("category-load-give");
+        // let categoryGet=document.getElementById("category-load-get");
 
-        let imageGive=document.getElementById("give_loadImg");
-        let imageGet=document.getElementById("get_loadImg");
+        // let imageGive=document.getElementById("give_loadImg");
+        // let imageGet=document.getElementById("get_loadImg");
 
         
 
-        let giveDescription=document.getElementById("newBarter-give-description");
-        let hiddenDescriptionGive=document.getElementById("newBarter-give-description-hidden");
+        // let giveDescription=document.getElementById("newBarter-give-description");
+        // let hiddenDescriptionGive=document.getElementById("newBarter-give-description-hidden");
 
-        let getDescription=document.getElementById("newBarter-get-description");
-        let hiddenDescriptionGet=document.getElementById("newBarter-get-description-hidden");
+        // let getDescription=document.getElementById("newBarter-get-description");
+        // let hiddenDescriptionGet=document.getElementById("newBarter-get-description-hidden");
         event.preventDefault();
         //sendData();
         
@@ -89,53 +111,81 @@ window.addEventListener('load',()=>{
         // console.log(giveDescription.value);
         hiddenDescriptionGive.value=giveDescription.innerText;
         hiddenDescriptionGet.value=getDescription.innerText;
-        if (hiddenDescriptionGive.value=='Разместите редактируемый текст здесь')
+        // if (hiddenDescriptionGive.value=='Разместите редактируемый текст здесь')
+        // {
+        //   hiddenDescriptionGive.value=null;
+        // }
+        // if (hiddenDescriptionGet.value=='Разместите редактируемый текст здесь')
+        // {
+        //   hiddenDescriptionGet.value=null;
+        // }
+        alert(hiddenFlagImgCategoryGive.value)
+        alert(hiddenFlagImgCategoryGet.value)
+        if (countValidForm==4)
         {
-          hiddenDescriptionGive.value=null;
+            newBarterForm.submit();  
         }
-        if (hiddenDescriptionGet.value=='Разместите редактируемый текст здесь')
+        else
         {
-          hiddenDescriptionGet.value=null;
+            alert("Введете данные");
+            // alert(hiddenFlagImgCategoryGive)
+            // alert(hiddenFlagImgCategoryGet)
         }
-
+      });
         // валидация формы новый бартер, что были введениы значения
-        let count=0;
-        
-        count+=validInput(nameGive,"stringSmall");
-        count+=validInput(nameGet,"stringSmall");
+      setInterval(function(){     
+      
+          countValidForm=0;
+          
+          countValidForm+=validInput(nameGive,"stringSmall");
+          countValidForm+=validInput(nameGet,"stringSmall");
+          
+          hiddenDescriptionGive.value=giveDescription.innerText;
+          hiddenDescriptionGet.value=getDescription.innerText;
 
-        if (validInput(hiddenDescriptionGive,"stringLong")==1)
-        {
 
-          count+=1
-          selectColor(giveDescription, false);
-        }
-        else
-        {
-          selectColor(giveDescription, true);
-          //giveDescription.style.border='1px solid red';
-        }
-  
-        if (validInput(hiddenDescriptionGet,"stringLong")==1)
-        {
+          if (hiddenDescriptionGive.value=='Разместите редактируемый текст здесь')
+          {
+            hiddenDescriptionGive.value=null;
+          }
+          if (hiddenDescriptionGet.value=='Разместите редактируемый текст здесь')
+          {
+            hiddenDescriptionGet.value=null;
+          }
 
-          count+=1
-          selectColor(getDescription, false);
-        }
-        else
-        {
-          selectColor(getDescription, true);
-        }
-        if (count==4)
-        {
-          newBarterForm.submit();
-
-        }
-        else
-        {
-          alert("Введете данные");
-        }
-      })
+          if (validInput(hiddenDescriptionGive,"stringLong")==1)
+          {
+            
+            countValidForm+=1
+            selectColor(giveDescription, false);
+          }
+          else
+          {
+            //selectColor(giveDescription, true);
+            giveDescription.style.border='2px solid red';
+          }
+          
+          if (validInput(hiddenDescriptionGet,"stringLong")==1)
+          {
+            
+            countValidForm+=1
+            selectColor(getDescription, false);
+          }
+          else
+          {
+            //selectColor(getDescription, true);
+            getDescription.style.border='2px solid red';
+          }
+        // if (countValidForm==4)
+        // {
+          //   newBarterForm.submit();
+          
+          // }
+          // else
+          // {
+            //   alert("Введете данные");
+            // }
+      },300);
       // показание картинки по умолчанию при выборе категории
       for (let i=0;i<newStuffArr.length;i++)
       {
@@ -145,7 +195,12 @@ window.addEventListener('load',()=>{
         let imgPreloadStuff=newStuffArr[i].querySelector('.new-stuff__img-preload');
         //alert(categoryStuff);
         categoryStuff.addEventListener("change", function(){
-          imgPreloadStuff.src="img/category1.png";
+          if (flagsChangeStuffImg[i]==false)
+          {
+            flagsChangeStuffImg[i]=true;
+            imgPreloadStuff.src="img/category1.png";
+
+          }
         });
       }
       // function sendData() 
