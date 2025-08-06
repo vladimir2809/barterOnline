@@ -29,3 +29,18 @@
 //     }
 //     });
 // });
+
+// function sendData() 
+// {
+//   const editableElement = document.getElementById('newBarter-give-description');
+//   const hiddenInput = document.getElementById('newBarter-give-description-hidden');
+//   hiddenInput.value = editableElement.innerHTML; // Или editableElement.textContent
+//   //  Если нужно отправить данные на сервер, добавьте код отправки формы здесь.
+//   //  Например, используя `fetch` или `XMLHttpRequest`.
+//   //  Обычно это делается в обработчике события `onsubmit` формы.
+//   //  Пример с fetch:
+//   fetch('/saveBarter/', {
+//     method: 'POST',
+//     body: new FormData(document.querySelector('#newBarterForm'))
+//   });
+// }

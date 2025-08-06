@@ -260,7 +260,7 @@ pool.query('SELECT NOW()', (err, res) => {
       if (req.files.get_loadImg!=undefined)
       {
 
-        //console.log(req.files.get_loadImg/*.name*/);
+        console.log(req.files.get_loadImg/*.name*/);
         // console.log(req.body.newStuff__giveName);
       }
       else
