@@ -235,46 +235,148 @@ pool.query('SELECT NOW()', (err, res) => {
     let stuff={
       name: '',
       category: null,
-      image: null,
-      desription: '',
+      imagePath: '000',
+      desсription: '',
     }
+    giveStuff=JSON.parse(JSON.stringify(stuff));
+    getStuff=JSON.parse(JSON.stringify(stuff));
     let dataForDB={
-      give: stuff,
-      get: stuff,
+      userId: null,
+      cityId: null,
+      // give: stuff,
+      // get: stuff,
     }
-    console.log(req.body);
+
+    
+    // Пример использования:
+    // console.log(randomName); // Вывод случайного имени, например: "bQ7Z9fWkXp"
+    function calcRouteImg(name,flag)
+    {
+      const randomName = generateRandomName(10);
+      let type=name.split('.')[1];
+      let imgCategory="category1.png";
+      if (flag==null) // если картинки нет
+      {
+        return 'views/img/default.jpg';
+      }
+      else if (flag==0)// если картинка есть
+      {
+        return 'views/imgUser/'+randomName+'.'+type;
+      }
+      else if (flag==1) // если картинка должна быть категорией
+      {
+        return 'views/img/'+imgCategory;
+      }
+    }
+    function calcPath(flagCategory)
+    {
+
+      if (flagCategory=='null')
+      {
+        
+        // console.log('not image GIVE + null');
+        console.log('image path privat null ');
+        return calcRouteImg('',null);
+      }
+      else if (flagCategory==1)
+      {
+        console.log('image path privat 1 ');
+        return calcRouteImg('',1);
+      }
+    }
+      console.log(req.body);
+      console.log(req.files);
+      console.log(req.body.flag_img_category_give+' flag Give');
+      console.log(req.body.flag_img_category_get+' flag Get');
+      
+    //if (/*req.files!=null ||*/ (req.body.flag_img_category_give!=null ||
+     //                      req.body.flag_img_category_get!=null))
     if (req.files!=null)
     {
 
-      //req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
-      if (req.files.give_loadImg!=undefined)
+      if (req.files.give_loadImg!=undefined /*&& req.files.give_loadImg!=null*/)
       {
-
-        console.log(req.files.give_loadImg/*.name*/);
+        
+        // req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
+        // giveStuff.imagePath='views/imgUser/'+req.files.give_loadImg.name;
+      //  console.log(req.files.give_loadImg/*.name*/);
         //console.log(req.body.newStuff__giveName);
+        giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,0);
+        console.log('image path privat 0 ');
+        
       }
       else
       {
-        console.log('not image give');
+        giveStuff.imagePath=calcPath(req.body.flag_img_category_give);
+        // console.log(req.body["flag-img-category-give"]);
+        // if (req.body.flag_img_category_give=='null')
+        // {
+          
+        //  // console.log('not image GIVE + null');
+        //   giveStuff.imagePath=calcRouteImg('',null);
+        //   console.log('image path privat null ');
+        // }
+        // else if (req.body.flag_img_category_give==1)
+        // {
+        //   giveStuff.imagePath=calcRouteImg('',1);
+        //   console.log('image path privat 1 ');
+        // }
+        // giveStuff.imagePath='views/imgUser/'+req.files.give_loadImg.name;
       }
+      
+      
+
       if (req.files.get_loadImg!=undefined)
       {
 
-        console.log(req.files.get_loadImg/*.name*/);
+        //req.files.get_loadImg.mv('views/imgUser/'+req.files.get_loadImg.name);
+        //getStuff.imagePath='views/imgUser/'+req.files.get_loadImg.name;
+        //console.log(req.files.get_loadImg/*.name*/);
+        getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,0);
         // console.log(req.body.newStuff__giveName);
       }
       else
       {
-        console.log('not image get');
+
+        getStuff.imagePath=calcPath(req.body.flag_img_category_get);
+        // if (req.body.flag_img_category_get=='null')
+        // {
+          
+        //   console.log('not image GET + null');
+        //   getStuff.imagePath=calcRouteImg('',null);
+        // }
+        // else if (req.body.flag_img_category_get==1)
+        // {
+        //   getStuff.imagePath=calcRouteImg('',1);
+        // }
       }
 
       res.send('success');
       //res.render('newBarter');
     }
-    else
+    //else 
+    if (req.files==null)
     {
+
+      // giveStuff.imagePath=calcRouteImg('',null);
+      // getStuff.imagePath=calcRouteImg('',null);
+
+      giveStuff.imagePath=calcPath(req.body.flag_img_category_give);
+      getStuff.imagePath=calcPath(req.body.flag_img_category_get);
+
       res.send('not image file');
     }
+
+    giveStuff.name=req.body.stuff__give__name;
+    giveStuff.category=req.body.category_load_give;
+    giveStuff.desсription=req.body.textareaContent_give;
+
+    getStuff.name=req.body.stuff__get__name;
+    getStuff.category=req.body.category_load_get;
+    getStuff.desсription=req.body.textareaContent_get;
+    
+    console.log('giveStuff', giveStuff);
+    console.log('getStuff', getStuff);
   })
   
   function isArraysEqual(firstArray, secondArray) {
@@ -284,3 +386,17 @@ pool.query('SELECT NOW()', (err, res) => {
   {
     dataUser[0]=cookie.user;
   }
+  function generateRandomName(length)
+  {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  }
+  /*
+  08.08.2025 останивился на том что подготавливал данные бартера для записи в БД
+
+  */

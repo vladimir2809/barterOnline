@@ -9,17 +9,17 @@
                 {{!-- <form action="" class="new-stuff__form"> --}}
                 <label for="newStuff__giveName" class="new-stuff__label-name">Название</label>
                 <br>
-                <input type="text" id="newStuff__giveName" name="newStuff__giveName" class="new-stuff__name">
+                <input type="text" id="newStuff__giveName" name="stuff__give__name" class="new-stuff__name">
                 <br>
                 <label for="category-load-give" class="new-stuff__label-category">Выберите категорию</label>
                 <br>
-                <select name="category-load-give" id="category-load-give" class="new-stuff__category">
+                <select name="category_load_give" id="category-load-give" class="new-stuff__category">
                     {{{categoryList}}}
                 </select>
                 <br>
                 <label for="new-stuff__give-loadImg">Загрузите изображение</label>
                 <br>
-                <input type="hidden" name="flag-img-category-give" id="flag-img-category-give" value="null">
+                <input type="hidden" name="flag_img_category_give" id="flag-img-category-give" value="null">
                 <input type="file" id="give_loadImg" 
                     class="new-stuff__load-img"
                     name="give_loadImg"
@@ -29,7 +29,7 @@
                 <br>
                 <label for="enter-give-description" class="new-stuff__label-descriptin">Введите описание</label>
                 <br>
-                <input type="hidden" name="textareaContent-give" class="new-stuff__description-input" 
+                <input type="hidden" name="textareaContent_give" class="new-stuff__description-input" 
                             id="newBarter-give-description-hidden" value="data">
                 <div contenteditable="true" id="newBarter-give-description" class="new-stuff__description"
                     style="min-height:40px; max-height:200px; overflow:auto;">
@@ -51,17 +51,17 @@
                 <br>
                 <label for="newStuff__getName" class="new-stuff__label-name">Название</label>
                 <br>
-                <input type="text" name="newStuff__getName" id="newStuff__getName" class="new-stuff__name">
+                <input type="text" id="newStuff__getName" name="stuff__get__name" class="new-stuff__name">
                 <br>
                 <label for="category-load-get" class="new-stuff__label-category">Выберите категорию</label>
                 <br>
-                <select name="category-load-get" id="category-load-get" class="new-stuff__category">
+                <select name="category_load_get" id="category-load-get" class="new-stuff__category">
                     {{{categoryList}}}
                 </select>
                 <br>
                 <label for="new-stuff__get-loadImg">Загрузите изображение</label>
                 <br>
-                <input type="hidden" name="flag-img-category-get" id="flag-img-category-get" value="null">
+                <input type="hidden" name="flag_img_category_get" id="flag-img-category-get" value="null">
                 <input type="file" id="get_loadImg" 
                     class="new-stuff__load-img"
                     name="get_loadImg"
@@ -71,7 +71,7 @@
                 <br>
                 <label for="enter-get-description" class="new-stuff__label-descriptin">Введите описание</label>
                 <br>
-                <input type="hidden" name="textareaContent-get" id='newBarter-get-description-hidden'
+                <input type="hidden" name="textareaContent_get" id='newBarter-get-description-hidden'
                         class="new-stuff__description-input">
                 {{!-- id="newBarter-give-description" --}}
                 <div contenteditable="true" name="newBarter-get-description" id="newBarter-get-description" 

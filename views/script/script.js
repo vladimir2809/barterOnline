@@ -11,6 +11,7 @@ var hiddenFlagImgCategoryGet=null;
 
 window.addEventListener('load',()=>{
     //alert('load end');
+    console.log (generateRandomName(10));
     resultNode=document.getElementsByClassName('result')[0];
     resultItemNode=document.getElementsByClassName('result-item')[0];
     newStuffArr=document.querySelectorAll('.new-stuff');
@@ -37,6 +38,13 @@ window.addEventListener('load',()=>{
     hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
     
 
+    for (let i=0;i<newStuffArr.length;i++)
+    {
+      //let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
+      let filesImages = newStuffArr[i].querySelector('input[type=file]');
+      filesImages.value=null;
+    }
+    
     createEventLoadImage();
 
     console.log(resultItemNode);
@@ -80,9 +88,24 @@ window.addEventListener('load',()=>{
       mainMenu.style.display="none";
       location.href='/exitUser/';
     });
+
+    // window.addEventListener('popstate',(event)=>{
+    //   //event.preventDefault();
+    //   if (newBarterForm!=undefined)
+    //   {
+    //     for (let i=0;i<newStuffArr.length;i++)
+    //     {
+    //       //let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
+    //       let filesImages = newStuffArr[i].querySelector('input[type=file]');
+    //       filesImages.value=null;
+    //     }
+    //   }
+    // });
+
     // если сейчас активна страница Новый Бартер
     if (newBarterForm!=undefined)
     {
+     
       newBarterForm.addEventListener('submit',(event)=>{
         event.preventDefault();
         //sendData();
