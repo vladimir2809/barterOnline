@@ -284,82 +284,38 @@ pool.query('SELECT NOW()', (err, res) => {
         return calcRouteImg('',1);
       }
     }
-      console.log(req.body);
-      console.log(req.files);
-      console.log(req.body.flag_img_category_give+' flag Give');
-      console.log(req.body.flag_img_category_get+' flag Get');
-      
-    //if (/*req.files!=null ||*/ (req.body.flag_img_category_give!=null ||
-     //                      req.body.flag_img_category_get!=null))
+    console.log(req.body);
+    console.log(req.files);
+    console.log(req.body.flag_img_category_give+' flag Give');
+    console.log(req.body.flag_img_category_get+' flag Get');
     if (req.files!=null)
     {
 
-      if (req.files.give_loadImg!=undefined /*&& req.files.give_loadImg!=null*/)
+      if (req.files.give_loadImg!=undefined )
       {
-        
-        // req.files.give_loadImg.mv('views/imgUser/'+req.files.give_loadImg.name);
-        // giveStuff.imagePath='views/imgUser/'+req.files.give_loadImg.name;
-      //  console.log(req.files.give_loadImg/*.name*/);
-        //console.log(req.body.newStuff__giveName);
         giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,0);
-        console.log('image path privat 0 ');
-        
+        console.log('image path privat 0 ');      
       }
       else
       {
         giveStuff.imagePath=calcPath(req.body.flag_img_category_give);
-        // console.log(req.body["flag-img-category-give"]);
-        // if (req.body.flag_img_category_give=='null')
-        // {
-          
-        //  // console.log('not image GIVE + null');
-        //   giveStuff.imagePath=calcRouteImg('',null);
-        //   console.log('image path privat null ');
-        // }
-        // else if (req.body.flag_img_category_give==1)
-        // {
-        //   giveStuff.imagePath=calcRouteImg('',1);
-        //   console.log('image path privat 1 ');
-        // }
-        // giveStuff.imagePath='views/imgUser/'+req.files.give_loadImg.name;
       }
-      
-      
 
       if (req.files.get_loadImg!=undefined)
       {
-
-        //req.files.get_loadImg.mv('views/imgUser/'+req.files.get_loadImg.name);
-        //getStuff.imagePath='views/imgUser/'+req.files.get_loadImg.name;
-        //console.log(req.files.get_loadImg/*.name*/);
         getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,0);
-        // console.log(req.body.newStuff__giveName);
       }
       else
       {
-
         getStuff.imagePath=calcPath(req.body.flag_img_category_get);
-        // if (req.body.flag_img_category_get=='null')
-        // {
-          
-        //   console.log('not image GET + null');
-        //   getStuff.imagePath=calcRouteImg('',null);
-        // }
-        // else if (req.body.flag_img_category_get==1)
-        // {
-        //   getStuff.imagePath=calcRouteImg('',1);
-        // }
       }
 
       res.send('success');
       //res.render('newBarter');
     }
-    //else 
     if (req.files==null)
     {
 
-      // giveStuff.imagePath=calcRouteImg('',null);
-      // getStuff.imagePath=calcRouteImg('',null);
 
       giveStuff.imagePath=calcPath(req.body.flag_img_category_give);
       getStuff.imagePath=calcPath(req.body.flag_img_category_get);

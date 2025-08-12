@@ -120,6 +120,67 @@ html {
   color: red;
 }
 
+.city-block {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: absolute;
+  width: 60rem;
+  height: 40rem;
+  padding: 1rem;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #AAAAFF;
+  border: 1px solid black;
+  border-radius: 2rem;
+  z-index: 100;
+}
+.city-block__close {
+  position: absolute;
+  right: 0rem;
+  top: 0rem;
+  cursor: pointer;
+}
+.city-block__img-close {
+  width: 4rem;
+  height: 4rem;
+}
+.city-block__cont-text {
+  width: 100%;
+  margin-left: 10rem;
+}
+.city-block label {
+  font-size: 2.4rem;
+}
+.city-block__text {
+  width: 80%;
+  height: 3rem;
+  font-size: 1.8rem;
+  padding-left: 0.5rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+.city-block__list {
+  -ms-flex-item-align: start;
+      align-self: start;
+  margin-left: 1.5rem;
+}
+.city-block__item {
+  margin-bottom: 0.7rem;
+}
+.city-block__link {
+  font-size: 1.8rem;
+  color: blue;
+}
+
 .search {
   grid-column: content-start/content-end;
   grid-row: 2/3;

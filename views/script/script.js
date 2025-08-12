@@ -8,7 +8,10 @@ var clickCloseMainMenu=false;
 let countValidForm=0;
 var hiddenFlagImgCategoryGive=null;
 var hiddenFlagImgCategoryGet=null;
-
+var city={
+  name:'',
+  idDB: 0,
+}
 window.addEventListener('load',()=>{
     //alert('load end');
     console.log (generateRandomName(10));
@@ -37,7 +40,8 @@ window.addEventListener('load',()=>{
     hiddenFlagImgCategoryGive=document.getElementById("flag-img-category-give");
     hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
     
-
+    var citySelected=document.getElementById("city-selected");
+    var cityBlock=document.getElementById('city-block');
     for (let i=0;i<newStuffArr.length;i++)
     {
       //let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
@@ -194,7 +198,7 @@ window.addEventListener('load',()=>{
           
         });
       }
-
+      
     }
     
     document.getElementById("avatar").addEventListener('click', ()=>{
@@ -230,7 +234,17 @@ window.addEventListener('load',()=>{
             }
             //alert("kj");
           });
-    }    
+    } 
+    
+    
+    citySelected.addEventListener('click',function(event){
+      // cityBlock=document.getElementById('city-block');
+      cityBlock.style.display='flex';
+      //alert('city');
+    })
+    document.getElementById('city_block_close').addEventListener("click",(event)=>{
+      cityBlock.style.display='none';
+    })
 });
 // событие загрузки изображения в форму а также показ превью
 function createEventLoadImage()
