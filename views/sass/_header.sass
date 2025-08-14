@@ -18,7 +18,8 @@
         font-size: 2.2rem
         color: blue
         cursor: pointer
-        width: 10rem
+        width: max-content
+        text-align: left
 .avatar
     cursor: pointer
     &__image
@@ -43,6 +44,9 @@
 .logo
     font-size: 2rem
     cursor: pointer
+    margin-bottom: .5rem
+    border-bottom: 1px solid blue
+    
     &__title
         color: red
         
@@ -80,9 +84,13 @@
         &:hover 
             color: red
 .city-block
-    display: flex
-    position: absolute
-    width: 60rem
+    display: none
+    position: fixed
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    min-width: 90%
+    //width: 60rem
     height: 40rem
     padding: 1rem
     flex-direction: column
@@ -102,11 +110,12 @@
         height: 4rem
     &__cont-text
         width: 100%
-        margin-left: 10rem
+        margin-left: 10%
+        //margin-right: 4rem
     & label
         font-size: 2.4rem
     &__text
-        width: 80%
+        width: 87.5%
         height: 3rem
         font-size: 1.8rem
         padding-left: .5rem

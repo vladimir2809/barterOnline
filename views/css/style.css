@@ -36,7 +36,10 @@ html {
   font-size: 2.2rem;
   color: blue;
   cursor: pointer;
-  width: 10rem;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  text-align: left;
 }
 
 .avatar {
@@ -64,6 +67,8 @@ html {
 .logo {
   font-size: 2rem;
   cursor: pointer;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid blue;
 }
 .logo__title {
   color: red;
@@ -121,11 +126,14 @@ html {
 }
 
 .city-block {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  position: absolute;
-  width: 60rem;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  min-width: 90%;
   height: 40rem;
   padding: 1rem;
   -webkit-box-orient: vertical;
@@ -155,13 +163,13 @@ html {
 }
 .city-block__cont-text {
   width: 100%;
-  margin-left: 10rem;
+  margin-left: 10%;
 }
 .city-block label {
   font-size: 2.4rem;
 }
 .city-block__text {
-  width: 80%;
+  width: 87.5%;
   height: 3rem;
   font-size: 1.8rem;
   padding-left: 0.5rem;
