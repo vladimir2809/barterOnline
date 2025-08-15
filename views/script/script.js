@@ -42,6 +42,7 @@ window.addEventListener('load',()=>{
     
     var citySelected=document.getElementById("city-selected");
     var cityBlock=document.getElementById('city-block');
+    var cityText=document.getElementById('city-text');
     for (let i=0;i<newStuffArr.length;i++)
     {
       //let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
@@ -245,6 +246,35 @@ window.addEventListener('load',()=>{
     document.getElementById('city_block_close').addEventListener("click",(event)=>{
       cityBlock.style.display='none';
     })
+
+
+    cityText.addEventListener('input',function(event){
+      let key = cityText.value;
+      let cityListHTML=document.getElementById('city-block-list');
+      if (key!='')
+      {
+          key = capitalizeFirstLetter(key);
+          //alert(key);
+          SendRequest('POST','/listForCity/',"key=" + key,function(request){
+            console.log(request.response);
+            cityListHTML.innerHTML=createHTMLListLi(JSON.parse(request.response));
+            //alert(request.response);
+          })
+      }
+    })
+
+
+    function createHTMLListLi(arr)
+    {
+        let result='';
+        for (let i=0;i<arr.length;i++)
+        {
+          result+=`<li class="city-block__item"><a href="" 
+          class="city-block__link">${arr[i]}</a></li>`
+        }
+        console.log(result);
+        return result;
+    }
 });
 // событие загрузки изображения в форму а также показ превью
 function createEventLoadImage()

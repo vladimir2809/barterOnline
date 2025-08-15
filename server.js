@@ -76,14 +76,14 @@ pool.query("SELECT * FROM category", (err, resDB) =>{
     console.log(err);
   }
 });
-pool.query('SELECT * FROM city LIMIT 20',function(err, resDB){
+pool.query('SELECT * FROM city',function(err, resDB){
   if (!err)
   {
     for (let i=0;i<resDB.rows.length;i++)
     {
       cityList.push(resDB.rows[i].name);
     }
-    console.log (cityList);
+    //console.log (cityList);
   }
 });
 const secretCookie='qwerty';
@@ -373,12 +373,15 @@ app.post('/listForCity/', function(req,res){
   console.log(req);
   key=req.body.key;
   console.log ('Key for city='+key);
+  let count=0;
   for (let i=0;i<cityList.length;i++)
   {
 
     if (cityList[i].indexOf(key+'')==0)
     {
       result.push(cityList[i]);
+      count++
+      if (count>10) break;
     }
   }
   //result=JSON.stringify(cityList);
