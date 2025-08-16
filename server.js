@@ -76,7 +76,7 @@ pool.query("SELECT * FROM category", (err, resDB) =>{
     console.log(err);
   }
 });
-pool.query('SELECT * FROM city',function(err, resDB){
+pool.query('SELECT * FROM city ORDER BY name',function(err, resDB){
   if (!err)
   {
     for (let i=0;i<resDB.rows.length;i++)
@@ -383,6 +383,10 @@ app.post('/listForCity/', function(req,res){
       count++
       if (count>10) break;
     }
+  }
+  if (count==0)
+  {
+    result=null;
   }
   //result=JSON.stringify(cityList);
   res.send(result);

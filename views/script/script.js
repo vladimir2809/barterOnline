@@ -12,6 +12,8 @@ var city={
   name:'',
   idDB: 0,
 }
+let cityArrDefault=["Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", 
+                                "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону"];
 window.addEventListener('load',()=>{
     //alert('load end');
     console.log (generateRandomName(10));
@@ -41,6 +43,7 @@ window.addEventListener('load',()=>{
     hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
     
     var citySelected=document.getElementById("city-selected");
+    let cityListHTML=document.getElementById('city-block-list');
     var cityBlock=document.getElementById('city-block');
     var cityText=document.getElementById('city-text');
     for (let i=0;i<newStuffArr.length;i++)
@@ -51,8 +54,11 @@ window.addEventListener('load',()=>{
     }
     
     createEventLoadImage();
-
+    cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
     console.log(resultItemNode);
+
+
+
     mainMenu=document.getElementById("main-menu")
     if (resultItemNode!=undefined)
     {
@@ -249,22 +255,51 @@ window.addEventListener('load',()=>{
 
 
     cityText.addEventListener('input',function(event){
+      // let cityArrDefault=["Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", 
+      //                           "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону"];
       let key = cityText.value;
-      let cityListHTML=document.getElementById('city-block-list');
+      // let cityListHTML=document.getElementById('city-block-list');
       if (key!='')
       {
           key = capitalizeFirstLetter(key);
           //alert(key);
           SendRequest('POST','/listForCity/',"key=" + key,function(request){
             console.log(request.response);
-            cityListHTML.innerHTML=createHTMLListLi(JSON.parse(request.response));
+            if (request.response!='')
+            {
+              cityListHTML.style.display="block";
+              cityListHTML.innerHTML=createHTMLListLiCity(JSON.parse(request.response));
+              document.querySelector('.city-block__not-result').style.display='none';
+            }
+            else
+            {
+              document.querySelector('.city-block__not-result').style.display='block';
+              cityListHTML.style.display="none";
+            }
             //alert(request.response);
           })
+      }
+      else
+      {
+        cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
       }
     })
 
 
-    function createHTMLListLi(arr)
+    // function createHTMLListLiCity(arr)
+    // {
+    //     let result='';
+    //     for (let i=0;i<arr.length;i++)
+    //     {
+    //       result+=`<li class="city-block__item"><a href="" 
+    //       class="city-block__link">${arr[i]}</a></li>`
+    //     }
+    //     console.log(result);
+    //     return result;
+    // }
+});
+
+function createHTMLListLiCity(arr)
     {
         let result='';
         for (let i=0;i<arr.length;i++)
@@ -275,7 +310,7 @@ window.addEventListener('load',()=>{
         console.log(result);
         return result;
     }
-});
+
 // событие загрузки изображения в форму а также показ превью
 function createEventLoadImage()
 {
