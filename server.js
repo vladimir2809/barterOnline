@@ -115,6 +115,7 @@ app.get("/",function(req,res){
   initDataUser(req.cookies)
   console.log(req.cookies)
   console.log(dataUser[0])
+  //console.log(req.cookies.city)
   let data=null;
   if (dataUser[0]!=undefined)
   {
@@ -391,6 +392,18 @@ app.post('/listForCity/', function(req,res){
   //result=JSON.stringify(cityList);
   res.send(result);
   //res.send('Hello aim ajax response');
+});
+app.post('/changeCity/',function(req,res){
+  let city=req.body.city;
+  console.log(req.body);
+  console.log(city);
+  res.cookie('city',''+city,{
+    maxAge: 1000 * 60 * 60 * 24 *30,
+  });
+  res.send(city);
+})
+app.post('/getCity/', function(req, res){
+  res.send(req.cookies.city);
 });
 app.post('/ajaxexp/',function(req,res){
   res.send('Hello aim ajax response');

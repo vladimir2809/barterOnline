@@ -188,10 +188,9 @@ html {
 }
 .city-block__item {
   margin-bottom: 0.7rem;
-}
-.city-block__link {
   font-size: 1.8rem;
   color: blue;
+  cursor: pointer;
 }
 
 .search {

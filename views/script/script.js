@@ -8,6 +8,8 @@ var clickCloseMainMenu=false;
 let countValidForm=0;
 var hiddenFlagImgCategoryGive=null;
 var hiddenFlagImgCategoryGet=null;
+
+var cityBlock=null;
 var city={
   name:'',
   idDB: 0,
@@ -44,7 +46,7 @@ window.addEventListener('load',()=>{
     
     var citySelected=document.getElementById("city-selected");
     let cityListHTML=document.getElementById('city-block-list');
-    var cityBlock=document.getElementById('city-block');
+    cityBlock=document.getElementById('city-block');
     var cityText=document.getElementById('city-text');
     for (let i=0;i<newStuffArr.length;i++)
     {
@@ -55,6 +57,13 @@ window.addEventListener('load',()=>{
     
     createEventLoadImage();
     cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
+    createEventCityList();
+
+    //cityBlock.style.display='none';
+    SendRequest('POST','/getCity/',"",function(request){
+      
+      document.getElementById('city-selected').innerText=request.response;
+    });
     console.log(resultItemNode);
 
 
@@ -264,12 +273,13 @@ window.addEventListener('load',()=>{
           key = capitalizeFirstLetter(key);
           //alert(key);
           SendRequest('POST','/listForCity/',"key=" + key,function(request){
-            console.log(request.response);
+            //console.log(request.response);
             if (request.response!='')
             {
               cityListHTML.style.display="block";
               cityListHTML.innerHTML=createHTMLListLiCity(JSON.parse(request.response));
               document.querySelector('.city-block__not-result').style.display='none';
+              createEventCityList();
             }
             else
             {
@@ -285,29 +295,29 @@ window.addEventListener('load',()=>{
       }
     })
 
-
-    // function createHTMLListLiCity(arr)
-    // {
-    //     let result='';
-    //     for (let i=0;i<arr.length;i++)
-    //     {
-    //       result+=`<li class="city-block__item"><a href="" 
-    //       class="city-block__link">${arr[i]}</a></li>`
-    //     }
-    //     console.log(result);
-    //     return result;
-    // }
 });
+function createEventCityList()
+{
+  document.querySelectorAll('.city-block__item').forEach(function(element){
+    element.addEventListener('click',function(){
+     // alert('city');
+      let city=element.innerText;
+      document.getElementById('city-selected').innerText=city;
+      cityBlock.style.display='none';
+      SendRequest('POST','/changeCity/',"city=" + city,function(request){
 
+      });
+    }); 
+  });
+}
 function createHTMLListLiCity(arr)
     {
         let result='';
         for (let i=0;i<arr.length;i++)
         {
-          result+=`<li class="city-block__item"><a href="" 
-          class="city-block__link">${arr[i]}</a></li>`
+          result+=`<li class="city-block__item">${arr[i]}</li>`
         }
-        console.log(result);
+        //console.log(result);
         return result;
     }
 
