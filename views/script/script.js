@@ -305,9 +305,10 @@ window.addEventListener('load',()=>{
       }
       else
       {
-        cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
         cityListHTML.style.display="block";
+        cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
         document.querySelector('.city-block__not-result').style.display='none';
+        createEventCityList();
       }
     })
     document.getElementById('newBarter-changeCity').addEventListener('click',(event)=>{
