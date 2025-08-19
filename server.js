@@ -371,7 +371,7 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
 })
 app.post('/listForCity/', function(req,res){
   let result=[];
-  console.log(req);
+  //console.log(req);
   key=req.body.key;
   console.log ('Key for city='+key);
   let count=0;
@@ -382,9 +382,10 @@ app.post('/listForCity/', function(req,res){
     {
       result.push(cityList[i]);
       count++
-      if (count>10) break;
+      if (count>=10) break;
     }
   }
+  console.log(count);
   if (count==0)
   {
     result=null;

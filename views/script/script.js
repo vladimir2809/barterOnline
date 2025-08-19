@@ -10,6 +10,8 @@ var hiddenFlagImgCategoryGive=null;
 var hiddenFlagImgCategoryGet=null;
 
 var cityBlock=null;
+var cityBarterHTML=null;
+var cityCurrent='';
 var city={
   name:'',
   idDB: 0,
@@ -47,6 +49,7 @@ window.addEventListener('load',()=>{
     var citySelected=document.getElementById("city-selected");
     let cityListHTML=document.getElementById('city-block-list');
     cityBlock=document.getElementById('city-block');
+    cityBarterHTML=document.getElementById('newBarter-city');
     var cityText=document.getElementById('city-text');
     for (let i=0;i<newStuffArr.length;i++)
     {
@@ -61,8 +64,15 @@ window.addEventListener('load',()=>{
 
     //cityBlock.style.display='none';
     SendRequest('POST','/getCity/',"",function(request){
+      cityCurrent=request.response;
+      document.getElementById('city-selected').innerText=cityCurrent;
       
-      document.getElementById('city-selected').innerText=request.response;
+      // let cityBarterHTML=document.getElementById('newBarter-city');
+      if (cityBarterHTML!=undefined)
+      {
+        cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent+"?";
+
+      }
     });
     console.log(resultItemNode);
 
@@ -125,7 +135,8 @@ window.addEventListener('load',()=>{
     // если сейчас активна страница Новый Бартер
     if (newBarterForm!=undefined)
     {
-     
+      // let cityBarterHTML=document.getElementById('newBarter-city');
+      // cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent;
       newBarterForm.addEventListener('submit',(event)=>{
         event.preventDefault();
         //sendData();
@@ -266,14 +277,16 @@ window.addEventListener('load',()=>{
     cityText.addEventListener('input',function(event){
       // let cityArrDefault=["Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", 
       //                           "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону"];
-      let key = cityText.value;
+      let key = event.target.value//cityText.value;
+      event.target.value = capitalizeFirstLetter(event.target.value);
+      console.log(key);
       // let cityListHTML=document.getElementById('city-block-list');
-      if (key!='')
+      if (key.length>0/*key!=null || key!=''*/)
       {
           key = capitalizeFirstLetter(key);
           //alert(key);
           SendRequest('POST','/listForCity/',"key=" + key,function(request){
-            //console.log(request.response);
+            console.log(request.response);
             if (request.response!='')
             {
               cityListHTML.style.display="block";
@@ -285,6 +298,7 @@ window.addEventListener('load',()=>{
             {
               document.querySelector('.city-block__not-result').style.display='block';
               cityListHTML.style.display="none";
+              
             }
             //alert(request.response);
           })
@@ -292,9 +306,13 @@ window.addEventListener('load',()=>{
       else
       {
         cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
+        cityListHTML.style.display="block";
+        document.querySelector('.city-block__not-result').style.display='none';
       }
     })
-
+    document.getElementById('newBarter-changeCity').addEventListener('click',(event)=>{
+      cityBlock.style.display="flex";
+    });
 });
 function createEventCityList()
 {
@@ -303,6 +321,12 @@ function createEventCityList()
      // alert('city');
       let city=element.innerText;
       document.getElementById('city-selected').innerText=city;
+      cityCurrent=city;
+      if (cityBarterHTML!=undefined)
+      {
+        cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent;
+
+      }
       cityBlock.style.display='none';
       SendRequest('POST','/changeCity/',"city=" + city,function(request){
 
@@ -394,4 +418,6 @@ function previewFile(preview, file) {
   };
   /*
     25.07.2025 остановился на том что убирал текст у описания бартера в странице "Создание нового бартера" 
+
+    18.08.2025 остановися на том что подбирал условие для окна выбор города
   */

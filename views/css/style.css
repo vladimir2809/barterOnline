@@ -397,6 +397,22 @@ html {
   display: block;
   margin: 0 auto;
 }
+.newBarter__city-cont {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.newBarter__city {
+  font-size: 1.8rem;
+  margin-left: 1rem;
+}
+.newBarter__change-city {
+  font-size: 1.6rem;
+  color: #F0A;
+  cursor: pointer;
+  margin-left: 1.5rem;
+  border: 1px solid gray;
+}
 
 .newBarter-give {
   margin-bottom: 2rem;
