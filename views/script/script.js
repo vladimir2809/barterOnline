@@ -10,7 +10,9 @@ var hiddenFlagImgCategoryGive=null;
 var hiddenFlagImgCategoryGet=null;
 
 var cityBlock=null;
+var cityText='';
 var cityBarterHTML=null;
+let cityListHTML=null;
 var cityCurrent='';
 var city={
   name:'',
@@ -47,10 +49,10 @@ window.addEventListener('load',()=>{
     hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
     
     var citySelected=document.getElementById("city-selected");
-    let cityListHTML=document.getElementById('city-block-list');
+    cityListHTML=document.getElementById('city-block-list');
     cityBlock=document.getElementById('city-block');
     cityBarterHTML=document.getElementById('newBarter-city');
-    var cityText=document.getElementById('city-text');
+    cityText=document.getElementById('city-text');
     for (let i=0;i<newStuffArr.length;i++)
     {
       //let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
@@ -271,6 +273,7 @@ window.addEventListener('load',()=>{
     })
     document.getElementById('city_block_close').addEventListener("click",(event)=>{
       cityBlock.style.display='none';
+      resetCityBlock()
     })
 
 
@@ -315,6 +318,14 @@ window.addEventListener('load',()=>{
       cityBlock.style.display="flex";
     });
 });
+function resetCityBlock()
+{
+  cityText.value='';
+  cityListHTML.style.display="block";
+  cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
+  createEventCityList();
+  document.querySelector('.city-block__not-result').style.display='none'; 
+}
 function createEventCityList()
 {
   document.querySelectorAll('.city-block__item').forEach(function(element){
@@ -328,6 +339,7 @@ function createEventCityList()
         cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent;
 
       }
+      resetCityBlock()
       cityBlock.style.display='none';
       SendRequest('POST','/changeCity/',"city=" + city,function(request){
 
