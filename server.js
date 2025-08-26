@@ -248,6 +248,9 @@ app.post('/userIn/', function(req, res){
             res.cookie('user',`${resDB.rows[0].name}  ${resDB.rows[0].surname}`,{
                       maxAge: 1000 * 60 * 60 * 24 *30,
             });
+            res.cookie('userID',`${resDB.rows[0].id}`,{
+                      maxAge: 1000 * 60 * 60 * 24 *30,
+            });
             dataUser[0]=resDB.rows[0].name;
             route=req.route;
             //res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
@@ -271,13 +274,13 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
     name: '',
     category: null,
     imagePath: '000',
-    desсription: '',
+    description: '',
   }
   giveStuff=JSON.parse(JSON.stringify(stuff));
   getStuff=JSON.parse(JSON.stringify(stuff));
   let dataForDB={
     userId: null,
-    cityId: null,
+    cityName: null,
     // give: stuff,
     // get: stuff,
   }
@@ -360,14 +363,58 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
 
   giveStuff.name=req.body.stuff__give__name;
   giveStuff.category=req.body.category_load_give;
-  giveStuff.desсription=req.body.textareaContent_give;
+  giveStuff.description=req.body.textareaContent_give;
 
   getStuff.name=req.body.stuff__get__name;
   getStuff.category=req.body.category_load_get;
-  getStuff.desсription=req.body.textareaContent_get;
+  getStuff.description=req.body.textareaContent_get;
   
+  dataForDB.userId=req.cookies.userID;
+  dataForDB.cityName=req.cookies.city;
+  //queryDBcityToId(req.cookies.city/*+'kjh'*/);
+
   console.log('giveStuff', giveStuff);
   console.log('getStuff', getStuff);
+  console.log('dataForDB', dataForDB);
+  let query=`
+  BEGIN TRANSACTION;
+
+  INSERT INTO stuff(name, link_image, description, category_id)
+  VALUES ('${giveStuff.name}', '${giveStuff.imagePath}',
+          '${giveStuff.description}', ${giveStuff.category});
+
+  INSERT INTO stuff(name, link_image, description, category_id)
+  VALUES ('${getStuff.name}', '${getStuff.imagePath}',
+          '${getStuff.description}', ${getStuff.category});
+
+  INSERT INTO barter(user_id, city_id, give_stuff, get_stuff)
+  VALUES (${dataForDB.userId}, 
+    (SELECT id FROM city WHERE '${dataForDB.cityName}' = name), 
+
+    (SELECT id
+      FROM stuff
+      ORDER BY id DESC
+      LIMIT 1)-1,
+    
+    (SELECT id
+      FROM stuff
+      ORDER BY id DESC
+      LIMIT 1)
+  );
+
+  COMMIT TRANSACTION;`
+  pool.query(query, (err, resDB) =>{
+    if (!err)
+    {
+      console.log ("new Barter")
+ 
+    }
+    else
+    {
+      console.log(err);
+    }
+  });
+  //queryDBcityToId(dataForDB.cityId);
 })
 app.post('/listForCity/', function(req,res){
   let result=[];
@@ -409,6 +456,48 @@ app.post('/getCity/', function(req, res){
 app.post('/ajaxexp/',function(req,res){
   res.send('Hello aim ajax response');
 });
+// function queryDBcityToId(nameCity)
+// {
+//   let result=555;
+//   pool.query(`SELECT id FROM city WHERE  '${nameCity}' = name;`, (err, resDB) =>{
+//     if (!err)
+//     {
+//       console.log(resDB);
+//       if (resDB.rowCount==1)
+//       {
+
+//         result=resDB.rows[0].id;
+//         console.log(result);
+//         return result;
+//       }
+//       // else
+//       // {
+//       //   result=null;
+
+//       // }
+//       // for (let i=0;i<resDB.rows.length;i++)
+//       // {
+//       //   categoryList.push(resDB.rows[i].name);
+        
+//       // }
+//       // console.log(categoryList);
+//       // categoryListStr = `<option value="1" class="search-block__option" selected>Все категории</option>`
+//       // for (let i=0;i<categoryList.length;i++)
+//       // {
+//       //     categoryListStr+=`<option value="${i+2}" class="search-block__option">${categoryList[i]}</option>`
+//       // }
+//       // // console.log (SHA256("Сообщение")) ;
+//       // // console.log(categoryListStr);
+//     }
+//     else
+//     {
+//       console.log(err);
+//       return null;
+//       //result=null;
+//     }
+//     // return result;
+//   });
+// }
 function isArraysEqual(firstArray, secondArray) {
   return firstArray.toString() === secondArray.toString();
 }
