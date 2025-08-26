@@ -332,6 +332,7 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
     if (req.files.give_loadImg!=undefined )
     {
       giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,0);
+      req.files.give_loadImg.mv(giveStuff.imagePath);
       console.log('image path privat 0 ');      
     }
     else
@@ -342,6 +343,7 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
     if (req.files.get_loadImg!=undefined)
     {
       getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,0);
+      req.files.get_loadImg.mv(getStuff.imagePath);
     }
     else
     {
@@ -416,6 +418,39 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   });
   //queryDBcityToId(dataForDB.cityId);
 })
+app.get('/getBarterArr/', function(req, res){
+  let stuff={
+    name: '',
+    category: null,
+    imagePath: '000',
+    description: '',
+  };
+  barter={
+    userId: null,
+    cityId: null,
+    giveStuffId: null,
+    getStuffId: null,
+  }
+  let barterArr=[];
+  pool.query(`SELECT * FROM barter;`, function(err, resDB){
+    if (!err)
+    {
+      for (let i = 0; i < resDB.rows.length; i++)
+      {
+          let barterOne=JSON.parse(JSON.stringify(barter));
+          barterOne.userId=resDB.rows[i].user_id;
+          barterOne.cityId=resDB.rows[i].city_id;
+          barterOne.giveStuffId=resDB.rows[i].give_stuff;
+          barterOne.getStuffId=resDB.rows[i].get_stuff;
+          barterArr.push(barterOne);
+
+      }
+    }
+    res.send(barterArr);
+  });
+  
+
+});
 app.post('/listForCity/', function(req,res){
   let result=[];
   //console.log(req);

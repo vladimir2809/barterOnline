@@ -121,6 +121,17 @@ window.addEventListener('load',()=>{
       location.href='/exitUser/';
     });
 
+
+
+
+
+    document.getElementById("myBarter_mainMenu").addEventListener('click', ()=>{
+      location.href='/getBarterArr/';
+    })
+
+
+
+    
     // window.addEventListener('popstate',(event)=>{
     //   //event.preventDefault();
     //   if (newBarterForm!=undefined)
