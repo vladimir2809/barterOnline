@@ -81,6 +81,11 @@ window.addEventListener('load',()=>{
 
 
     mainMenu=document.getElementById("main-menu")
+
+    // 
+    // вывод бартеров на главной странице
+    // 
+    
     if (resultItemNode!=undefined)
     {
 

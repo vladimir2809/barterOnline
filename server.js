@@ -420,10 +420,11 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
 })
 app.get('/getBarterArr/', function(req, res){
   let stuff={
+    id:null,
     name: '',
-    category: null,
     imagePath: '000',
     description: '',
+    category_id: null,
   };
   barter={
     userId: null,
@@ -431,7 +432,15 @@ app.get('/getBarterArr/', function(req, res){
     giveStuffId: null,
     getStuffId: null,
   }
+  let barterGiveGet={
+    userId:null,
+    cityId:null,
+    give:null,
+    get: null,
+  }
+  let stuffArr=[];
   let barterArr=[];
+  let barterGiveGetArr=[];
   pool.query(`SELECT * FROM barter;`, function(err, resDB){
     if (!err)
     {
@@ -445,13 +454,121 @@ app.get('/getBarterArr/', function(req, res){
           barterArr.push(barterOne);
 
       }
+      getStuff(barterArr);
     }
-    res.send(barterArr);
+    else
+    { 
+      console.log(err);
+    }
+    
+    // res.send(barterArr,stuffArr);
   });
-  
+  function getStuff(brtArr)
+  {
 
-});
-app.post('/listForCity/', function(req,res){
+    let listIdStuff=[];
+    for (let i=0;i<brtArr.length;i++)
+    {
+      listIdStuff.push(brtArr[i].giveStuffId);
+      listIdStuff.push(brtArr[i].getStuffId);
+    }
+    let strIdStuff=listIdStuff.join(', ');
+    let query=`SELECT * FROM stuff WHERE id IN (${strIdStuff})`;
+    console.log(query);
+    pool.query(query, function(err, resDB){
+      if(!err)
+      {
+        for (let i = 0; i < resDB.rows.length; i++)
+        {
+          let stuffOne=JSON.parse(JSON.stringify(stuff));
+          stuffOne.id=resDB.rows[i].id;
+          stuffOne.name=resDB.rows[i].name;
+          stuffOne.imagePath=resDB.rows[i].link_image;
+          stuffOne.description=resDB.rows[i].description;
+          stuffOne.category_id=resDB.rows[i].category_id;
+          stuffArr.push(stuffOne);
+        }
+
+        //res.send(barterArr,/*stuffArr*/);
+        createBarterGiveGet(barterArr, stuffArr);
+        res.send(barterGiveGetArr);
+      }
+      else
+      { 
+        console.log(err);
+      }
+
+
+    });
+    
+  }
+  function createBarterGiveGet(brtArr, stfArr)
+  {
+    for( i=0;i<brtArr.length;i++)
+    {
+      let giveGetOne=JSON.parse(JSON.stringify(barterGiveGet)); 
+      giveGetOne.give=JSON.parse(JSON.stringify(stuff));
+      giveGetOne.get=JSON.parse(JSON.stringify(stuff));
+      giveGetOne.userId=brtArr[i].userId;
+      giveGetOne.cityId=brtArr[i].cityId;
+      for (let j=0;j<stfArr.length;j++)
+      {
+
+        
+        if (brtArr[i].giveStuffId==stfArr[j].id)
+        {
+          for (var attr1 in giveGetOne.give)
+          {
+            for (var attr2 in stfArr[j])
+            {
+              if (attr1==attr2) 
+              {
+                giveGetOne.give[attr1]=stfArr[j][attr2];
+              }
+            }
+          } 
+          // giveGetOne.give.id=stfArr[j].id;
+
+          // giveGetOne.give.name=stfArr[j].name;
+         
+          // giveGetOne.give.imagePath=stfArr[j].imagePath;
+       
+          // giveGetOne.give.description=stfArr[j].description;
+      
+          // giveGetOne.give.category_id=stfArr[j].category_id;
+       
+        }
+        if (brtArr[i].getStuffId==stfArr[j].id)
+        {
+          for (var attr1 in giveGetOne.get)
+          {
+            for (var attr2 in stfArr[j])
+            {
+              if (attr1==attr2) 
+              {
+                giveGetOne.get[attr1]=stfArr[j][attr2];
+              }
+            }
+          }
+          // giveGetOne.get.id=stfArr[j].id;
+          
+          // giveGetOne.get.name=stfArr[j].name;
+         
+          // giveGetOne.get.imagePath=stfArr[j].imagePath;
+       
+          // giveGetOne.get.description=stfArr[j].description;
+      
+          // giveGetOne.get.category_id=stfArr[j].category_id;
+       
+        }
+      }
+      barterGiveGetArr.push(giveGetOne);
+
+    }
+  }
+    
+  });
+  app.post('/listForCity/', function(req,res){
   let result=[];
   //console.log(req);
   key=req.body.key;
