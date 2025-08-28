@@ -85,14 +85,31 @@ window.addEventListener('load',()=>{
     // 
     // вывод бартеров на главной странице
     // 
-    
+
     if (resultItemNode!=undefined)
     {
+      SendRequest('get', "/getBarterArr/", "", function(request){ 
+        let response=JSON.parse(request.response);
+        console.log(response)
+        for (let i=response.length-1;i >= 0; i--)
+        {
+          let cloneResultItem=resultItemNode.cloneNode(true);
+          let get=cloneResultItem.querySelector('.stuff-get');
+          get.querySelector(".stuff-get img").src=response[i].get.imagePath;
+          get.querySelector(".stuff-get .stuff__name").innerText=response[i].get.name;
+          get.querySelector(".stuff-get .stuff__paragraph").innerText=response[i].get.description;
 
-      let cloneResultItem=resultItemNode.cloneNode(true);
-      resultNode.append(cloneResultItem);
-      cloneResultItem=resultItemNode.cloneNode(true);
-      resultNode.append(cloneResultItem);
+          let give=cloneResultItem.querySelector('.stuff-give');
+          give.querySelector(".stuff-give img").src=response[i].give.imagePath;
+          give.querySelector(".stuff-give .stuff__name").innerText=response[i].give.name;
+          give.querySelector(".stuff-give .stuff__paragraph").innerText=response[i].give.description;
+          resultNode.append(cloneResultItem);
+        }
+      });
+      // let cloneResultItem=resultItemNode.cloneNode(true);
+      // resultNode.append(cloneResultItem);
+      // cloneResultItem=resultItemNode.cloneNode(true);
+      // resultNode.append(cloneResultItem);
       
       //previewFile();
     }
@@ -243,6 +260,10 @@ window.addEventListener('load',()=>{
           
         });
       }
+
+      document.getElementById('newBarter-changeCity').addEventListener('click',(event)=>{
+        cityBlock.style.display="flex";
+      });
       
     }
     
@@ -330,9 +351,9 @@ window.addEventListener('load',()=>{
         createEventCityList();
       }
     })
-    document.getElementById('newBarter-changeCity').addEventListener('click',(event)=>{
-      cityBlock.style.display="flex";
-    });
+    // document.getElementById('newBarter-changeCity').addEventListener('click',(event)=>{
+    //   cityBlock.style.display="flex";
+    // });
 });
 function resetCityBlock()
 {

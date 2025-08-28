@@ -295,15 +295,15 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
     let imgCategory="category1.png";
     if (flag==null) // если картинки нет
     {
-      return 'views/img/default.jpg';
+      return 'img/default.jpg';
     }
     else if (flag==0)// если картинка есть
     {
-      return 'views/imgUser/'+randomName+'.'+type;
+      return 'imgUser/'+randomName+'.'+type;
     }
     else if (flag==1) // если картинка должна быть категорией
     {
-      return 'views/img/'+imgCategory;
+      return 'img/'+imgCategory;
     }
   }
   function calcPath(flagCategory)
@@ -332,7 +332,7 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
     if (req.files.give_loadImg!=undefined )
     {
       giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,0);
-      req.files.give_loadImg.mv(giveStuff.imagePath);
+      req.files.give_loadImg.mv('views/'+giveStuff.imagePath);
       console.log('image path privat 0 ');      
     }
     else
@@ -343,7 +343,7 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
     if (req.files.get_loadImg!=undefined)
     {
       getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,0);
-      req.files.get_loadImg.mv(getStuff.imagePath);
+      req.files.get_loadImg.mv('views/'+getStuff.imagePath);
     }
     else
     {

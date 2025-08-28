@@ -309,6 +309,9 @@ html {
       align-content: center;
   border: 1px solid green;
 }
+.result-item:first-child {
+  display: none;
+}
 @media only screen and (max-width: 430px) {
   .result-item {
     grid-template-columns: 29rem;
@@ -356,10 +359,16 @@ html {
 
 .stuff {
   padding: 1rem;
+  padding-top: 0.3rem;
   border: 1px solid gray;
 }
 .stuff__intension {
-  font-size: 1.8rem;
+  font-size: 1.2rem;
+  width: 100%;
+  color: #83F;
+}
+.stuff__name {
+  font-size: 1.6rem;
   width: 100%;
 }
 .stuff__img {
