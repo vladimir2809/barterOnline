@@ -104,6 +104,7 @@ window.addEventListener('load',()=>{
           give.querySelector(".stuff-give .stuff__name").innerText=response[i].give.name;
           give.querySelector(".stuff-give .stuff__paragraph").innerText=response[i].give.description;
           resultNode.append(cloneResultItem);
+          // `UPDATE table_name указывает таблицу, в которой нужно обновить данные.SETcolumn1 = value1, column2 = value2, ... определяет столбцы, которые нужно обновить, и новые значения для них.WHERE condition определяет условие, по которому будут выбраны записи для обновления. Если это ус`
         }
       });
       // let cloneResultItem=resultItemNode.cloneNode(true);

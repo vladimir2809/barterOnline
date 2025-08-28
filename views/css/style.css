@@ -321,11 +321,13 @@ html {
   grid-column: 2/3;
   grid-row: 1/2;
   align-self: center;
-  width: 6.2rem;
+  width: 90%;
   height: 6.2rem;
 }
 @media only screen and (max-width: 430px) {
   .result-item__exchange-icon {
+    width: 6.2rem;
+    height: 6.2rem;
     grid-column: 1/2;
     grid-row: 2/3;
     justify-self: center;
@@ -376,7 +378,10 @@ html {
   height: 18rem;
 }
 .stuff__paragraph {
+  height: 2.8rem;
   font-size: 1.4rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .link-newBarter {
