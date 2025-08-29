@@ -66,7 +66,7 @@ pool.query("SELECT * FROM category", (err, resDB) =>{
     categoryListStr = `<option value="1" class="search-block__option" selected>Все категории</option>`
     for (let i=0;i<categoryList.length;i++)
     {
-        categoryListStr+=`<option value="${i+2}" class="search-block__option">${categoryList[i]}</option>`
+        categoryListStr+=`<option value="${i+1}" class="search-block__option">${categoryList[i]}</option>`
     }
     // console.log (SHA256("Сообщение")) ;
     // console.log(categoryListStr);
@@ -288,11 +288,11 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   
   // Пример использования:
   // console.log(randomName); // Вывод случайного имени, например: "bQ7Z9fWkXp"
-  function calcRouteImg(name,flag)
+  function calcRouteImg(name,numCategory,flag)
   {
     const randomName = generateRandomName(10);
     let type=name.split('.')[1];
-    let imgCategory="category1.png";
+    let imgCategory="category"+numCategory+".png";
     if (flag==null) // если картинки нет
     {
       return 'img/default.jpg';
@@ -306,7 +306,7 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
       return 'img/'+imgCategory;
     }
   }
-  function calcPath(flagCategory)
+  function calcPath(flagCategory, numCategory)
   {
 
     if (flagCategory=='null')
@@ -314,12 +314,12 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
       
       // console.log('not image GIVE + null');
       console.log('image path privat null ');
-      return calcRouteImg('',null);
+      return calcRouteImg('',0,null);
     }
     else if (flagCategory==1)
     {
       console.log('image path privat 1 ');
-      return calcRouteImg('',1);
+      return calcRouteImg('',numCategory,1);
     }
   }
   console.log(req.body);
@@ -331,23 +331,23 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
 
     if (req.files.give_loadImg!=undefined )
     {
-      giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,0);
+      giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,'',0);
       req.files.give_loadImg.mv('views/'+giveStuff.imagePath);
       console.log('image path privat 0 ');      
     }
     else
     {
-      giveStuff.imagePath=calcPath(req.body.flag_img_category_give);
+      giveStuff.imagePath=calcPath(req.body.flag_img_category_give ,req.body.category_load_give);
     }
 
     if (req.files.get_loadImg!=undefined)
     {
-      getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,0);
+      getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,'',0);
       req.files.get_loadImg.mv('views/'+getStuff.imagePath);
     }
     else
     {
-      getStuff.imagePath=calcPath(req.body.flag_img_category_get);
+      getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
     }
 
     res.send('success');
@@ -357,8 +357,8 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   {
 
 
-    giveStuff.imagePath=calcPath(req.body.flag_img_category_give);
-    getStuff.imagePath=calcPath(req.body.flag_img_category_get);
+    giveStuff.imagePath=calcPath(req.body.flag_img_category_give,req.body.category_load_give);
+    getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
 
     res.send('not image file');
   }
@@ -465,7 +465,11 @@ app.get('/getBarterArr/', function(req, res){
   });
   function getStuff(brtArr)
   {
-
+    if (brtArr.length==0) 
+    {
+      res.send('');
+      return null;
+    }
     let listIdStuff=[];
     for (let i=0;i<brtArr.length;i++)
     {
