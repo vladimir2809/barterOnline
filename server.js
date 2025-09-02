@@ -142,6 +142,10 @@ app.get("/",function(req,res){
 })
 app.get("/newBarter/",function(req,res){
   let data=null///*req.cookies[0]*/dataUser[0][0];
+  if (req.cookies.userID==undefined)
+  {
+    res.render('signIn');
+  }
   if (dataUser[0]!=undefined)
   {
     data=dataUser[0][0];
@@ -398,13 +402,13 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   let query=`
   BEGIN TRANSACTION;
 
-  INSERT INTO stuff(name, link_image, description, category_id)
+  INSERT INTO stuff(name, link_image, description, category_id, type)
   VALUES ('${giveStuff.name}', '${giveStuff.imagePath}',
-          '${giveStuff.description}', ${giveStuff.category});
+          '${giveStuff.description}', ${giveStuff.category}, 'give');
 
-  INSERT INTO stuff(name, link_image, description, category_id)
+  INSERT INTO stuff(name, link_image, description, category_id,  type)
   VALUES ('${getStuff.name}', '${getStuff.imagePath}',
-          '${getStuff.description}', ${getStuff.category});
+          '${getStuff.description}', ${getStuff.category}, 'get');
 
   INSERT INTO barter(user_id, city_id, give_stuff, get_stuff)
   VALUES (${dataForDB.userId}, 
