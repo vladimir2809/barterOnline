@@ -65,6 +65,18 @@ window.addEventListener('load',()=>{
     createEventCityList();
 
     //cityBlock.style.display='none';
+    document.addEventListener('keydown', function(event) {
+      if (event.code == 'F9' )
+      {
+        SendRequest('post','/clearCookie/',"",function(request){
+            console.log('clear Cookie');
+            console.log (document.cookie);
+        })
+       // alert('Cookie Reset')
+      }
+    });
+
+
     SendRequest('POST','/getCity/',"",function(request){
       cityCurrent=request.response;
       document.getElementById('city-selected').innerText=cityCurrent;
@@ -76,6 +88,9 @@ window.addEventListener('load',()=>{
 
       }
     });
+
+
+
     console.log(resultItemNode);
 
 
@@ -109,6 +124,16 @@ window.addEventListener('load',()=>{
             // `UPDATE table_name указывает таблицу, в которой нужно обновить данные.SETcolumn1 = value1, column2 = value2, ... определяет столбцы, которые нужно обновить, и новые значения для них.WHERE condition определяет условие, по которому будут выбраны записи для обновления. Если это ус`
           }
         }
+        document.querySelector('.question-city__close').addEventListener('click',function(){
+          document.querySelector('.question-city').style.display='none';
+        });
+        document.querySelector('.question-city__ok').addEventListener('click',function(){
+          document.querySelector('.question-city').style.display='none';
+        });
+        document.querySelector('.question-city__select').addEventListener('click',function(){
+          document.querySelector('.question-city').style.display='none';
+          document.querySelector('.city-block').style.display='block';
+        });
       });
       // let cloneResultItem=resultItemNode.cloneNode(true);
       // resultNode.append(cloneResultItem);

@@ -61,4 +61,22 @@
                 </div>
             </div>
         </div>
+        <div class="question-city">
+            <img src="img/close_icon.png" alt="img" class="question-city__close">
+            <h3 class="question-city__text">Ваш город {{{cityStart}}}? </h3>
+            <div class="question-city__cont">    
+                <button class="question-city__ok">Да</button>
+                <button class="question-city__select">Выбрать другой.</button>
+            </div>
+        </div>
+        {{#if dataCity}}
+            <script>
+                setTimeout(function(){
+                   document.querySelector('.question-city').style.display='block';
+                },500) 
+                    
+            </script>
+        {{else}}
+            
+        {{/if}}
     {{!-- </div> --}}

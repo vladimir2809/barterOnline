@@ -16,6 +16,7 @@ var categoryList=[];
 var categoryListStr='';
 var cityList=[];
 var dataUser=[];
+var cityStart="Москва";
 const pool = new Pool({
   user: "myuser",
   host: "localhost",
@@ -110,19 +111,33 @@ app.listen(80, function(){
 app.use(express.static(__dirname + '/views/'))
 
 
-
+app.post('/clearCookie/', function(req,res){
+  res.clearCookie('user');
+  res.clearCookie('userID');
+  res.clearCookie('city');
+  res.send('cookie Clear')
+})
 app.get("/",function(req,res){
+
+  
+
   initDataUser(req.cookies)
   console.log(req.cookies)
   console.log(dataUser[0])
   //console.log(req.cookies.city)
   let data=null;
+  let dataCity=false;
   if (dataUser[0]!=undefined)
   {
     data=dataUser[0][0];
   }
-
-  res.render('index',{categoryList: categoryListStr, dataUser: data});
+  if (Object.keys(req.cookies).length === 0)
+  {
+    res.cookie('city', cityStart, {maxAge: 1000 * 60 * 60 *24 * 30})
+    dataCity=true;
+  }
+  res.render('index',{categoryList: categoryListStr, dataUser: data, 
+                  dataCity: dataCity, cityStart:cityStart});
   //console.log(req.cookies);
 })
 app.get("/newBarter/",function(req,res){
@@ -144,6 +159,8 @@ app.get("/registration/",function(req,res){
 app.get("/exitUser/",function(req,res){
   dataUser[0]=undefined;
   res.clearCookie('user');
+  res.clearCookie('userID');
+  res.clearCookie('city');
   res.render('index', {flagExit: true});
 })
 app.get("/test/",function(req,res){
@@ -350,7 +367,7 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
       getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
     }
 
-    res.send('success');
+    //res.send('success');
     //res.render('newBarter');
   }
   if (req.files==null)
@@ -360,7 +377,7 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
     giveStuff.imagePath=calcPath(req.body.flag_img_category_give,req.body.category_load_give);
     getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
 
-    res.send('not image file');
+    //res.send('not image file');
   }
 
   giveStuff.name=req.body.stuff__give__name;
@@ -417,6 +434,7 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
     }
   });
   //queryDBcityToId(dataForDB.cityId);
+  res.redirect("/")
 })
 app.get('/getBarterArr/', function(req, res){
   let stuff={
