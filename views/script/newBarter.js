@@ -8,6 +8,9 @@ var nameGet=document.getElementById("newStuff__getName");
 
 var getDescription=document.getElementById("newBarter-get-description");
 var hiddenDescriptionGet=document.getElementById("newBarter-get-description-hidden");
+var hiddenFlagImgCategoryGive=document.getElementById("flag-img-category-give");
+var hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
+createEventLoadImage();
 if (newBarterForm!=undefined)
     {
       // let cityBarterHTML=document.getElementById('newBarter-city');
@@ -106,3 +109,56 @@ if (newBarterForm!=undefined)
       });
       
     }
+// событие загрузки изображения в форму а также показ превью
+function createEventLoadImage()
+{
+  for (let i=0;i<newStuffArr.length;i++)
+  {
+    let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
+    let filesImages = newStuffArr[i].querySelector('input[type=file]');
+    filesImages.addEventListener('change', function() {
+        //console.log(1123);
+        if (filesImages.files[0].size <= 1024 * 1024)
+        {
+          //filesImages.value='';
+          previewFile(previewImages, filesImages.files[0]);
+          if (i==0)
+          {
+            hiddenFlagImgCategoryGive.value = 0;
+
+          }
+          if (i==1)
+          {
+            hiddenFlagImgCategoryGet.value = 0;
+
+          }
+          console.log("give="+hiddenFlagImgCategoryGive.value)
+          console.log("get="+hiddenFlagImgCategoryGet.value)
+        }
+        else
+        {
+          alert('Картинка должна весить меньше 1МБ.');
+          filesImages.value='';
+          previewImages.src='img/default.jpg';
+          //previewFile(previewImages, filesImages.files[0]);
+        }
+      
+    });
+  }
+}
+
+function previewFile(preview, file) {
+    var reader  = new FileReader();
+  
+    reader.onloadend = function () {
+      preview.src = reader.result;
+      console.log(formatByteSize(file.size))
+      console.log('path', file.name);
+    }
+    
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+    }
+  }
