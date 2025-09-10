@@ -1,5 +1,6 @@
 var resultNode=document.getElementsByClassName('result')[0];
 var resultItemNode=document.getElementsByClassName('result-item')[0];
+let timePressBtnSearch=0;
 if (resultItemNode!=undefined)
     {
       SendRequest('get', "/getBarterArr/", "", function(request){ 
@@ -33,11 +34,43 @@ if (resultItemNode!=undefined)
           document.querySelector('.question-city').style.display='none';
           document.querySelector('.city-block').style.display='block';
         });
-      });
+        let searchButton=document.querySelector('.search__button');
+        
+        searchButton.addEventListener("click", function(){
+            if (searchButton.classList.contains('search__button_disabled')==false)
+            {
+              timePressBtnSearch=new Date();
+              this.classList.add('search__button_disabled');
+              let nameGive=document.getElementById('query-search-give').value;
+              //query-search-get
+              let nameGet=document.getElementById('query-search-get').value;
+              let categoryGive=document.getElementById('category-give').value;
+              let categoryGet=document.getElementById('category-get').value;
+              let dataSearch=JSON.stringify({nameGive:nameGive,
+                                            nameGet:nameGet,
+                                            categoryGive:categoryGive,
+                                            categoryGet:categoryGet})
+              SendRequest('post',"/querySearch/", 
+              `data=${dataSearch}`,function(request){
+                console.log(request);
+              });
+            }
+          });
+     
       // let cloneResultItem=resultItemNode.cloneNode(true);
       // resultNode.append(cloneResultItem);
       // cloneResultItem=resultItemNode.cloneNode(true);
       // resultNode.append(cloneResultItem);
       
       //previewFile();
+    });
+  }
+  setInterval(function(){
+    let time=new Date();
+    //console.log(time-timePressBtnSearch);
+    if (time-timePressBtnSearch>1500)
+    {
+      document.querySelector('.search__button').classList.remove('search__button_disabled')
     }
+
+  },25)

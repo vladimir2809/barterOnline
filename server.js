@@ -64,7 +64,7 @@ pool.query("SELECT * FROM category", (err, resDB) =>{
       
     }
     console.log(categoryList);
-    categoryListStr = `<option value="1" class="search-block__option" selected>Все категории</option>`
+    categoryListStr = `<option value="0" class="search-block__option" selected>Все категории</option>`
     for (let i=0;i<categoryList.length;i++)
     {
         categoryListStr+=`<option value="${i+1}" class="search-block__option">${categoryList[i]}</option>`
@@ -593,6 +593,14 @@ app.get('/getBarterArr/', function(req, res){
     }
   }
     
+  });
+  var countSearchQuery=0;
+  app.post('/querySearch/', function(req, res){
+    let data=JSON.parse(req.body.data)
+    console.log (data.nameGive, data.nameGet, data.categoryGive,data.categoryGet)
+    countSearchQuery++;
+    console.log('count search query: '+countSearchQuery);
+    res.send('result query')
   });
   app.post('/listForCity/', function(req,res){
   let result=[];

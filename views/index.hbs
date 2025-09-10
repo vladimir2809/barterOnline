@@ -4,9 +4,9 @@
                 <div class="search-block search-give search-block_border-right">
                     <h3 class="search-block__title">Отдать</h3>
                     <form action="" class="search-block__form">
-                        <lebel class="search-block__label-query" for="query-search-1">Введете название</lebel>
+                        <lebel class="search-block__label-query" for="query-search-give">Введете название</lebel>
                         <br>
-                        <input type="text" class="search-block__query" id="query-search-1" placeholder="наименование">
+                        <input type="text" class="search-block__query" id="query-search-give" placeholder="наименование">
                         <label for="category-give" class="search-block__label-category">Выберите категорию</label>
                         <br>
                         <select name="category-give" id="category-give" class="search-block__select">
@@ -21,9 +21,9 @@
                 <div class="search-block search-get">
                     <h3 class="search-block__title">Получить</h3>
                     <form action="" class="search-block__form">
-                        <lebel class="search-block__label-query" for="query-search-2">Введете название</lebel>
+                        <lebel class="search-block__label-query" for="query-search-get">Введете название</lebel>
                         <!-- <br> -->
-                        <input type="text" class="search-block__query" id="query-search-2" placeholder="наименование">
+                        <input type="text" class="search-block__query" id="query-search-get" placeholder="наименование">
                         <label for="category-get" class="search-block__label-category">Выберите категорию</label>
                         <br>
                         <select name="category-get" id="category-get" class="search-block__select">
@@ -34,7 +34,8 @@
 
                 </div>
             </div>
-            <button class="search__button">Найти</button>
+            {{!-- search__button_disabled --}}
+            <button class="search__button ">Найти</button>
         </div>
         <a href="newBarter" class="link-newBarter">Создать новый бартер</a>
         <div class="result">

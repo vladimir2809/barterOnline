@@ -208,6 +208,9 @@ html {
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
 }
+.search__button_disabled {
+  color: #AAA;
+}
 
 .search-content {
   display: grid;
