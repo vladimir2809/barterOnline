@@ -51,7 +51,7 @@ if (resultItemNode!=undefined)
                                             categoryGive:categoryGive,
                                             categoryGet:categoryGet})
               SendRequest('post',"/querySearch/", 
-              `data=${dataSearch}`,function(request){
+                          `data=${dataSearch}`,function(request){
                 console.log(request);
               });
             }

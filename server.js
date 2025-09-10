@@ -600,7 +600,71 @@ app.get('/getBarterArr/', function(req, res){
     console.log (data.nameGive, data.nameGet, data.categoryGive,data.categoryGet)
     countSearchQuery++;
     console.log('count search query: '+countSearchQuery);
-    res.send('result query')
+    searchByStuff(data);
+    //res.send('result query')
+    function searchByStuff(data)
+    {
+      //let query=`SELECT * FROM stuff WHERE name LIKE '%${data.nameGive}%';`
+      let queryGive=`
+        SELECT *, barter.id AS barterId
+        FROM barter 
+        JOIN stuff ON barter.give_stuff = stuff.id
+        WHERE stuff.name LIKE '%${data.nameGive}%';`;
+      let queryGet=`
+        SELECT *, barter.id AS barterId 
+        FROM barter 
+        JOIN stuff ON barter.get_stuff = stuff.id
+        WHERE stuff.name LIKE '%${data.nameGet}%';`;
+      let queryGiveAndGet=`
+        SELECT *, barter.id AS barterId
+        FROM barter 
+        JOIN stuff ON barter.give_stuff = stuff.id OR barter.get_stuff = stuff.id
+        WHERE stuff.name LIKE '%${data.nameGive}%' OR stuff.name LIKE '%${data.nameGet}%';`;
+      let query='';
+      let giveAndGet=false;
+      if (data.nameGive!='' &&  data.nameGet=='')
+      {
+        query=queryGive;
+      }
+      else if (data.nameGive=='' &&  data.nameGet!='')
+      {
+        query=queryGet;
+      }
+      else if (data.nameGive!='' &&  data.nameGet!='')
+      {
+        query=queryGiveAndGet;
+        giveAndGet=true;
+      }
+      pool.query(query, function(err, resDB){
+        if (!err)
+        {
+          result=[];
+          if (giveAndGet==true)
+          {
+            for (let i=1;i<resDB.rows.length;i++)
+            {
+              if (resDB.rows[i].barterid==resDB.rows[i-1].barterid)
+              {
+                result.push(resDB.rows[i]);
+              }
+            }
+          }
+          else
+          {
+            result=resDB.rows;
+          }
+          console.log(result);
+          res.send('result query')
+        }
+        else
+        {
+          console.log(err);
+          res.send('errorResult')
+        }
+
+
+      })
+    } 
   });
   app.post('/listForCity/', function(req,res){
   let result=[];
