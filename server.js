@@ -646,39 +646,45 @@ app.get('/getBarterArr/', function(req, res){
             {
               listStuffNum.push(resDB.rows[i].get_stuff)
             }
-            console.log('listStuffNum '+listStuffNum)
-            let strStuffArr=listStuffNum.join(",");
-            console.log ("strStuffArr "+strStuffArr);
-            // let query2=`SELECT * 
-            //             FROM stuff
-            //             WHERE id IN (${strStuffArr}) AND type = 'get'`;
-            let query2= `
-                SELECT *, barter.id AS barterid
-                FROM barter
-                JOIN stuff ON barter.get_stuff = stuff.id
-                WHERE stuff.id IN (${strStuffArr}) AND stuff.type = 'get';`
-            console.log (query2);
-            pool.query(query2, function(err,resDB){
-              if (!err)
-              {
-                for (let i=0;i<resDB.rows.length;i++)
+            if (listStuffNum.length>0)
+            {
+
+            
+
+              console.log('listStuffNum '+listStuffNum)
+              let strStuffArr=listStuffNum.join(",");
+              console.log ("strStuffArr "+strStuffArr);
+              // let query2=`SELECT * 
+              //             FROM stuff
+              //             WHERE id IN (${strStuffArr}) AND type = 'get'`;
+              let query2= `
+              SELECT *, barter.id AS barterid
+              FROM barter
+              JOIN stuff ON barter.get_stuff = stuff.id
+              WHERE stuff.id IN (${strStuffArr}) AND stuff.type = 'get';`
+              console.log (query2);
+              pool.query(query2, function(err,resDB){
+                if (!err)
                 {
-                  let getResult=resDB.rows[i].name
-                  console.log (resDB.rows[i].name);
-                  if (resDB.rows[i].name.toString().indexOf(data.nameGet)!=-1)
+                  for (let i=0;i<resDB.rows.length;i++)
                   {
-                    result.push(resDB.rows[i]);
+                    let getResult=resDB.rows[i].name
+                    console.log (resDB.rows[i].name);
+                    if (resDB.rows[i].name.toString().indexOf(data.nameGet)!=-1)
+                    {
+                      result.push(resDB.rows[i]);
+                    }
                   }
                 }
-              }
-              else
-              {
-                console.log(err)
-              }
-              console.log(result);
-              res.send('result query gg')
-              
-            });
+                else
+                {
+                  console.log(err)
+                }
+                console.log(result);
+                res.send('result query gg')
+                  
+              });
+            }
             // for (let i=1;i<resDB.rows.length;i++)
             // {
             //   if (resDB.rows[i].barterid==resDB.rows[i-1].barterid)
@@ -692,7 +698,7 @@ app.get('/getBarterArr/', function(req, res){
             result=resDB.rows;
           }
           console.log(result);
-         // res.send('result query')
+          if (giveAndGet==false) res.send('result query')
         }
         else
         {
