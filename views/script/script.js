@@ -62,8 +62,8 @@ window.addEventListener('load',()=>{
     }
     
     // createEventLoadImage();
-    createEventCityList();
     cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
+    createEventCityList();
 
     //cityBlock.style.display='none';
     document.addEventListener('keydown', function(event) {

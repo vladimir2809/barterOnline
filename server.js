@@ -615,11 +615,11 @@ app.get('/getBarterArr/', function(req, res){
         FROM barter 
         JOIN stuff ON barter.get_stuff = stuff.id
         WHERE stuff.name LIKE '%${data.nameGet}%';`;
-      let queryGiveAndGet=`
-        SELECT *, barter.id AS barterId
-        FROM barter 
-        JOIN stuff ON barter.give_stuff = stuff.id OR barter.get_stuff = stuff.id
-        WHERE stuff.name LIKE '%${data.nameGive}%' OR stuff.name LIKE '%${data.nameGet}%';`;
+      // let queryGiveAndGet=`
+      //   SELECT *, barter.id AS barterId
+      //   FROM barter 
+      //   JOIN stuff ON barter.give_stuff = stuff.id OR barter.get_stuff = stuff.id
+      //   WHERE stuff.name LIKE '%${data.nameGive}%' OR stuff.name LIKE '%${data.nameGet}%';`;
       let query='';
       let giveAndGet=false;
       if (data.nameGive!='' &&  data.nameGet=='')
@@ -632,7 +632,7 @@ app.get('/getBarterArr/', function(req, res){
       }
       else if (data.nameGive!='' &&  data.nameGet!='')
       {
-        query=queryGiveAndGet;
+        query=queryGive
         giveAndGet=true;
       }
       pool.query(query, function(err, resDB){
@@ -641,20 +641,58 @@ app.get('/getBarterArr/', function(req, res){
           result=[];
           if (giveAndGet==true)
           {
-            for (let i=1;i<resDB.rows.length;i++)
+            let listStuffNum=[];
+            for (let i=0;i<resDB.rows.length;i++)
             {
-              if (resDB.rows[i].barterid==resDB.rows[i-1].barterid)
-              {
-                result.push(resDB.rows[i]);
-              }
+              listStuffNum.push(resDB.rows[i].get_stuff)
             }
+            console.log('listStuffNum '+listStuffNum)
+            let strStuffArr=listStuffNum.join(",");
+            console.log ("strStuffArr "+strStuffArr);
+            // let query2=`SELECT * 
+            //             FROM stuff
+            //             WHERE id IN (${strStuffArr}) AND type = 'get'`;
+            let query2= `
+                SELECT *, barter.id AS barterid
+                FROM barter
+                JOIN stuff ON barter.get_stuff = stuff.id
+                WHERE stuff.id IN (${strStuffArr}) AND stuff.type = 'get';`
+            console.log (query2);
+            pool.query(query2, function(err,resDB){
+              if (!err)
+              {
+                for (let i=0;i<resDB.rows.length;i++)
+                {
+                  let getResult=resDB.rows[i].name
+                  console.log (resDB.rows[i].name);
+                  if (resDB.rows[i].name.toString().indexOf(data.nameGet)!=-1)
+                  {
+                    result.push(resDB.rows[i]);
+                  }
+                }
+              }
+              else
+              {
+                console.log(err)
+              }
+              console.log(result);
+              res.send('result query gg')
+              
+            });
+            // for (let i=1;i<resDB.rows.length;i++)
+            // {
+            //   if (resDB.rows[i].barterid==resDB.rows[i-1].barterid)
+            //   {
+            //     result.push(resDB.rows[i]);
+            //   }
+            // }
           }
           else
           {
             result=resDB.rows;
           }
           console.log(result);
-          res.send('result query')
+         // res.send('result query')
         }
         else
         {
@@ -665,6 +703,7 @@ app.get('/getBarterArr/', function(req, res){
 
       })
     } 
+    
   });
   app.post('/listForCity/', function(req,res){
   let result=[];
