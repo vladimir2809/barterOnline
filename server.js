@@ -597,6 +597,8 @@ app.get('/getBarterArr/', function(req, res){
   var countSearchQuery=0;
   app.post('/querySearch/', function(req, res){
     let data=JSON.parse(req.body.data)
+    data.nameGive=data.nameGive.toLowerCase();
+    data.nameGet=data.nameGet.toLowerCase();
     console.log (data.nameGive, data.nameGet, data.categoryGive,data.categoryGet)
     countSearchQuery++;
     console.log('count search query: '+countSearchQuery);
@@ -604,17 +606,18 @@ app.get('/getBarterArr/', function(req, res){
     //res.send('result query')
     function searchByStuff(data)
     {
+      
       //let query=`SELECT * FROM stuff WHERE name LIKE '%${data.nameGive}%';`
-      let queryGive=`
-        SELECT *, barter.id AS barterId
-        FROM barter 
-        JOIN stuff ON barter.give_stuff = stuff.id
-        WHERE stuff.name LIKE '%${data.nameGive}%';`;
-      let queryGet=`
-        SELECT *, barter.id AS barterId 
-        FROM barter 
-        JOIN stuff ON barter.get_stuff = stuff.id
-        WHERE stuff.name LIKE '%${data.nameGet}%';`;
+      // let queryGive=`
+      //   SELECT *, barter.id AS barterId
+      //   FROM barter 
+      //   JOIN stuff ON barter.give_stuff = stuff.id
+      //   WHERE stuff.name LIKE '%${data.nameGive}%';`;
+      // let queryGet=`
+      //   SELECT *, barter.id AS barterId 
+      //   FROM barter 
+      //   JOIN stuff ON barter.get_stuff = stuff.id
+      //   WHERE stuff.name LIKE '%${data.nameGet}%';`;
       // let queryGiveAndGet=`
       //   SELECT *, barter.id AS barterId
       //   FROM barter 
@@ -622,19 +625,36 @@ app.get('/getBarterArr/', function(req, res){
       //   WHERE stuff.name LIKE '%${data.nameGive}%' OR stuff.name LIKE '%${data.nameGet}%';`;
       let query='';
       let giveAndGet=false;
-      if (data.nameGive!='' &&  data.nameGet=='')
+      if  ( (data.nameGive!='' &&  data.nameGet=='') ||
+            (data.nameGive!='' &&  data.nameGet!='') )
       {
-        query=queryGive;
+        query=`
+          SELECT *, barter.id AS barterId
+          FROM barter 
+          JOIN stuff ON barter.give_stuff = stuff.id
+          WHERE LOWER(stuff.name) LIKE '%${data.nameGive}%';`;
+        if (data.nameGive!='' &&  data.nameGet!='')
+        {
+          //query=queryGive
+          giveAndGet=true;
+        }
+        //queryGive;
       }
-      else if (data.nameGive=='' &&  data.nameGet!='')
+      else if  (data.nameGive=='' &&  data.nameGet!='') 
       {
-        query=queryGet;
+        query=`
+          SELECT *, barter.id AS barterId 
+          FROM barter 
+          JOIN stuff ON barter.get_stuff = stuff.id
+          WHERE LOWER(stuff.name) LIKE '%${data.nameGet}%';`
+       
+        // queryGet;
       }
-      else if (data.nameGive!='' &&  data.nameGet!='')
-      {
-        query=queryGive
-        giveAndGet=true;
-      }
+      // else if (data.nameGive!='' &&  data.nameGet!='')
+      // {
+      //   query=queryGive
+      //   giveAndGet=true;
+      // }
       pool.query(query, function(err, resDB){
         if (!err)
         {
@@ -658,19 +678,19 @@ app.get('/getBarterArr/', function(req, res){
               //             FROM stuff
               //             WHERE id IN (${strStuffArr}) AND type = 'get'`;
               let query2= `
-              SELECT *, barter.id AS barterid
-              FROM barter
-              JOIN stuff ON barter.get_stuff = stuff.id
-              WHERE stuff.id IN (${strStuffArr}) AND stuff.type = 'get';`
+                    SELECT *, barter.id AS barterid
+                    FROM barter
+                    JOIN stuff ON barter.get_stuff = stuff.id
+                    WHERE stuff.id IN (${strStuffArr}) AND stuff.type = 'get';`
               console.log (query2);
               pool.query(query2, function(err,resDB){
                 if (!err)
                 {
                   for (let i=0;i<resDB.rows.length;i++)
                   {
-                    let getResult=resDB.rows[i].name
+                    let getResult=resDB.rows[i].name.toLowerCase();
                     console.log (resDB.rows[i].name);
-                    if (resDB.rows[i].name.toString().indexOf(data.nameGet)!=-1)
+                    if (getResult.indexOf(data.nameGet)!=-1)
                     {
                       result.push(resDB.rows[i]);
                     }
@@ -696,6 +716,15 @@ app.get('/getBarterArr/', function(req, res){
           else
           {
             result=resDB.rows;
+            // for (let i=0;i<resDB.rows.length;i++)
+            // {
+            //   let getResult=resDB.rows[i].name.toLowerCase();
+            //   console.log (resDB.rows[i].name);
+            //   if (getResult.indexOf(data.nameGet)!=-1)
+            //   {
+            //     result.push(resDB.rows[i]);
+            //   }
+            // }
           }
           console.log(result);
           if (giveAndGet==false) res.send('result query')
