@@ -604,62 +604,94 @@ app.get('/getBarterArr/', function(req, res){
     console.log('count search query: '+countSearchQuery);
     searchByStuff(data);
     //res.send('result query')
-    function searchByStuff(data)
+    function searchByStuff(data) // функция которая ищет бартеры по данным
     {
       
-      //let query=`SELECT * FROM stuff WHERE name LIKE '%${data.nameGive}%';`
-      // let queryGive=`
-      //   SELECT *, barter.id AS barterId
-      //   FROM barter 
-      //   JOIN stuff ON barter.give_stuff = stuff.id
-      //   WHERE stuff.name LIKE '%${data.nameGive}%';`;
-      // let queryGet=`
-      //   SELECT *, barter.id AS barterId 
-      //   FROM barter 
-      //   JOIN stuff ON barter.get_stuff = stuff.id
-      //   WHERE stuff.name LIKE '%${data.nameGet}%';`;
-      // let queryGiveAndGet=`
-      //   SELECT *, barter.id AS barterId
-      //   FROM barter 
-      //   JOIN stuff ON barter.give_stuff = stuff.id OR barter.get_stuff = stuff.id
-      //   WHERE stuff.name LIKE '%${data.nameGive}%' OR stuff.name LIKE '%${data.nameGet}%';`;
       let query='';
       let giveAndGet=false;
-      if  ( (data.nameGive!='' &&  data.nameGet=='') ||
-            (data.nameGive!='' &&  data.nameGet!='') )
+      let giveAndCatGet=false;
+      if  ( (data.nameGive!='' &&  data.nameGet=='') || // GIVE
+            (data.nameGive!='' &&  data.nameGet!='') ) 
       {
-        query=`
-          SELECT *, barter.id AS barterId
-          FROM barter 
-          JOIN stuff ON barter.give_stuff = stuff.id
-          WHERE LOWER(stuff.name) LIKE '%${data.nameGive}%';`;
-        if (data.nameGive!='' &&  data.nameGet!='')
+        if (data.categoryGive==0)
+        {
+
+          query=`
+            SELECT *, barter.id AS barterId
+            FROM barter 
+            JOIN stuff ON barter.give_stuff = stuff.id
+            WHERE LOWER(stuff.name) LIKE '%${data.nameGive}%';`;
+        }
+        else 
+        {
+          query=`
+            SELECT *, barter.id AS barterId
+            FROM barter 
+            JOIN stuff ON barter.give_stuff = stuff.id
+            WHERE stuff.category_id = ${data.categoryGive} AND
+                  LOWER(stuff.name) LIKE '%${data.nameGive}%'`;
+        }
+        if (data.nameGive!='' &&  data.nameGet!='') //GIVE AND GET
         {
           //query=queryGive
           giveAndGet=true;
+
         }
-        //queryGive;
+        else if (data.nameGive!='' && data.categoryGet!=0)
+        {
+          console.log('giveAndCatGet 1111');
+          giveAndCatGet=true;
+        }
+        
       }
-      else if  (data.nameGive=='' &&  data.nameGet!='') 
+      else if (data.categoryGive!=0)
       {
+        //queryGive;
         query=`
-          SELECT *, barter.id AS barterId 
-          FROM barter 
-          JOIN stuff ON barter.get_stuff = stuff.id
-          WHERE LOWER(stuff.name) LIKE '%${data.nameGet}%';`
-       
-        // queryGet;
+            SELECT *, barter.id AS barterId
+            FROM barter 
+            JOIN stuff ON barter.give_stuff = stuff.id
+            WHERE stuff.category_id = ${data.categoryGive};`;
+        if (data.nameGive=='' && data.categoryGet!=0)
+        {
+          giveAndCatGet=true;
+          console.log('giveAndCatGet 2222');
+        }
       }
-      // else if (data.nameGive!='' &&  data.nameGet!='')
-      // {
-      //   query=queryGive
-      //   giveAndGet=true;
-      // }
+      else if  (data.nameGive=='' &&  data.nameGet!='') // GET
+      {
+        if (data.categoryGet==0)
+        { 
+          query=`
+            SELECT *, barter.id AS barterId 
+            FROM barter 
+            JOIN stuff ON barter.get_stuff = stuff.id
+            WHERE LOWER(stuff.name) LIKE '%${data.nameGet}%';`
+        }
+        else // GET AND CATEGORY
+        {
+          query=`
+            SELECT *, barter.id AS barterId 
+            FROM barter 
+            JOIN stuff ON barter.get_stuff = stuff.id
+            WHERE stuff.category_id = ${data.categoryGet} AND
+                  LOWER(stuff.name) LIKE '%${data.nameGet}%';`;
+        }
+       
+      }
+      else if  (data.categoryGet!=0)
+      {
+        // queryGet;
+        query=`SELECT *, barter.id AS barterId 
+        FROM barter 
+        JOIN stuff ON barter.get_stuff = stuff.id
+        WHERE stuff.category_id = ${data.categoryGet};`
+      }
       pool.query(query, function(err, resDB){
         if (!err)
         {
           result=[];
-          if (giveAndGet==true)
+          if (giveAndGet==true || giveAndCatGet==true)
           {
             let listStuffNum=[];
             for (let i=0;i<resDB.rows.length;i++)
@@ -668,15 +700,9 @@ app.get('/getBarterArr/', function(req, res){
             }
             if (listStuffNum.length>0)
             {
-
-            
-
               console.log('listStuffNum '+listStuffNum)
               let strStuffArr=listStuffNum.join(",");
               console.log ("strStuffArr "+strStuffArr);
-              // let query2=`SELECT * 
-              //             FROM stuff
-              //             WHERE id IN (${strStuffArr}) AND type = 'get'`;
               let query2= `
                     SELECT *, barter.id AS barterid
                     FROM barter
@@ -686,14 +712,38 @@ app.get('/getBarterArr/', function(req, res){
               pool.query(query2, function(err,resDB){
                 if (!err)
                 {
+
+                  
                   for (let i=0;i<resDB.rows.length;i++)
                   {
                     let getResult=resDB.rows[i].name.toLowerCase();
+                    let categoryResult=resDB.rows[i].category_id;
                     console.log (resDB.rows[i].name);
-                    if (getResult.indexOf(data.nameGet)!=-1)
+                    if (giveAndGet==true)
                     {
-                      result.push(resDB.rows[i]);
+
+                      if ((getResult.indexOf(data.nameGet)!=-1 && data.categoryGet==0)||
+                        ( getResult.indexOf(data.nameGet)!=-1 &&
+                        data.categoryGet!=0 && 
+                        categoryResult==data.categoryGet))
+                      {
+                        result.push(resDB.rows[i]);
+                      }
                     }
+                    else if (giveAndCatGet==true)
+                    {
+                      if (( resDB.rows[i].category_id==data.categoryGet &&
+                            data.nameGet=='')
+                            ||
+                            ( getResult.indexOf(data.nameGet)!=-1 &&
+                              data.nameGet!='' && 
+                              categoryResult==data.categoryGet )
+                          )
+                      {
+                        result.push(resDB.rows[i]);
+                      }
+                    }
+                    
                   }
                 }
                 else
@@ -705,29 +755,14 @@ app.get('/getBarterArr/', function(req, res){
                   
               });
             }
-            // for (let i=1;i<resDB.rows.length;i++)
-            // {
-            //   if (resDB.rows[i].barterid==resDB.rows[i-1].barterid)
-            //   {
-            //     result.push(resDB.rows[i]);
-            //   }
-            // }
-          }
+
+          }   
           else
           {
             result=resDB.rows;
-            // for (let i=0;i<resDB.rows.length;i++)
-            // {
-            //   let getResult=resDB.rows[i].name.toLowerCase();
-            //   console.log (resDB.rows[i].name);
-            //   if (getResult.indexOf(data.nameGet)!=-1)
-            //   {
-            //     result.push(resDB.rows[i]);
-            //   }
-            // }
           }
           console.log(result);
-          if (giveAndGet==false) res.send('result query')
+          if (giveAndGet==false && giveAndCatGet==false) res.send('result query')
         }
         else
         {
@@ -842,4 +877,5 @@ function generateRandomName(length)
 /*
 08.08.2025 останивился на том что подготавливал данные бартера для записи в БД
 
+12.09.2025 остановился на побдоре условий для поискка по категориям
 */
