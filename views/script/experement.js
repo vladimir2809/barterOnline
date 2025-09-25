@@ -130,3 +130,29 @@
 //         Request.send(null);
 //     }
 // } 
+
+/*
+
+        PROMISE XP  
+
+*/
+// let image = document.createElement('img');
+// image.src = 'img.png';
+// loadImg(image).then(function(result){
+//     document.body.appendChild(result);
+//     console.log ("PROMISES IMG READY");
+// }).catch(function(err){
+//     console.log(err);
+//     console.log ("PROMISES IMG REJECT");
+// })
+// function loadImg()
+// {
+//     return new Promise(function(resolve, reject){
+//         image.addEventListener('load', function() {
+//             resolve(image);
+//         })
+//         image.addEventListener('error', function() {
+//             reject('image load error');
+//         });
+//     });
+// }

@@ -441,159 +441,193 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   res.redirect("/")
 })
 app.get('/getBarterArr/', function(req, res){
-  let stuff={
-    id:null,
-    name: '',
-    imagePath: '000',
-    description: '',
-    category_id: null,
-  };
-  barter={
-    userId: null,
-    cityId: null,
-    giveStuffId: null,
-    getStuffId: null,
-  }
-  let barterGiveGet={
-    userId:null,
-    cityId:null,
-    give:null,
-    get: null,
-  }
-  let stuffArr=[];
-  let barterArr=[];
-  let barterGiveGetArr=[];
-  pool.query(`SELECT * FROM barter;`, function(err, resDB){
-    if (!err)
-    {
-      for (let i = 0; i < resDB.rows.length; i++)
-      {
-          let barterOne=JSON.parse(JSON.stringify(barter));
-          barterOne.userId=resDB.rows[i].user_id;
-          barterOne.cityId=resDB.rows[i].city_id;
-          barterOne.giveStuffId=resDB.rows[i].give_stuff;
-          barterOne.getStuffId=resDB.rows[i].get_stuff;
-          barterArr.push(barterOne);
+  getBarterGiveGet().then(function(result){
 
-      }
-      getStuff(barterArr);
+
+    console.log('get Barter ARR ',result)
+    res.send(result);
+  })
+  //res.send({kkk:'0'});
+});
+function getBarterGiveGet(listIdBarter=null)
+{
+
+  return new Promise(function(resolve,reject){
+    let stuff={
+      id:null,
+      name: '',
+      imagePath: '000',
+      description: '',
+      category_id: null,
+    };
+    barter={
+      userId: null,
+      cityId: null,
+      giveStuffId: null,
+      getStuffId: null,
     }
-    else
-    { 
-      console.log(err);
+    let barterGiveGet={
+      userId:null,
+      cityId:null,
+      give:null,
+      get: null,
     }
-    
-    // res.send(barterArr,stuffArr);
-  });
-  function getStuff(brtArr)
-  {
-    if (brtArr.length==0) 
+    let stuffArr=[];
+    let barterArr=[];
+    let barterGiveGetArr=[];
+    let responceBeing=false;
+    let query=`SELECT * FROM barter;`;
+    if (listIdBarter.length==0)
     {
-      res.send('');
-      return null;
+        resolve([]);
     }
-    let listIdStuff=[];
-    for (let i=0;i<brtArr.length;i++)
+    else if (listIdBarter!=null )
     {
-      listIdStuff.push(brtArr[i].giveStuffId);
-      listIdStuff.push(brtArr[i].getStuffId);
+      let strIdBarter=listIdBarter.join(', ');
+      query=`SELECT * FROM barter WHERE id IN (${strIdBarter});`;
     }
-    let strIdStuff=listIdStuff.join(', ');
-    let query=`SELECT * FROM stuff WHERE id IN (${strIdStuff})`;
     console.log(query);
     pool.query(query, function(err, resDB){
-      if(!err)
+      if (!err)
       {
         for (let i = 0; i < resDB.rows.length; i++)
         {
-          let stuffOne=JSON.parse(JSON.stringify(stuff));
-          stuffOne.id=resDB.rows[i].id;
-          stuffOne.name=resDB.rows[i].name;
-          stuffOne.imagePath=resDB.rows[i].link_image;
-          stuffOne.description=resDB.rows[i].description;
-          stuffOne.category_id=resDB.rows[i].category_id;
-          stuffArr.push(stuffOne);
-        }
+            let barterOne=JSON.parse(JSON.stringify(barter));
+            barterOne.userId=resDB.rows[i].user_id;
+            barterOne.cityId=resDB.rows[i].city_id;
+            barterOne.giveStuffId=resDB.rows[i].give_stuff;
+            barterOne.getStuffId=resDB.rows[i].get_stuff;
+            barterArr.push(barterOne);
 
-        //res.send(barterArr,/*stuffArr*/);
-        createBarterGiveGet(barterArr, stuffArr);
-        res.send(barterGiveGetArr);
+        }
+        getStuff(barterArr);
+        return barterGiveGetArr;
       }
       else
       { 
         console.log(err);
       }
-
-
+      
+      // res.send(barterArr,stuffArr);
     });
-    
-  }
-  function createBarterGiveGet(brtArr, stfArr)
-  {
-    for( i=0;i<brtArr.length;i++)
+    function getStuff(brtArr)
     {
-      let giveGetOne=JSON.parse(JSON.stringify(barterGiveGet)); 
-      giveGetOne.give=JSON.parse(JSON.stringify(stuff));
-      giveGetOne.get=JSON.parse(JSON.stringify(stuff));
-      giveGetOne.userId=brtArr[i].userId;
-      giveGetOne.cityId=brtArr[i].cityId;
-      for (let j=0;j<stfArr.length;j++)
+      if (brtArr.length==0) 
       {
-
-        
-        if (brtArr[i].giveStuffId==stfArr[j].id)
-        {
-          for (var attr1 in giveGetOne.give)
-          {
-            for (var attr2 in stfArr[j])
-            {
-              if (attr1==attr2) 
-              {
-                giveGetOne.give[attr1]=stfArr[j][attr2];
-              }
-            }
-          } 
-          // giveGetOne.give.id=stfArr[j].id;
-
-          // giveGetOne.give.name=stfArr[j].name;
-         
-          // giveGetOne.give.imagePath=stfArr[j].imagePath;
-       
-          // giveGetOne.give.description=stfArr[j].description;
-      
-          // giveGetOne.give.category_id=stfArr[j].category_id;
-       
-        }
-        if (brtArr[i].getStuffId==stfArr[j].id)
-        {
-          for (var attr1 in giveGetOne.get)
-          {
-            for (var attr2 in stfArr[j])
-            {
-              if (attr1==attr2) 
-              {
-                giveGetOne.get[attr1]=stfArr[j][attr2];
-              }
-            }
-          }
-          // giveGetOne.get.id=stfArr[j].id;
-          
-          // giveGetOne.get.name=stfArr[j].name;
-         
-          // giveGetOne.get.imagePath=stfArr[j].imagePath;
-       
-          // giveGetOne.get.description=stfArr[j].description;
-      
-          // giveGetOne.get.category_id=stfArr[j].category_id;
-       
-        }
+        res.send('');
+        return null;
       }
-      barterGiveGetArr.push(giveGetOne);
+      let listIdStuff=[];
+      for (let i=0;i<brtArr.length;i++)
+      {
+        listIdStuff.push(brtArr[i].giveStuffId);
+        listIdStuff.push(brtArr[i].getStuffId);
+      }
+      let strIdStuff=listIdStuff.join(', ');
+      let query=`SELECT * FROM stuff WHERE id IN (${strIdStuff})`;
+      console.log(query);
+      pool.query(query,  function(err, resDB){
+        if(!err)
+        {
+          for (let i = 0; i < resDB.rows.length; i++)
+          {
+            let stuffOne=JSON.parse(JSON.stringify(stuff));
+            stuffOne.id=resDB.rows[i].id;
+            stuffOne.name=resDB.rows[i].name;
+            stuffOne.imagePath=resDB.rows[i].link_image;
+            stuffOne.description=resDB.rows[i].description;
+            stuffOne.category_id=resDB.rows[i].category_id;
+            stuffArr.push(stuffOne);
+          }
 
+          //res.send(barterArr,/*stuffArr*/);
+          createBarterGiveGet(barterArr, stuffArr);
+          resolve(barterGiveGetArr);
+          //res.send(barterGiveGetArr);
+          
+          //return barterGiveGetArr;
+        }
+        else
+        { 
+          console.log(err);
+        }
+        responceBeing=true;
+
+
+      });
+      
     }
-  }
-    
+    function createBarterGiveGet(brtArr, stfArr)
+    {
+      for( i=0;i<brtArr.length;i++)
+      {
+        let giveGetOne=JSON.parse(JSON.stringify(barterGiveGet)); 
+        giveGetOne.give=JSON.parse(JSON.stringify(stuff));
+        giveGetOne.get=JSON.parse(JSON.stringify(stuff));
+        giveGetOne.userId=brtArr[i].userId;
+        giveGetOne.cityId=brtArr[i].cityId;
+        for (let j=0;j<stfArr.length;j++)
+        {
+
+          
+          if (brtArr[i].giveStuffId==stfArr[j].id)
+          {
+            for (var attr1 in giveGetOne.give)
+            {
+              for (var attr2 in stfArr[j])
+              {
+                if (attr1==attr2) 
+                {
+                  giveGetOne.give[attr1]=stfArr[j][attr2];
+                }
+              }
+            } 
+            // giveGetOne.give.id=stfArr[j].id;
+
+            // giveGetOne.give.name=stfArr[j].name;
+          
+            // giveGetOne.give.imagePath=stfArr[j].imagePath;
+        
+            // giveGetOne.give.description=stfArr[j].description;
+        
+            // giveGetOne.give.category_id=stfArr[j].category_id;
+        
+          }
+          if (brtArr[i].getStuffId==stfArr[j].id)
+          {
+            for (var attr1 in giveGetOne.get)
+            {
+              for (var attr2 in stfArr[j])
+              {
+                if (attr1==attr2) 
+                {
+                  giveGetOne.get[attr1]=stfArr[j][attr2];
+                }
+              }
+            }
+            // giveGetOne.get.id=stfArr[j].id;
+            
+            // giveGetOne.get.name=stfArr[j].name;
+          
+            // giveGetOne.get.imagePath=stfArr[j].imagePath;
+        
+            // giveGetOne.get.description=stfArr[j].description;
+        
+            // giveGetOne.get.category_id=stfArr[j].category_id;
+        
+          }
+        }
+        barterGiveGetArr.push(giveGetOne);
+
+      }
+    }
   });
+}
+
+
+/*
+    ПОИСК
+*/
   var countSearchQuery=0;
   app.post('/querySearch/', function(req, res){
     let data=JSON.parse(req.body.data)
@@ -602,6 +636,19 @@ app.get('/getBarterArr/', function(req, res){
     console.log (data.nameGive, data.nameGet, data.categoryGive,data.categoryGet)
     countSearchQuery++;
     console.log('count search query: '+countSearchQuery);
+
+    // getBarterGiveGet([23]).then(function(result2){
+
+
+    //   console.log('get Barter ARR ',result2)
+    //   res.send(result2);
+    // }).catch(function(err){
+
+      
+    //     console.log('get barter ERROR ',err)
+    //     res.send('error promise');
+    // })
+
     searchByStuff(data);
     //res.send('result query')
     function searchByStuff(data) // функция которая ищет бартеры по данным
@@ -751,7 +798,26 @@ app.get('/getBarterArr/', function(req, res){
                   console.log(err)
                 }
                 console.log(result);
-                res.send('result query gg')
+
+
+                getResponceBarter(result)
+
+                // let barterListId=[];
+                // for (let i=0;i<result.length;i++)
+                // {
+                //   barterListId.push(result[i].barterid);
+                // }
+                // getBarterGiveGet(barterListId).then(function(result2){
+
+
+                //   console.log('get Barter ARR PROMISE',result2)
+                //   res.send(result2);
+                // }).catch(function(err){
+
+                  
+                //     console.log('get barter ERROR PROMISE',err)
+                // })
+                //res.send('result query gg')
                   
               });
             }
@@ -762,7 +828,7 @@ app.get('/getBarterArr/', function(req, res){
             result=resDB.rows;
           }
           console.log(result);
-          if (giveAndGet==false && giveAndCatGet==false) res.send('result query')
+          if (giveAndGet==false && giveAndCatGet==false) getResponceBarter(result)//res.send('result none ')
         }
         else
         {
@@ -773,7 +839,24 @@ app.get('/getBarterArr/', function(req, res){
 
       })
     } 
-    
+    function getResponceBarter(result)
+    {
+      let barterListId=[];
+      for (let i=0;i<result.length;i++)
+      {
+        barterListId.push(result[i].barterid);
+      }
+      getBarterGiveGet(barterListId).then(function(result2){
+        
+        
+        console.log('get Barter ARR PROMISE',result2)
+        res.send(result2);
+      }).catch(function(err){
+        
+        
+        console.log('get barter ERROR PROMISE',err)
+      })
+    }
   });
   app.post('/listForCity/', function(req,res){
   let result=[];
