@@ -14,6 +14,7 @@ const upload = multer({ dest: 'uploads/' })
 
 var categoryList=[];
 var categoryListStr='';
+var categoryListId=[];
 var cityList=[];
 var dataUser=[];
 var cityStart="Москва";
@@ -61,16 +62,21 @@ pool.query("SELECT * FROM category", (err, resDB) =>{
     for (let i=0;i<resDB.rows.length;i++)
     {
       categoryList.push(resDB.rows[i].name);
+      categoryListId.push(resDB.rows[i].id);
       
     }
-    console.log(categoryList);
-    categoryListStr = `<option value="0" class="search-block__option" selected>Все категории</option>`
     for (let i=0;i<categoryList.length;i++)
     {
-        categoryListStr+=`<option value="${i+1}" class="search-block__option">${categoryList[i]}</option>`
+      console.log("i: "+i+" id: "+categoryListId[i]+" category: "+categoryList[i]);
+
+    }
+    // categoryListStr = `<option value="0" class="search-block__option" selected>Все категории</option>`
+    for (let i=0;i<categoryList.length;i++)
+    {
+        categoryListStr+=`<option value="${i}" class="search-block__option">${categoryList[i]}</option>`
     }
     // console.log (SHA256("Сообщение")) ;
-    // console.log(categoryListStr);
+     console.log(categoryListStr);
   }
   else
   {
@@ -383,13 +389,23 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
 
     //res.send('not image file');
   }
-
+  function getIdCategoryFromDB(num)
+  {
+    
+    for (let i=0;i<categoryListId.length;i++)
+    {
+      if (num==i)
+      {
+        return categoryListId[i];
+      }
+    }
+  }
   giveStuff.name=req.body.stuff__give__name;
-  giveStuff.category=req.body.category_load_give;
+  giveStuff.category=getIdCategoryFromDB(req.body.category_load_give);
   giveStuff.description=req.body.textareaContent_give;
 
   getStuff.name=req.body.stuff__get__name;
-  getStuff.category=req.body.category_load_get;
+  getStuff.category=getIdCategoryFromDB(req.body.category_load_get);
   getStuff.description=req.body.textareaContent_get;
   
   dataForDB.userId=req.cookies.userID;
@@ -399,33 +415,45 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   console.log('giveStuff', giveStuff);
   console.log('getStuff', getStuff);
   console.log('dataForDB', dataForDB);
-  let query=`
-  BEGIN TRANSACTION;
+  let query=`INSERT INTO barter(user_id, city_id, give_name, give_link_image,
+                                give_description, give_category_id,
+                                get_name, get_link_image,
+                                get_description, get_category_id, free) 
+              VALUES (${dataForDB.userId},
+                      (SELECT id FROM city WHERE '${dataForDB.cityName}' = name),
+                      '${giveStuff.name}','${giveStuff.imagePath}',
+                      '${giveStuff.description}',${giveStuff.category},
+                      '${getStuff.name}','${getStuff.imagePath}',
+                      '${getStuff.description}',${getStuff.category},'false');
+            `
+  console.log(query);
+  // let query=`
+  // BEGIN TRANSACTION;
 
-  INSERT INTO stuff(name, link_image, description, category_id, type)
-  VALUES ('${giveStuff.name}', '${giveStuff.imagePath}',
-          '${giveStuff.description}', ${giveStuff.category}, 'give');
+  // INSERT INTO stuff(name, link_image, description, category_id, type)
+  // VALUES ('${giveStuff.name}', '${giveStuff.imagePath}',
+  //         '${giveStuff.description}', ${giveStuff.category}, 'give');
 
-  INSERT INTO stuff(name, link_image, description, category_id,  type)
-  VALUES ('${getStuff.name}', '${getStuff.imagePath}',
-          '${getStuff.description}', ${getStuff.category}, 'get');
+  // INSERT INTO stuff(name, link_image, description, category_id,  type)
+  // VALUES ('${getStuff.name}', '${getStuff.imagePath}',
+  //         '${getStuff.description}', ${getStuff.category}, 'get');
 
-  INSERT INTO barter(user_id, city_id, give_stuff, get_stuff)
-  VALUES (${dataForDB.userId}, 
-    (SELECT id FROM city WHERE '${dataForDB.cityName}' = name), 
+  // INSERT INTO barter(user_id, city_id, give_stuff, get_stuff)
+  // VALUES (${dataForDB.userId}, 
+  //   (SELECT id FROM city WHERE '${dataForDB.cityName}' = name), 
 
-    (SELECT id
-      FROM stuff
-      ORDER BY id DESC
-      LIMIT 1)-1,
+  //   (SELECT id
+  //     FROM stuff
+  //     ORDER BY id DESC
+  //     LIMIT 1)-1,
     
-    (SELECT id
-      FROM stuff
-      ORDER BY id DESC
-      LIMIT 1)
-  );
+  //   (SELECT id
+  //     FROM stuff
+  //     ORDER BY id DESC
+  //     LIMIT 1)
+  // );
 
-  COMMIT TRANSACTION;`
+  // COMMIT TRANSACTION;`
   pool.query(query, (err, resDB) =>{
     if (!err)
     {
