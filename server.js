@@ -476,8 +476,13 @@ function getBarterGiveGet(listIdBarter=null)
     let barterArr=[];
     let barterGiveGetArr=[];
     let responceBeing=false;
-    let query=`SELECT * FROM barter;`;
-    if (listIdBarter.length==0)
+    let query='';
+    if (listIdBarter==null)
+    {
+
+       query=`SELECT * FROM barter;`;
+    }
+    else if (listIdBarter.length==0)
     {
         resolve([]);
     }
@@ -514,7 +519,7 @@ function getBarterGiveGet(listIdBarter=null)
     {
       if (brtArr.length==0) 
       {
-        res.send('');
+        //res.send('');
         return null;
       }
       let listIdStuff=[];
@@ -800,7 +805,7 @@ function getBarterGiveGet(listIdBarter=null)
                 console.log(result);
 
 
-                getResponceBarter(result)
+                res.send(getResponceBarter(result))
 
                 // let barterListId=[];
                 // for (let i=0;i<result.length;i++)
@@ -828,7 +833,7 @@ function getBarterGiveGet(listIdBarter=null)
             result=resDB.rows;
           }
           console.log(result);
-          if (giveAndGet==false && giveAndCatGet==false) getResponceBarter(result)//res.send('result none ')
+          if (giveAndGet==false && giveAndCatGet==false) res.send(getResponceBarter(result))//res.send('result none ')
         }
         else
         {
@@ -850,7 +855,8 @@ function getBarterGiveGet(listIdBarter=null)
         
         
         console.log('get Barter ARR PROMISE',result2)
-        res.send(result2);
+        return result2;
+       // res.send(result2);
       }).catch(function(err){
         
         
