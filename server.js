@@ -468,430 +468,482 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   //queryDBcityToId(dataForDB.cityId);
   res.redirect("/")
 })
+var countSearchQuery=0;
 app.get('/getBarterArr/', function(req, res){
-  getBarterGiveGet().then(function(result){
-
-
-    console.log('get Barter ARR ',result)
-    res.send(result);
-  })
-  //res.send({kkk:'0'});
-});
-function getBarterGiveGet(listIdBarter=null)
-{
-
-  return new Promise(function(resolve,reject){
-    let stuff={
-      id:null,
-      name: '',
-      imagePath: '000',
-      description: '',
-      category_id: null,
-    };
-    barter={
-      userId: null,
-      cityId: null,
-      giveStuffId: null,
-      getStuffId: null,
-    }
-    let barterGiveGet={
-      userId:null,
-      cityId:null,
-      give:null,
-      get: null,
-    }
-    let stuffArr=[];
-    let barterArr=[];
-    let barterGiveGetArr=[];
-    let responceBeing=false;
-    let query='';
-    if (listIdBarter==null)
-    {
-
-       query=`SELECT * FROM barter;`;
-    }
-    else if (listIdBarter.length==0)
-    {
-        resolve([]);
-    }
-    else if (listIdBarter!=null )
-    {
-      let strIdBarter=listIdBarter.join(', ');
-      query=`SELECT * FROM barter WHERE id IN (${strIdBarter});`;
-    }
-    console.log(query);
+    let query=` SELECT * FROM barter;`
+    countSearchQuery++;
+    console.log(countSearchQuery);
     pool.query(query, function(err, resDB){
       if (!err)
       {
-        for (let i = 0; i < resDB.rows.length; i++)
-        {
-            let barterOne=JSON.parse(JSON.stringify(barter));
-            barterOne.userId=resDB.rows[i].user_id;
-            barterOne.cityId=resDB.rows[i].city_id;
-            barterOne.giveStuffId=resDB.rows[i].give_stuff;
-            barterOne.getStuffId=resDB.rows[i].get_stuff;
-            barterArr.push(barterOne);
+        console.log(resDB.rows);
 
-        }
-        getStuff(barterArr);
-        return barterGiveGetArr;
+        res.send(calcBarterArr(resDB.rows))
       }
       else
-      { 
+      {
+        res.send('при чтении данных произошла ошибка')
         console.log(err);
       }
-      
-      // res.send(barterArr,stuffArr);
     });
-    function getStuff(brtArr)
-    {
-      if (brtArr.length==0) 
-      {
-        //res.send('');
-        return null;
-      }
-      let listIdStuff=[];
-      for (let i=0;i<brtArr.length;i++)
-      {
-        listIdStuff.push(brtArr[i].giveStuffId);
-        listIdStuff.push(brtArr[i].getStuffId);
-      }
-      let strIdStuff=listIdStuff.join(', ');
-      let query=`SELECT * FROM stuff WHERE id IN (${strIdStuff})`;
-      console.log(query);
-      pool.query(query,  function(err, resDB){
-        if(!err)
-        {
-          for (let i = 0; i < resDB.rows.length; i++)
-          {
-            let stuffOne=JSON.parse(JSON.stringify(stuff));
-            stuffOne.id=resDB.rows[i].id;
-            stuffOne.name=resDB.rows[i].name;
-            stuffOne.imagePath=resDB.rows[i].link_image;
-            stuffOne.description=resDB.rows[i].description;
-            stuffOne.category_id=resDB.rows[i].category_id;
-            stuffArr.push(stuffOne);
-          }
+});
+function calcBarterArr(rowsDB)
+{
+  let stuff={
+    id:null,
+    name: '',
+    imagePath: '000',
+    description: '',
+    category_id: null,
+  };
+  let barterGiveGet={
+    userId:null,
+    cityId:null,
+    give:null,
+    get: null,
+  }
+  let barterGiveGetArr=[];
+  for (let i=0;i<rowsDB.length;i++)
+  {
+    let barterGiveGetOne=JSON.parse(JSON.stringify(barterGiveGet));
 
-          //res.send(barterArr,/*stuffArr*/);
-          createBarterGiveGet(barterArr, stuffArr);
-          resolve(barterGiveGetArr);
-          //res.send(barterGiveGetArr);
-          
-          //return barterGiveGetArr;
-        }
-        else
-        { 
-          console.log(err);
-        }
-        responceBeing=true;
+    barterGiveGetOne.userId=rowsDB[i].user_id;
+    barterGiveGetOne.cityId=rowsDB[i].city_id;
+    
+    let stuffGive=JSON.parse(JSON.stringify(stuff));
+    stuffGive.name=rowsDB[i].give_name;
+    stuffGive.imagePath=rowsDB[i].give_link_image;
+    stuffGive.description=rowsDB[i].give_description;
+    stuffGive.category_id=rowsDB[i].give_category_id;
+    
+    let stuffGet=JSON.parse(JSON.stringify(stuff));
+    stuffGet.name=rowsDB[i].get_name;
+    stuffGet.imagePath=rowsDB[i].get_link_image;
+    stuffGet.description=rowsDB[i].get_description;
+    stuffGet.category_id=rowsDB[i].get_category_id;
+    
+    barterGiveGetOne.give=stuffGive;
+    barterGiveGetOne.get=stuffGet;
 
-
-      });
-      
-    }
-    function createBarterGiveGet(brtArr, stfArr)
-    {
-      for( i=0;i<brtArr.length;i++)
-      {
-        let giveGetOne=JSON.parse(JSON.stringify(barterGiveGet)); 
-        giveGetOne.give=JSON.parse(JSON.stringify(stuff));
-        giveGetOne.get=JSON.parse(JSON.stringify(stuff));
-        giveGetOne.userId=brtArr[i].userId;
-        giveGetOne.cityId=brtArr[i].cityId;
-        for (let j=0;j<stfArr.length;j++)
-        {
-
-          
-          if (brtArr[i].giveStuffId==stfArr[j].id)
-          {
-            for (var attr1 in giveGetOne.give)
-            {
-              for (var attr2 in stfArr[j])
-              {
-                if (attr1==attr2) 
-                {
-                  giveGetOne.give[attr1]=stfArr[j][attr2];
-                }
-              }
-            } 
-            // giveGetOne.give.id=stfArr[j].id;
-
-            // giveGetOne.give.name=stfArr[j].name;
-          
-            // giveGetOne.give.imagePath=stfArr[j].imagePath;
-        
-            // giveGetOne.give.description=stfArr[j].description;
-        
-            // giveGetOne.give.category_id=stfArr[j].category_id;
-        
-          }
-          if (brtArr[i].getStuffId==stfArr[j].id)
-          {
-            for (var attr1 in giveGetOne.get)
-            {
-              for (var attr2 in stfArr[j])
-              {
-                if (attr1==attr2) 
-                {
-                  giveGetOne.get[attr1]=stfArr[j][attr2];
-                }
-              }
-            }
-            // giveGetOne.get.id=stfArr[j].id;
-            
-            // giveGetOne.get.name=stfArr[j].name;
-          
-            // giveGetOne.get.imagePath=stfArr[j].imagePath;
-        
-            // giveGetOne.get.description=stfArr[j].description;
-        
-            // giveGetOne.get.category_id=stfArr[j].category_id;
-        
-          }
-        }
-        barterGiveGetArr.push(giveGetOne);
-
-      }
-    }
-  });
+    barterGiveGetArr.push(barterGiveGetOne);
+  }
+  return barterGiveGetArr;
 }
+// function getBarterGiveGet(listIdBarter=null)
+// {
+
+//   return new Promise(function(resolve,reject){
+//     let stuff={
+//       id:null,
+//       name: '',
+//       imagePath: '000',
+//       description: '',
+//       category_id: null,
+//     };
+//     barter={
+//       userId: null,
+//       cityId: null,
+//       giveStuffId: null,
+//       getStuffId: null,
+//     }
+//     let barterGiveGet={
+//       userId:null,
+//       cityId:null,
+//       give:null,
+//       get: null,
+//     }
+//     let stuffArr=[];
+//     let barterArr=[];
+//     let barterGiveGetArr=[];
+//     let responceBeing=false;
+//     let query='';
+//     if (listIdBarter==null)
+//     {
+
+//        query=`SELECT * FROM barter;`;
+//     }
+//     else if (listIdBarter.length==0)
+//     {
+//         resolve([]);
+//     }
+//     else if (listIdBarter!=null )
+//     {
+//       let strIdBarter=listIdBarter.join(', ');
+//       query=`SELECT * FROM barter WHERE id IN (${strIdBarter});`;
+//     }
+//     console.log(query);
+//     pool.query(query, function(err, resDB){
+//       if (!err)
+//       {
+//         for (let i = 0; i < resDB.rows.length; i++)
+//         {
+//             let barterOne=JSON.parse(JSON.stringify(barter));
+//             barterOne.userId=resDB.rows[i].user_id;
+//             barterOne.cityId=resDB.rows[i].city_id;
+//             barterOne.giveStuffId=resDB.rows[i].give_stuff;
+//             barterOne.getStuffId=resDB.rows[i].get_stuff;
+//             barterArr.push(barterOne);
+
+//         }
+//         getStuff(barterArr);
+//         return barterGiveGetArr;
+//       }
+//       else
+//       { 
+//         console.log(err);
+//       }
+      
+//       // res.send(barterArr,stuffArr);
+//     });
+//     function getStuff(brtArr)
+//     {
+//       if (brtArr.length==0) 
+//       {
+//         //res.send('');
+//         return null;
+//       }
+//       let listIdStuff=[];
+//       for (let i=0;i<brtArr.length;i++)
+//       {
+//         listIdStuff.push(brtArr[i].giveStuffId);
+//         listIdStuff.push(brtArr[i].getStuffId);
+//       }
+//       let strIdStuff=listIdStuff.join(', ');
+//       let query=`SELECT * FROM stuff WHERE id IN (${strIdStuff})`;
+//       console.log(query);
+//       pool.query(query,  function(err, resDB){
+//         if(!err)
+//         {
+//           for (let i = 0; i < resDB.rows.length; i++)
+//           {
+//             let stuffOne=JSON.parse(JSON.stringify(stuff));
+//             stuffOne.id=resDB.rows[i].id;
+//             stuffOne.name=resDB.rows[i].name;
+//             stuffOne.imagePath=resDB.rows[i].link_image;
+//             stuffOne.description=resDB.rows[i].description;
+//             stuffOne.category_id=resDB.rows[i].category_id;
+//             stuffArr.push(stuffOne);
+//           }
+
+//           //res.send(barterArr,/*stuffArr*/);
+//           createBarterGiveGet(barterArr, stuffArr);
+//           resolve(barterGiveGetArr);
+//           //res.send(barterGiveGetArr);
+          
+//           //return barterGiveGetArr;
+//         }
+//         else
+//         { 
+//           console.log(err);
+//         }
+//         responceBeing=true;
+
+
+//       });
+      
+//     }
+//     function createBarterGiveGet(brtArr, stfArr)
+//     {
+//       for( i=0;i<brtArr.length;i++)
+//       {
+//         let giveGetOne=JSON.parse(JSON.stringify(barterGiveGet)); 
+//         giveGetOne.give=JSON.parse(JSON.stringify(stuff));
+//         giveGetOne.get=JSON.parse(JSON.stringify(stuff));
+//         giveGetOne.userId=brtArr[i].userId;
+//         giveGetOne.cityId=brtArr[i].cityId;
+//         for (let j=0;j<stfArr.length;j++)
+//         {
+
+          
+//           if (brtArr[i].giveStuffId==stfArr[j].id)
+//           {
+//             for (var attr1 in giveGetOne.give)
+//             {
+//               for (var attr2 in stfArr[j])
+//               {
+//                 if (attr1==attr2) 
+//                 {
+//                   giveGetOne.give[attr1]=stfArr[j][attr2];
+//                 }
+//               }
+//             } 
+//             // giveGetOne.give.id=stfArr[j].id;
+
+//             // giveGetOne.give.name=stfArr[j].name;
+          
+//             // giveGetOne.give.imagePath=stfArr[j].imagePath;
+        
+//             // giveGetOne.give.description=stfArr[j].description;
+        
+//             // giveGetOne.give.category_id=stfArr[j].category_id;
+        
+//           }
+//           if (brtArr[i].getStuffId==stfArr[j].id)
+//           {
+//             for (var attr1 in giveGetOne.get)
+//             {
+//               for (var attr2 in stfArr[j])
+//               {
+//                 if (attr1==attr2) 
+//                 {
+//                   giveGetOne.get[attr1]=stfArr[j][attr2];
+//                 }
+//               }
+//             }
+//             // giveGetOne.get.id=stfArr[j].id;
+            
+//             // giveGetOne.get.name=stfArr[j].name;
+          
+//             // giveGetOne.get.imagePath=stfArr[j].imagePath;
+        
+//             // giveGetOne.get.description=stfArr[j].description;
+        
+//             // giveGetOne.get.category_id=stfArr[j].category_id;
+        
+//           }
+//         }
+//         barterGiveGetArr.push(giveGetOne);
+
+//       }
+//     }
+//   });
+// }
 
 
 /*
     ПОИСК
 */
-  var countSearchQuery=0;
-  app.post('/querySearch/', function(req, res){
-    let data=JSON.parse(req.body.data)
-    data.nameGive=data.nameGive.toLowerCase();
-    data.nameGet=data.nameGet.toLowerCase();
-    console.log (data.nameGive, data.nameGet, data.categoryGive,data.categoryGet)
-    countSearchQuery++;
-    console.log('count search query: '+countSearchQuery);
 
-    // getBarterGiveGet([23]).then(function(result2){
+  // app.post('/querySearch/', function(req, res){
+  //   let data=JSON.parse(req.body.data)
+  //   data.nameGive=data.nameGive.toLowerCase();
+  //   data.nameGet=data.nameGet.toLowerCase();
+  //   console.log (data.nameGive, data.nameGet, data.categoryGive,data.categoryGet)
+  //   countSearchQuery++;
+  //   console.log('count search query: '+countSearchQuery);
+
+  //   // getBarterGiveGet([23]).then(function(result2){
 
 
-    //   console.log('get Barter ARR ',result2)
-    //   res.send(result2);
-    // }).catch(function(err){
+  //   //   console.log('get Barter ARR ',result2)
+  //   //   res.send(result2);
+  //   // }).catch(function(err){
 
       
-    //     console.log('get barter ERROR ',err)
-    //     res.send('error promise');
-    // })
+  //   //     console.log('get barter ERROR ',err)
+  //   //     res.send('error promise');
+  //   // })
 
-    searchByStuff(data);
-    //res.send('result query')
-    function searchByStuff(data) // функция которая ищет бартеры по данным
-    {
+  //   searchByStuff(data);
+  //   //res.send('result query')
+  //   function searchByStuff(data) // функция которая ищет бартеры по данным
+  //   {
       
-      let query='';
-      let giveAndGet=false;
-      let giveAndCatGet=false;
-      if  ( (data.nameGive!='' &&  data.nameGet=='') || // GIVE
-            (data.nameGive!='' &&  data.nameGet!='') ) 
-      {
-        if (data.categoryGive==0)
-        {
+  //     let query='';
+  //     let giveAndGet=false;
+  //     let giveAndCatGet=false;
+  //     if  ( (data.nameGive!='' &&  data.nameGet=='') || // GIVE
+  //           (data.nameGive!='' &&  data.nameGet!='') ) 
+  //     {
+  //       if (data.categoryGive==0)
+  //       {
 
-          query=`
-            SELECT *, barter.id AS barterId
-            FROM barter 
-            JOIN stuff ON barter.give_stuff = stuff.id
-            WHERE LOWER(stuff.name) LIKE '%${data.nameGive}%';`;
-        }
-        else 
-        {
-          query=`
-            SELECT *, barter.id AS barterId
-            FROM barter 
-            JOIN stuff ON barter.give_stuff = stuff.id
-            WHERE stuff.category_id = ${data.categoryGive} AND
-                  LOWER(stuff.name) LIKE '%${data.nameGive}%'`;
-        }
-        if (data.nameGive!='' &&  data.nameGet!='') //GIVE AND GET
-        {
-          //query=queryGive
-          giveAndGet=true;
+  //         query=`
+  //           SELECT *, barter.id AS barterId
+  //           FROM barter 
+  //           JOIN stuff ON barter.give_stuff = stuff.id
+  //           WHERE LOWER(stuff.name) LIKE '%${data.nameGive}%';`;
+  //       }
+  //       else 
+  //       {
+  //         query=`
+  //           SELECT *, barter.id AS barterId
+  //           FROM barter 
+  //           JOIN stuff ON barter.give_stuff = stuff.id
+  //           WHERE stuff.category_id = ${data.categoryGive} AND
+  //                 LOWER(stuff.name) LIKE '%${data.nameGive}%'`;
+  //       }
+  //       if (data.nameGive!='' &&  data.nameGet!='') //GIVE AND GET
+  //       {
+  //         //query=queryGive
+  //         giveAndGet=true;
 
-        }
-        else if (data.nameGive!='' && data.categoryGet!=0)
-        {
-          console.log('giveAndCatGet 1111');
-          giveAndCatGet=true;
-        }
+  //       }
+  //       else if (data.nameGive!='' && data.categoryGet!=0)
+  //       {
+  //         console.log('giveAndCatGet 1111');
+  //         giveAndCatGet=true;
+  //       }
         
-      }
-      else if (data.categoryGive!=0)
-      {
-        //queryGive;
-        query=`
-            SELECT *, barter.id AS barterId
-            FROM barter 
-            JOIN stuff ON barter.give_stuff = stuff.id
-            WHERE stuff.category_id = ${data.categoryGive};`;
-        if (data.nameGive=='' && data.categoryGet!=0)
-        {
-          giveAndCatGet=true;
-          console.log('giveAndCatGet 2222');
-        }
-      }
-      else if  (data.nameGive=='' &&  data.nameGet!='') // GET
-      {
-        if (data.categoryGet==0)
-        { 
-          query=`
-            SELECT *, barter.id AS barterId 
-            FROM barter 
-            JOIN stuff ON barter.get_stuff = stuff.id
-            WHERE LOWER(stuff.name) LIKE '%${data.nameGet}%';`
-        }
-        else // GET AND CATEGORY
-        {
-          query=`
-            SELECT *, barter.id AS barterId 
-            FROM barter 
-            JOIN stuff ON barter.get_stuff = stuff.id
-            WHERE stuff.category_id = ${data.categoryGet} AND
-                  LOWER(stuff.name) LIKE '%${data.nameGet}%';`;
-        }
+  //     }
+  //     else if (data.categoryGive!=0)
+  //     {
+  //       //queryGive;
+  //       query=`
+  //           SELECT *, barter.id AS barterId
+  //           FROM barter 
+  //           JOIN stuff ON barter.give_stuff = stuff.id
+  //           WHERE stuff.category_id = ${data.categoryGive};`;
+  //       if (data.nameGive=='' && data.categoryGet!=0)
+  //       {
+  //         giveAndCatGet=true;
+  //         console.log('giveAndCatGet 2222');
+  //       }
+  //     }
+  //     else if  (data.nameGive=='' &&  data.nameGet!='') // GET
+  //     {
+  //       if (data.categoryGet==0)
+  //       { 
+  //         query=`
+  //           SELECT *, barter.id AS barterId 
+  //           FROM barter 
+  //           JOIN stuff ON barter.get_stuff = stuff.id
+  //           WHERE LOWER(stuff.name) LIKE '%${data.nameGet}%';`
+  //       }
+  //       else // GET AND CATEGORY
+  //       {
+  //         query=`
+  //           SELECT *, barter.id AS barterId 
+  //           FROM barter 
+  //           JOIN stuff ON barter.get_stuff = stuff.id
+  //           WHERE stuff.category_id = ${data.categoryGet} AND
+  //                 LOWER(stuff.name) LIKE '%${data.nameGet}%';`;
+  //       }
        
-      }
-      else if  (data.categoryGet!=0)
-      {
-        // queryGet;
-        query=`SELECT *, barter.id AS barterId 
-        FROM barter 
-        JOIN stuff ON barter.get_stuff = stuff.id
-        WHERE stuff.category_id = ${data.categoryGet};`
-      }
-      pool.query(query, function(err, resDB){
-        if (!err)
-        {
-          result=[];
-          if (giveAndGet==true || giveAndCatGet==true)
-          {
-            let listStuffNum=[];
-            for (let i=0;i<resDB.rows.length;i++)
-            {
-              listStuffNum.push(resDB.rows[i].get_stuff)
-            }
-            if (listStuffNum.length>0)
-            {
-              console.log('listStuffNum '+listStuffNum)
-              let strStuffArr=listStuffNum.join(",");
-              console.log ("strStuffArr "+strStuffArr);
-              let query2= `
-                    SELECT *, barter.id AS barterid
-                    FROM barter
-                    JOIN stuff ON barter.get_stuff = stuff.id
-                    WHERE stuff.id IN (${strStuffArr}) AND stuff.type = 'get';`
-              console.log (query2);
-              pool.query(query2, function(err,resDB){
-                if (!err)
-                {
+  //     }
+  //     else if  (data.categoryGet!=0)
+  //     {
+  //       // queryGet;
+  //       query=`SELECT *, barter.id AS barterId 
+  //       FROM barter 
+  //       JOIN stuff ON barter.get_stuff = stuff.id
+  //       WHERE stuff.category_id = ${data.categoryGet};`
+  //     }
+  //     pool.query(query, function(err, resDB){
+  //       if (!err)
+  //       {
+  //         result=[];
+  //         if (giveAndGet==true || giveAndCatGet==true)
+  //         {
+  //           let listStuffNum=[];
+  //           for (let i=0;i<resDB.rows.length;i++)
+  //           {
+  //             listStuffNum.push(resDB.rows[i].get_stuff)
+  //           }
+  //           if (listStuffNum.length>0)
+  //           {
+  //             console.log('listStuffNum '+listStuffNum)
+  //             let strStuffArr=listStuffNum.join(",");
+  //             console.log ("strStuffArr "+strStuffArr);
+  //             let query2= `
+  //                   SELECT *, barter.id AS barterid
+  //                   FROM barter
+  //                   JOIN stuff ON barter.get_stuff = stuff.id
+  //                   WHERE stuff.id IN (${strStuffArr}) AND stuff.type = 'get';`
+  //             console.log (query2);
+  //             pool.query(query2, function(err,resDB){
+  //               if (!err)
+  //               {
 
                   
-                  for (let i=0;i<resDB.rows.length;i++)
-                  {
-                    let getResult=resDB.rows[i].name.toLowerCase();
-                    let categoryResult=resDB.rows[i].category_id;
-                    console.log (resDB.rows[i].name);
-                    if (giveAndGet==true)
-                    {
+  //                 for (let i=0;i<resDB.rows.length;i++)
+  //                 {
+  //                   let getResult=resDB.rows[i].name.toLowerCase();
+  //                   let categoryResult=resDB.rows[i].category_id;
+  //                   console.log (resDB.rows[i].name);
+  //                   if (giveAndGet==true)
+  //                   {
 
-                      if ((getResult.indexOf(data.nameGet)!=-1 && data.categoryGet==0)||
-                        ( getResult.indexOf(data.nameGet)!=-1 &&
-                        data.categoryGet!=0 && 
-                        categoryResult==data.categoryGet))
-                      {
-                        result.push(resDB.rows[i]);
-                      }
-                    }
-                    else if (giveAndCatGet==true)
-                    {
-                      if (( resDB.rows[i].category_id==data.categoryGet &&
-                            data.nameGet=='')
-                            ||
-                            ( getResult.indexOf(data.nameGet)!=-1 &&
-                              data.nameGet!='' && 
-                              categoryResult==data.categoryGet )
-                          )
-                      {
-                        result.push(resDB.rows[i]);
-                      }
-                    }
+  //                     if ((getResult.indexOf(data.nameGet)!=-1 && data.categoryGet==0)||
+  //                       ( getResult.indexOf(data.nameGet)!=-1 &&
+  //                       data.categoryGet!=0 && 
+  //                       categoryResult==data.categoryGet))
+  //                     {
+  //                       result.push(resDB.rows[i]);
+  //                     }
+  //                   }
+  //                   else if (giveAndCatGet==true)
+  //                   {
+  //                     if (( resDB.rows[i].category_id==data.categoryGet &&
+  //                           data.nameGet=='')
+  //                           ||
+  //                           ( getResult.indexOf(data.nameGet)!=-1 &&
+  //                             data.nameGet!='' && 
+  //                             categoryResult==data.categoryGet )
+  //                         )
+  //                     {
+  //                       result.push(resDB.rows[i]);
+  //                     }
+  //                   }
                     
-                  }
-                }
-                else
-                {
-                  console.log(err)
-                }
-                console.log(result);
+  //                 }
+  //               }
+  //               else
+  //               {
+  //                 console.log(err)
+  //               }
+  //               console.log(result);
 
 
-                res.send(getResponceBarter(result))
+  //               res.send(getResponceBarter(result))
 
-                // let barterListId=[];
-                // for (let i=0;i<result.length;i++)
-                // {
-                //   barterListId.push(result[i].barterid);
-                // }
-                // getBarterGiveGet(barterListId).then(function(result2){
+  //               // let barterListId=[];
+  //               // for (let i=0;i<result.length;i++)
+  //               // {
+  //               //   barterListId.push(result[i].barterid);
+  //               // }
+  //               // getBarterGiveGet(barterListId).then(function(result2){
 
 
-                //   console.log('get Barter ARR PROMISE',result2)
-                //   res.send(result2);
-                // }).catch(function(err){
+  //               //   console.log('get Barter ARR PROMISE',result2)
+  //               //   res.send(result2);
+  //               // }).catch(function(err){
 
                   
-                //     console.log('get barter ERROR PROMISE',err)
-                // })
-                //res.send('result query gg')
+  //               //     console.log('get barter ERROR PROMISE',err)
+  //               // })
+  //               //res.send('result query gg')
                   
-              });
-            }
+  //             });
+  //           }
 
-          }   
-          else
-          {
-            result=resDB.rows;
-          }
-          console.log(result);
-          if (giveAndGet==false && giveAndCatGet==false) res.send(getResponceBarter(result))//res.send('result none ')
-        }
-        else
-        {
-          console.log(err);
-          res.send('errorResult')
-        }
+  //         }   
+  //         else
+  //         {
+  //           result=resDB.rows;
+  //         }
+  //         console.log(result);
+  //         if (giveAndGet==false && giveAndCatGet==false) res.send(getResponceBarter(result))//res.send('result none ')
+  //       }
+  //       else
+  //       {
+  //         console.log(err);
+  //         res.send('errorResult')
+  //       }
 
 
-      })
-    } 
-    function getResponceBarter(result)
-    {
-      let barterListId=[];
-      for (let i=0;i<result.length;i++)
-      {
-        barterListId.push(result[i].barterid);
-      }
-      getBarterGiveGet(barterListId).then(function(result2){
+  //     })
+  //   } 
+  //   function getResponceBarter(result)
+  //   {
+  //     let barterListId=[];
+  //     for (let i=0;i<result.length;i++)
+  //     {
+  //       barterListId.push(result[i].barterid);
+  //     }
+  //     getBarterGiveGet(barterListId).then(function(result2){
         
         
-        console.log('get Barter ARR PROMISE',result2)
-        return result2;
-       // res.send(result2);
-      }).catch(function(err){
+  //       console.log('get Barter ARR PROMISE',result2)
+  //       return result2;
+  //      // res.send(result2);
+  //     }).catch(function(err){
         
         
-        console.log('get barter ERROR PROMISE',err)
-      })
-    }
-  });
+  //       console.log('get barter ERROR PROMISE',err)
+  //     })
+  //   }
+  // });
   app.post('/listForCity/', function(req,res){
   let result=[];
   //console.log(req);
