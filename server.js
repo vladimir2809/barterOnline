@@ -83,6 +83,17 @@ pool.query("SELECT * FROM category", (err, resDB) =>{
     console.log(err);
   }
 });
+function getIdCategoryFromDB(num)
+{
+  
+  for (let i=0;i<categoryListId.length;i++)
+  {
+    if (num==i)
+    {
+      return categoryListId[i];
+    }
+  }
+}
 pool.query('SELECT * FROM city ORDER BY name',function(err, resDB){
   if (!err)
   {
@@ -389,17 +400,17 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
 
     //res.send('not image file');
   }
-  function getIdCategoryFromDB(num)
-  {
+  // function getIdCategoryFromDB(num)
+  // {
     
-    for (let i=0;i<categoryListId.length;i++)
-    {
-      if (num==i)
-      {
-        return categoryListId[i];
-      }
-    }
-  }
+  //   for (let i=0;i<categoryListId.length;i++)
+  //   {
+  //     if (num==i)
+  //     {
+  //       return categoryListId[i];
+  //     }
+  //   }
+  // }
   giveStuff.name=req.body.stuff__give__name;
   giveStuff.category=getIdCategoryFromDB(req.body.category_load_give);
   giveStuff.description=req.body.textareaContent_give;
@@ -471,14 +482,13 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
 var countSearchQuery=0;
 app.get('/getBarterArr/', function(req, res){
     let query=` SELECT * FROM barter;`
-    countSearchQuery++;
-    console.log(countSearchQuery);
+
     pool.query(query, function(err, resDB){
       if (!err)
       {
         console.log(resDB.rows);
 
-        res.send(calcBarterArr(resDB.rows))
+        res.send(calcBarterArr(resDB.rows));
       }
       else
       {
@@ -487,6 +497,90 @@ app.get('/getBarterArr/', function(req, res){
       }
     });
 });
+app.post('/querySearch/', function(req, res){
+    let data=JSON.parse(req.body.data)
+    data.nameGive=data.nameGive.toLowerCase();
+    data.nameGet=data.nameGet.toLowerCase();
+    console.log (data.nameGive, data.nameGet, data.categoryGive,data.categoryGet)
+    countSearchQuery++;
+    console.log('count search query: '+countSearchQuery);
+    let query=`SELECT * FROM barter`;
+    let where='';
+    let where2='';
+    if (data.nameGive=='' && data.nameGet=='' &&
+    data.categoryGive==0 && data.categoryGet==0)
+    {
+      //query=`SELECT * FROM barter;`
+      where='';
+    }
+    if (data.nameGive!=''  &&  data.categoryGive==0 )
+    {
+      //query=`SELECT * FROM barter WHERE LOWER(give_name) LIKE '%${data.nameGive}%';`
+      where=`LOWER(give_name) LIKE '%${data.nameGive}%'`
+
+    }
+    if (data.nameGive==''  &&  data.categoryGive!=0 )
+    {
+      let categoryGive=getIdCategoryFromDB(data.categoryGive)
+      //query=`SELECT * FROM barter   WHERE give_category_id = ${categoryGive};`
+      where=`give_category_id = ${categoryGive}`;
+    }
+    if (data.nameGive!='' &&  data.categoryGive!=0 )
+    {
+      let categoryGive=getIdCategoryFromDB(data.categoryGive)
+      // query=`SELECT * FROM barter 
+      //       WHERE LOWER(give_name) LIKE '%${data.nameGive}%' AND
+      //       give_category_id = ${categoryGive};`
+      where =`LOWER(give_name) LIKE '%${data.nameGive}%' AND
+              give_category_id = ${categoryGive}`;
+    }
+    if ( data.nameGet!='' && data.categoryGet==0)
+    {
+      where2=`LOWER(get_name) LIKE '%${data.nameGet}%'`
+    }
+
+    if ( data.nameGet=='' &&  data.categoryGet!=0)
+    {
+      let categoryGet=getIdCategoryFromDB(data.categoryGet)
+      where2=`get_category_id = ${categoryGet}`;
+    }
+
+    if ( data.nameGet!='' &&  data.categoryGet!=0)
+    {
+      let categoryGet=getIdCategoryFromDB(data.categoryGet)
+      // query=`SELECT * FROM barter 
+      //       WHERE LOWER(give_name) LIKE '%${data.nameGive}%' AND
+      //       give_category_id = ${categoryGive};`
+      where2 =`LOWER(get_name) LIKE '%${data.nameGet}%' AND
+              get_category_id = ${categoryGet}`;
+    }
+    if ( (data.nameGive!='' || data.categoryGive!=0) &&
+          (data.categoryGet!=0 || data.nameGet!=''))
+    {
+      query=query+' WHERE '+where+' AND '+where2+';';
+    }
+    else if (where!='')
+    {
+      query=query+' WHERE '+where+';';
+    }
+    else if (where2!='')
+    {
+      query=query+' WHERE '+where2+';';
+    }
+    // query=query+' WHERE '+where+';';
+    console.log(query);
+    pool.query(query, function(err, resDB){
+      if (!err)
+      {
+        console.log(resDB.rows);
+        res.send(calcBarterArr(resDB.rows));
+      }
+      else
+      {
+        console.log(err);
+      }
+    })
+})
 function calcBarterArr(rowsDB)
 {
   let stuff={
