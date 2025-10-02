@@ -1,8 +1,24 @@
 var resultNode=document.getElementsByClassName('result')[0];
 var resultItemNode=document.getElementsByClassName('result-item')[0];
 let timePressBtnSearch=0;
+let checkboxFree=document.getElementById("checkbox-free");
 if (resultItemNode!=undefined)
     {
+      
+      checkboxFree.addEventListener('change', function(event){
+        let inputText=document.getElementById("query-search-get");
+        let inputCategory=document.getElementById("category-get");
+        if (checkboxFree.checked==true)
+        {
+          inputText.disabled=true;
+          inputCategory.disabled=true;
+        }
+        else
+        {
+          inputText.disabled=false;
+          inputCategory.disabled=false;
+        }
+      })
       SendRequest('get', "/getBarterArr/", "", function(request){ 
         if (request.response!='')
         {      
@@ -78,9 +94,17 @@ if (resultItemNode!=undefined)
   },25)
   function viewsBarterArr(data)
   {
-
+    //resultNode.innerHTML='';
+    //let parentElement = document.getElementById('list'); // Получаем элемент
+    // Получаем живую коллекцию дочерних элементов
+    for (let i=0;i<resultNode.children.length;i++) {
+      resultNode.removeChild(resultNode.lastChild);
+    }
+    //alert(resultNode.children.length);
+    //alert(data);
     for (let i=data.length-1;i >= 0; i--)
     {
+     
       let cloneResultItem=resultItemNode.cloneNode(true);
       let get=cloneResultItem.querySelector('.stuff-get');
       get.querySelector(".stuff-get img").src=data[i].get.imagePath;

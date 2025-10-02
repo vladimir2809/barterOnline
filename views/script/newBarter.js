@@ -10,11 +10,63 @@ var getDescription=document.getElementById("newBarter-get-description");
 var hiddenDescriptionGet=document.getElementById("newBarter-get-description-hidden");
 var hiddenFlagImgCategoryGive=document.getElementById("flag-img-category-give");
 var hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
+
+let checkboxFree=document.getElementById("new-stuff__get-checkbox");
+let memoryInputColor=[];
+let memoryInputValue=[];
+let flagDisabledInputNameGet=false;
+let flagDisabledInputdescriptionGet=false;
 createEventLoadImage();
 if (newBarterForm!=undefined)
     {
       // let cityBarterHTML=document.getElementById('newBarter-city');
       // cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent;
+      checkboxFree.addEventListener('change', function(event){
+        let inputText=document.getElementById("newStuff__getName");
+        let inputCategory=document.getElementById("category-load-get");
+        let inputFile=document.getElementById("get_loadImg");
+        let inputDescription=document.getElementById("newBarter-get-description");
+        if (checkboxFree.checked==true)
+        {
+          inputText.disabled=true;
+          inputCategory.disabled=true;
+          inputFile.disabled=true;
+          inputDescription.contentEditable=false;
+
+          flagDisabledInputNameGet=true;
+          flagDisabledInputdescriptionGet=true;
+
+          memoryInputColor[0]=inputText.style.borderColor;
+          inputText.style.outlineColor='gray';
+          inputText.style.borderColor='gray';
+          memoryInputValue[0]= inputText.value;
+          inputText.value='';
+
+          memoryInputColor[1]=inputDescription.style.borderColor;
+          inputDescription.style.outlineColor='gray'
+          inputDescription.style.borderColor='gray'
+          memoryInputValue[1]=getDescription.innerText;
+          getDescription.innerText='';
+        }
+        else
+        {
+          inputText.disabled=false;
+          inputCategory.disabled=false;
+          inputFile.disabled=false;
+          inputDescription.contentEditable=true;
+
+          flagDisabledInputNameGet=false;
+          flagDisabledInputdescriptionGet=false;
+
+          inputText.style.outlineColor=memoryInputColor[0];
+          inputText.style.borderColor=memoryInputColor[0];
+          inputText.value=memoryInputValue[0];
+
+          inputDescription.style.outlineColor=memoryInputColor[1];
+          inputDescription.style.borderColor=memoryInputColor[1];
+          getDescription.innerText=memoryInputValue[1]
+        }
+      })
       newBarterForm.addEventListener('submit',(event)=>{
         event.preventDefault();
         //sendData();
@@ -39,7 +91,10 @@ if (newBarterForm!=undefined)
           countValidForm=0;
           
           countValidForm+=validInput(nameGive,"stringSmall");
-          countValidForm+=validInput(nameGet,"stringSmall");
+          if (flagDisabledInputNameGet==false)
+          {
+            countValidForm+=validInput(nameGet,"stringSmall");
+          } 
           
           hiddenDescriptionGive.value=giveDescription.innerText;
           hiddenDescriptionGet.value=getDescription.innerText;
@@ -62,22 +117,27 @@ if (newBarterForm!=undefined)
           }
           else
           {
+            
             giveDescription.style.border='1px solid red';
             giveDescription.style.outline='1px solid red';
           }
           
-          if (validInput(hiddenDescriptionGet,"stringLong")==1)
+          if (flagDisabledInputdescriptionGet==false)
           {
-            
-            countValidForm+=1
-            selectColor(getDescription, false);
+
+            if (validInput(hiddenDescriptionGet,"stringLong")==1)
+            {
+              
+              countValidForm+=1
+              selectColor(getDescription, false);
+            }
+            else
+            {
+              getDescription.style.border='1px solid red';
+              getDescription.style.outline='1px solid red';
+            }
           }
-          else
-          {
-            getDescription.style.border='1px solid red';
-            getDescription.style.outline='1px solid red';
-          }
-      },300);
+        },300);
       // показание картинки по умолчанию при выборе категории
       for (let i=0;i<newStuffArr.length;i++)
       {
