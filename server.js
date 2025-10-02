@@ -378,14 +378,22 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
       giveStuff.imagePath=calcPath(req.body.flag_img_category_give ,req.body.category_load_give);
     }
 
-    if (req.files.get_loadImg!=undefined)
+    if (req.body.get_checkbox!='get_free')
     {
-      getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,'',0);
-      req.files.get_loadImg.mv('views/'+getStuff.imagePath);
-    }
+
+      if (req.files.get_loadImg!=undefined)
+      {
+        getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,'',0);
+        req.files.get_loadImg.mv('views/'+getStuff.imagePath);
+      }
+      else
+      {
+        getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
+      }
+    } 
     else
     {
-      getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
+      getStuff.imagePath='img/getfree.png';
     }
 
     //res.send('success');
@@ -393,11 +401,15 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   }
   if (req.files==null)
   {
-
-
     giveStuff.imagePath=calcPath(req.body.flag_img_category_give,req.body.category_load_give);
-    getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
-
+    if (req.body.get_checkbox!='get_free')
+    {
+      getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
+    }
+    else
+    {
+      getStuff.imagePath='img/getfree.png';
+    }
     //res.send('not image file');
   }
   // function getIdCategoryFromDB(num)
@@ -416,7 +428,14 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   giveStuff.description=req.body.textareaContent_give;
 
   getStuff.name=req.body.stuff__get__name;
-  getStuff.category=getIdCategoryFromDB(req.body.category_load_get);
+  if (req.body.get_checkbox!='get_free')
+  {
+    getStuff.category=getIdCategoryFromDB(req.body.category_load_get);
+  }
+  else
+  {
+    getStuff.category=getIdCategoryFromDB(0);
+  }
   getStuff.description=req.body.textareaContent_get;
   
   dataForDB.userId=req.cookies.userID;
@@ -426,7 +445,10 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   console.log('giveStuff', giveStuff);
   console.log('getStuff', getStuff);
   console.log('dataForDB', dataForDB);
-  let query=`INSERT INTO barter(user_id, city_id, give_name, give_link_image,
+  let query='';
+  if (req.body.get_checkbox!='get_free')
+  {
+    query=`INSERT INTO barter(user_id, city_id, give_name, give_link_image,
                                 give_description, give_category_id,
                                 get_name, get_link_image,
                                 get_description, get_category_id, free) 
@@ -437,34 +459,23 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
                       '${getStuff.name}','${getStuff.imagePath}',
                       '${getStuff.description}',${getStuff.category},'false');
             `
+  }
+  else
+  {
+    query=`INSERT INTO barter(user_id, city_id, give_name, give_link_image,
+      give_description, give_category_id,
+      get_name, get_link_image,
+      get_description, get_category_id, free) 
+      VALUES (${dataForDB.userId},
+              (SELECT id FROM city WHERE '${dataForDB.cityName}' = name),
+              '${giveStuff.name}','${giveStuff.imagePath}',
+              '${giveStuff.description}',${giveStuff.category},
+              'null','${getStuff.imagePath}',
+              'null', ${getStuff.category}, 'true');
+      `
+  }
   console.log(query);
-  // let query=`
-  // BEGIN TRANSACTION;
 
-  // INSERT INTO stuff(name, link_image, description, category_id, type)
-  // VALUES ('${giveStuff.name}', '${giveStuff.imagePath}',
-  //         '${giveStuff.description}', ${giveStuff.category}, 'give');
-
-  // INSERT INTO stuff(name, link_image, description, category_id,  type)
-  // VALUES ('${getStuff.name}', '${getStuff.imagePath}',
-  //         '${getStuff.description}', ${getStuff.category}, 'get');
-
-  // INSERT INTO barter(user_id, city_id, give_stuff, get_stuff)
-  // VALUES (${dataForDB.userId}, 
-  //   (SELECT id FROM city WHERE '${dataForDB.cityName}' = name), 
-
-  //   (SELECT id
-  //     FROM stuff
-  //     ORDER BY id DESC
-  //     LIMIT 1)-1,
-    
-  //   (SELECT id
-  //     FROM stuff
-  //     ORDER BY id DESC
-  //     LIMIT 1)
-  // );
-
-  // COMMIT TRANSACTION;`
   pool.query(query, (err, resDB) =>{
     if (!err)
     {
@@ -593,6 +604,7 @@ function calcBarterArr(rowsDB)
   let barterGiveGet={
     userId:null,
     cityId:null,
+    free: null,
     give:null,
     get: null,
   }
@@ -603,7 +615,9 @@ function calcBarterArr(rowsDB)
 
     barterGiveGetOne.userId=rowsDB[i].user_id;
     barterGiveGetOne.cityId=rowsDB[i].city_id;
+    barterGiveGetOne.free=rowsDB[i].free;
     
+
     let stuffGive=JSON.parse(JSON.stringify(stuff));
     stuffGive.name=rowsDB[i].give_name;
     stuffGive.imagePath=rowsDB[i].give_link_image;

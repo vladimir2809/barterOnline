@@ -108,13 +108,15 @@ if (resultItemNode!=undefined)
       let cloneResultItem=resultItemNode.cloneNode(true);
       let get=cloneResultItem.querySelector('.stuff-get');
       get.querySelector(".stuff-get img").src=data[i].get.imagePath;
-      get.querySelector(".stuff-get .stuff__name").innerText=data[i].get.name;
-      get.querySelector(".stuff-get .stuff__paragraph").innerText=data[i].get.description;
+      get.querySelector(".stuff-get .stuff__name").innerText=data[i].get.name !='null' ?
+                                                             data[i].get.name : '\u00A0';;
+      get.querySelector(".stuff-get .stuff__paragraph").innerText=data[i].get.description != 'null' ?
+                                                                  data[i].get.description : '\u00A0';;
       
       let give=cloneResultItem.querySelector('.stuff-give');
       give.querySelector(".stuff-give img").src=data[i].give.imagePath;
-      give.querySelector(".stuff-give .stuff__name").innerText=data[i].give.name;
-      give.querySelector(".stuff-give .stuff__paragraph").innerText=data[i].give.description;
+      give.querySelector(".stuff-give .stuff__name").innerText=data[i].give.name 
+      give.querySelector(".stuff-give .stuff__paragraph").innerText=data[i].give.description
       resultNode.append(cloneResultItem);
       // `UPDATE table_name указывает таблицу, в которой нужно обновить данные.SETcolumn1 = value1, column2 = value2, ... определяет столбцы, которые нужно обновить, и новые значения для них.WHERE condition определяет условие, по которому будут выбраны записи для обновления. Если это ус`
     }

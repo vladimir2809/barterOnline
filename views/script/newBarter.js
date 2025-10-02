@@ -74,7 +74,7 @@ if (newBarterForm!=undefined)
         hiddenDescriptionGive.value=giveDescription.innerText;
         hiddenDescriptionGet.value=getDescription.innerText;
 
-        if (countValidForm==4)
+        if (countValidForm==4 || (checkboxFree.checked==true && countValidForm==2))
         {
             newBarterForm.submit();  
         }
@@ -91,6 +91,8 @@ if (newBarterForm!=undefined)
           countValidForm=0;
           
           countValidForm+=validInput(nameGive,"stringSmall");
+
+
           if (flagDisabledInputNameGet==false)
           {
             countValidForm+=validInput(nameGet,"stringSmall");
