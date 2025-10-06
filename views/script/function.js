@@ -167,3 +167,29 @@ function SendRequest(r_method, r_path, r_args, r_handler)
         Request.send(null);
     }
 } 
+function distinguishTextYellow(strSearch, originalString)
+{
+    //const originalString = "Привет, мир!";
+    let originalString2=originalString;
+    if (strSearch==undefined || strSearch.length==0) return '';
+    if (originalString==undefined || originalString.length==0) return '';
+    strSearch=strSearch.toLowerCase();
+    originalString=originalString.toLowerCase();
+
+    let stringToInsert = "<mark>";
+    let index = originalString.indexOf(strSearch);
+
+    //const newString = originalString.substring(0, index) + stringToInsert + originalString.substring(index);
+    result = insertTextToPos(originalString2, stringToInsert, index);
+    stringToInsert = "</mark>";
+    index = index+strSearch.length+6;
+    result = insertTextToPos(result, stringToInsert, index);
+    console.log(result); // Выведет: Привет, JavaScript! мир!
+    return result;
+}
+function insertTextToPos(originalString, stringToInsert, index)
+{
+    newString = originalString.substring(0, index) + stringToInsert + originalString.substring(index);
+    return newString;
+}
+distinguishTextYellow('м', "Привет, мир!")

@@ -512,7 +512,8 @@ app.post('/querySearch/', function(req, res){
     let data=JSON.parse(req.body.data)
     data.nameGive=data.nameGive.toLowerCase();
     data.nameGet=data.nameGet.toLowerCase();
-    console.log (data.nameGive, data.nameGet, data.categoryGive,data.categoryGet)
+    console.log (data.nameGive, data.nameGet, 
+                 data.categoryGive,data.categoryGet ,data.freeGet )
     countSearchQuery++;
     console.log('count search query: '+countSearchQuery);
     let query=`SELECT * FROM barter`;
@@ -555,7 +556,11 @@ app.post('/querySearch/', function(req, res){
       let categoryGet=getIdCategoryFromDB(data.categoryGet)
       where2=`get_category_id = ${categoryGet}`;
     }
-
+    if ( data.nameGet=='' &&  data.categoryGet!=0)
+    {
+      let categoryGet=getIdCategoryFromDB(data.categoryGet)
+      where2=`get_category_id = ${categoryGet}`;
+    }
     if ( data.nameGet!='' &&  data.categoryGet!=0)
     {
       let categoryGet=getIdCategoryFromDB(data.categoryGet)
@@ -565,8 +570,14 @@ app.post('/querySearch/', function(req, res){
       where2 =`LOWER(get_name) LIKE '%${data.nameGet}%' AND
               get_category_id = ${categoryGet}`;
     }
+    if (data.freeGet==true)
+    {
+      where2 =`free = true`;
+    }
+
+
     if ( (data.nameGive!='' || data.categoryGive!=0) &&
-          (data.categoryGet!=0 || data.nameGet!=''))
+          ((data.categoryGet!=0 || data.nameGet!='') || data.freeGet==true))
     {
       query=query+' WHERE '+where+' AND '+where2+';';
     }
@@ -578,6 +589,9 @@ app.post('/querySearch/', function(req, res){
     {
       query=query+' WHERE '+where2+';';
     }
+
+
+
     // query=query+' WHERE '+where+';';
     console.log(query);
     pool.query(query, function(err, resDB){

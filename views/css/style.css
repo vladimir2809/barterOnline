@@ -349,9 +349,6 @@ html {
       align-content: center;
   border: 1px solid green;
 }
-.result-item:first-child {
-  display: none;
-}
 @media only screen and (max-width: 430px) {
   .result-item {
     grid-template-columns: 29rem;
@@ -375,6 +372,9 @@ html {
         -ms-transform: rotate(90deg);
             transform: rotateZ(90deg);
   }
+}
+.result-item_display-none {
+  display: none;
 }
 
 .stuff-get {

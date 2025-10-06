@@ -25,8 +25,8 @@
     justify-content: center
     align-content: center
     border: 1px solid green//gray
-    &:first-child
-        display: none
+    // &:first-child
+    //     display: none
     @include respond(phone)
         grid-template-columns: 29rem
         //grid-template-rows: 27rem 8rem 27rem 
@@ -45,6 +45,8 @@
             grid-row: 2 / 3
             justify-self: center
             transform: rotateZ(90deg)
+    &_display-none
+        display: none
 .stuff-get
     grid-column: 3 / 4
     grid-row: 1 / 2
