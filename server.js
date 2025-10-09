@@ -620,7 +620,18 @@ function calcBarterArr(rowsDB)
   return barterGiveGetArr;
 }
   app.get('/viewsBarter/', function(req, res){
-    res.render('viewsBarter');
+    initDataUser(req.cookies)
+    let data=null;
+    let nameSurname=null;
+    if (dataUser[0]!=undefined)
+    {
+      data=dataUser[0][0];
+      nameSurname=dataUser[0];
+    }
+    console.log (data)
+    res.render('viewsBarter',{categoryList: categoryListStr,  
+                              dataUser: data, 
+                              nameUser: nameSurname});
   })
   app.post('/listForCity/', function(req,res){
   let result=[];

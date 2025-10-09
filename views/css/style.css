@@ -435,6 +435,34 @@ html {
 
 .views-barter {
   grid-column: content-start/content-end;
+  display: grid;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 2rem;
+}
+
+.barter > * {
+  margin-bottom: 3rem;
+}
+.barter__header {
+  text-align: center;
+}
+
+.stuff-views * {
+  margin-bottom: 1.5rem;
+}
+.stuff-views__action {
+  text-align: center;
+}
+.stuff-views__image {
+  width: 100%;
+  max-width: 43rem;
+}
+.stuff-views__description {
+  width: 100%;
+  height: 20rem;
+  border: 1px solid black;
 }
 
 .newBarter {
