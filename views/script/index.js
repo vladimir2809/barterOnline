@@ -1,5 +1,4 @@
 var resultNode=document.getElementsByClassName('result')[0];
-// var resultItemNode=document.getElementsByClassName('result-item')[0];
 var resultItemNode=document.querySelector('.result-item');
 let timePressBtnSearch=0;
 let checkboxFree=document.getElementById("checkbox-free");
@@ -26,21 +25,6 @@ if (resultItemNode!=undefined)
           let response=JSON.parse(request.response);
           console.log(response)
           viewsBarterArr(response);
-          // for (let i=response.length-1;i >= 0; i--)
-          // {
-          //   let cloneResultItem=resultItemNode.cloneNode(true);
-          //   let get=cloneResultItem.querySelector('.stuff-get');
-          //   get.querySelector(".stuff-get img").src=response[i].get.imagePath;
-          //   get.querySelector(".stuff-get .stuff__name").innerText=response[i].get.name;
-          //   get.querySelector(".stuff-get .stuff__paragraph").innerText=response[i].get.description;
-            
-          //   let give=cloneResultItem.querySelector('.stuff-give');
-          //   give.querySelector(".stuff-give img").src=response[i].give.imagePath;
-          //   give.querySelector(".stuff-give .stuff__name").innerText=response[i].give.name;
-          //   give.querySelector(".stuff-give .stuff__paragraph").innerText=response[i].give.description;
-          //   resultNode.append(cloneResultItem);
-          //   // `UPDATE table_name указывает таблицу, в которой нужно обновить данные.SETcolumn1 = value1, column2 = value2, ... определяет столбцы, которые нужно обновить, и новые значения для них.WHERE condition определяет условие, по которому будут выбраны записи для обновления. Если это ус`
-          // }
         }
         document.querySelector('.question-city__close').addEventListener('click',function(){
           document.querySelector('.question-city').style.display='none';
@@ -78,18 +62,10 @@ if (resultItemNode!=undefined)
               });
             }
           });
-     
-      // let cloneResultItem=resultItemNode.cloneNode(true);
-      // resultNode.append(cloneResultItem);
-      // cloneResultItem=resultItemNode.cloneNode(true);
-      // resultNode.append(cloneResultItem);
-      
-      //previewFile();
     });
   }
   setInterval(function(){
     let time=new Date();
-    //console.log(time-timePressBtnSearch);
     if (time-timePressBtnSearch>1500)
     {
       document.querySelector('.search__button').classList.remove('search__button_disabled')
@@ -98,20 +74,10 @@ if (resultItemNode!=undefined)
   },25)
   function viewsBarterArr(data, dataSearch='')
   {
-    //resultNode.innerHTML='';
-    //let parentElement = document.getElementById('list'); // Получаем элемент
-    // Получаем живую коллекцию дочерних элементов
-   //if(resultNode.children.length>0)
-
     let numChild=resultNode.childElementCount;
     for (let i=0;i<numChild;i++) {
       resultNode.removeChild(resultNode.lastChild);
     }
-
-
-    //alert(resultNode.childElementCount);
-    //alert(data);
-    // resultItemNode.style.display='grid';
     for (let i=data.length-1;i >= 0; i--)
     {
      
@@ -143,6 +109,5 @@ if (resultItemNode!=undefined)
         }
       }
       resultNode.append(cloneResultItem);
-      // `UPDATE table_name указывает таблицу, в которой нужно обновить данные.SETcolumn1 = value1, column2 = value2, ... определяет столбцы, которые нужно обновить, и новые значения для них.WHERE condition определяет условие, по которому будут выбраны записи для обновления. Если это ус`
     }
   }

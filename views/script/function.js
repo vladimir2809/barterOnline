@@ -192,4 +192,12 @@ function insertTextToPos(originalString, stringToInsert, index)
     newString = originalString.substring(0, index) + stringToInsert + originalString.substring(index);
     return newString;
 }
-distinguishTextYellow('м', "Привет, мир!")
+// distinguishTextYellow('м', "Привет, мир!")
+
+function formatByteSize(bytes) // перевод значения памяти в человека понятный вид
+{
+    if(bytes < 1024) return bytes + " bytes";
+    else if(bytes < 1048576) return(bytes / 1024).toFixed(3) + " KiB";
+    else if(bytes < 1073741824) return(bytes / 1048576).toFixed(3) + " MiB";
+    else return(bytes / 1073741824).toFixed(3) + " GiB";
+};

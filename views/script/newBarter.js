@@ -12,7 +12,8 @@ var hiddenFlagImgCategoryGive=document.getElementById("flag-img-category-give");
 var hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
 
 let checkboxFree=document.getElementById("new-stuff__get-checkbox");
-let memoryInputColor=[];
+
+
 let memoryInputValue=[];
 let flagDisabledInputNameGet=false;
 let flagDisabledInputdescriptionGet=false;
@@ -36,13 +37,13 @@ if (newBarterForm!=undefined)
           flagDisabledInputNameGet=true;
           flagDisabledInputdescriptionGet=true;
 
-          memoryInputColor[0]=inputText.style.borderColor;
+   
           inputText.style.outlineColor='gray';
           inputText.style.borderColor='gray';
           memoryInputValue[0]= inputText.value;
           inputText.value='';
 
-          memoryInputColor[1]=inputDescription.style.borderColor;
+       
           inputDescription.style.outlineColor='gray'
           inputDescription.style.borderColor='gray'
           memoryInputValue[1]=getDescription.innerText;
@@ -58,12 +59,10 @@ if (newBarterForm!=undefined)
           flagDisabledInputNameGet=false;
           flagDisabledInputdescriptionGet=false;
 
-          inputText.style.outlineColor=memoryInputColor[0];
-          inputText.style.borderColor=memoryInputColor[0];
+        
           inputText.value=memoryInputValue[0];
 
-          inputDescription.style.outlineColor=memoryInputColor[1];
-          inputDescription.style.borderColor=memoryInputColor[1];
+          
           getDescription.innerText=memoryInputValue[1]
         }
       })
@@ -81,8 +80,6 @@ if (newBarterForm!=undefined)
         else
         {
             alert("Введете данные");
-            // alert(hiddenFlagImgCategoryGive)
-            // alert(hiddenFlagImgCategoryGet)
         }
       });
       // валидация формы новый бартер, что были введениы значения
@@ -179,10 +176,10 @@ function createEventLoadImage()
     let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
     let filesImages = newStuffArr[i].querySelector('input[type=file]');
     filesImages.addEventListener('change', function() {
-        //console.log(1123);
+       
         if (filesImages.files[0].size <= 1024 * 1024)
         {
-          //filesImages.value='';
+       
           previewFile(previewImages, filesImages.files[0]);
           if (i==0)
           {
