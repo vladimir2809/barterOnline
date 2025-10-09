@@ -352,6 +352,7 @@ html {
 @media only screen and (max-width: 430px) {
   .result-item {
     grid-template-columns: 29rem;
+    grid-template-rows: 45% 10% 45%;
   }
 }
 .result-item__exchange-icon {
@@ -430,6 +431,10 @@ html {
   justify-self: center;
   font-size: 4rem;
   padding: 1.5rem 0;
+}
+
+.views-barter {
+  grid-column: content-start/content-end;
 }
 
 .newBarter {

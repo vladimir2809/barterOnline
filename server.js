@@ -582,6 +582,7 @@ function calcBarterArr(rowsDB)
     category_id: null,
   };
   let barterGiveGet={
+    barterId: null,
     userId:null,
     cityId:null,
     free: null,
@@ -593,6 +594,7 @@ function calcBarterArr(rowsDB)
   {
     let barterGiveGetOne=JSON.parse(JSON.stringify(barterGiveGet));
 
+    barterGiveGetOne.barterId=rowsDB[i].id;
     barterGiveGetOne.userId=rowsDB[i].user_id;
     barterGiveGetOne.cityId=rowsDB[i].city_id;
     barterGiveGetOne.free=rowsDB[i].free;
@@ -617,6 +619,9 @@ function calcBarterArr(rowsDB)
   }
   return barterGiveGetArr;
 }
+  app.get('/viewsBarter/', function(req, res){
+    res.render('viewsBarter');
+  })
   app.post('/listForCity/', function(req,res){
   let result=[];
   //console.log(req);

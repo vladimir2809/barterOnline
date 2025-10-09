@@ -82,6 +82,7 @@ if (resultItemNode!=undefined)
     {
      
       let cloneResultItem=resultItemNode.cloneNode(true);
+      cloneResultItem.barterId=data[i].barterId;
       cloneResultItem.classList.remove('result-item_display-none');
       let get=cloneResultItem.querySelector('.stuff-get');
       get.querySelector(".stuff-get img").src=data[i].get.imagePath;
@@ -110,4 +111,13 @@ if (resultItemNode!=undefined)
       }
       resultNode.append(cloneResultItem);
     }
+    Array.from(resultNode.children).forEach(element => {
+      element.addEventListener('click', function(event){
+        let id=element.barterId;
+        location.href='/viewsBarter/?barter_id='+id;
+        // SendRequest('get', "/viewsBarter/", "id="+id, function(request){
+
+        // });
+      })
+    });
   }
