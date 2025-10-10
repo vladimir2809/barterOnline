@@ -348,6 +348,7 @@ html {
   -ms-flex-line-pack: center;
       align-content: center;
   border: 1px solid green;
+  cursor: pointer;
 }
 @media only screen and (max-width: 430px) {
   .result-item {
@@ -459,7 +460,7 @@ html {
   font-size: 1.6rem;
 }
 .stuff-views > p {
-  width: 43rem;
+  width: 41rem;
   font-size: 1.4rem;
 }
 .stuff-views__action {
@@ -467,7 +468,7 @@ html {
 }
 .stuff-views__image {
   width: 100%;
-  max-width: 43rem;
+  max-width: 41rem;
 }
 .stuff-views__description {
   width: 100%;
@@ -504,6 +505,11 @@ html {
 .newBarter__city {
   font-size: 1.8rem;
   margin-left: 1rem;
+}
+@media only screen and (max-width: 430px) {
+  .newBarter__city {
+    font-size: 1.4rem;
+  }
 }
 .newBarter__change-city {
   display: -webkit-box;

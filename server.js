@@ -648,7 +648,15 @@ function calcBarterArr(rowsDB)
     let barter_id=req.query.barter_id
     console.log ("views Barter One: "+barter_id)
     // console.log (req)
-    pool.query(`SELECT * FROM barter WHERE id=${barter_id}`, function(err, resDB){
+    let query=`
+    SELECT *,
+      (SELECT name 
+      FROM barter 
+      JOIN city ON barter.city_id = city.id
+      WHERE barter.id=${barter_id}) AS city_name
+    FROM barter 
+    WHERE id=${barter_id}`
+    pool.query(query, function(err, resDB){
 
         if (!err)
         {
@@ -686,11 +694,11 @@ function calcBarterArr(rowsDB)
 
             barterData.get.free=resDB.rows[0].free;
 
-            
+            let city_name=resDB.rows[0].city_name;
             res.render('viewsBarter',{categoryList: categoryListStr,  
                                       dataUser: data, 
                                       nameUser: nameSurname,
-
+                                      city: city_name,
                                       noViewsCity: true,
                                       barterData: barterData});
           }

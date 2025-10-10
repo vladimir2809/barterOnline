@@ -3,6 +3,7 @@ var resultItemNode=null;
 var newStuffArr=null;
 var newBarterForm=null;
 var mainMenu=null;
+var citySelected=null;
 var flagsChangeStuffImg=[false, false];
 var clickCloseMainMenu=false;
 let countValidForm=0;
@@ -49,7 +50,7 @@ window.addEventListener('load',()=>{
     // hiddenFlagImgCategoryGive=document.getElementById("flag-img-category-give");
     // hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
     
-    var citySelected=document.getElementById("city-selected");
+    citySelected=document.getElementById("city-selected");
     cityListHTML=document.getElementById('city-block-list');
     cityBlock=document.getElementById('city-block');
     cityBarterHTML=document.getElementById('newBarter-city');
@@ -80,7 +81,7 @@ window.addEventListener('load',()=>{
 
     SendRequest('POST','/getCity/',"",function(request){
       cityCurrent=request.response;
-      document.getElementById('city-selected').innerText=cityCurrent;
+      citySelected.innerText=cityCurrent;
       
       // let cityBarterHTML=document.getElementById('newBarter-city');
       if (cityBarterHTML!=undefined)
@@ -332,12 +333,14 @@ window.addEventListener('load',()=>{
           });
     } 
     
-    
-    citySelected.addEventListener('click',function(event){
-      // cityBlock=document.getElementById('city-block');
-      cityBlock.style.display='flex';
-      //alert('city');
-    })
+    if (citySelected!=undefined)
+    {
+      citySelected.addEventListener('click',function(event){
+        // cityBlock=document.getElementById('city-block');
+        cityBlock.style.display='flex';
+        //alert('city');
+      })
+    }
     document.getElementById('city_block_close').addEventListener("click",(event)=>{
       cityBlock.style.display='none';
       resetCityBlock()
@@ -399,7 +402,7 @@ function createEventCityList()
     element.addEventListener('click',function(){
      // alert('city');
       let city=element.innerText;
-      document.getElementById('city-selected').innerText=city;
+      citySelected.innerText=city;
       cityCurrent=city;
       if (cityBarterHTML!=undefined)
       {

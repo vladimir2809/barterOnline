@@ -17,8 +17,10 @@
     &__city-cont
         display: flex
     &__city
-        font-size: 1.8rem
+        font-size: 1.8rem//1.8
         margin-left: 1rem
+        @include respond(phone)
+            font-size: 1.4rem
         // text-align: center
     &__change-city
         display: flex
