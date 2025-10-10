@@ -71,6 +71,22 @@ function getIdCategoryFromDB(num)
     }
   }
 }
+
+function getNameCategoryToId(id)
+{
+  for (let i=0; i<categoryListId.length; i++)
+  {
+
+    if (categoryListId[i]==id)
+    {
+      return categoryList[i];
+    }
+  }
+}
+// setTimeout(() => {
+//   console.log ("category id=43, name="+getNameCategoryToId(43))
+  
+// }, 1000);
 pool.query('SELECT * FROM city ORDER BY name',function(err, resDB){
   if (!err)
   {
@@ -130,7 +146,7 @@ app.get("/",function(req,res){
     res.cookie('city', cityStart, {maxAge: 1000 * 60 * 60 *24 * 30})
     dataCity=true;
   }
-  res.render('index',{categoryList: categoryListStr, dataUser: data, 
+  res.render('index',{categoryList: categoryListStr, dataUser: data, noViewsCity: false, 
                   dataCity: dataCity, cityStart:cityStart});
   //console.log(req.cookies);
 })
@@ -619,7 +635,7 @@ function calcBarterArr(rowsDB)
   }
   return barterGiveGetArr;
 }
-  app.get('/viewsBarter/', function(req, res){
+  app.get('/viewsBarter', function(req, res){
     initDataUser(req.cookies)
     let data=null;
     let nameSurname=null;
@@ -629,10 +645,67 @@ function calcBarterArr(rowsDB)
       nameSurname=dataUser[0];
     }
     console.log (data)
-    res.render('viewsBarter',{categoryList: categoryListStr,  
-                              dataUser: data, 
-                              nameUser: nameSurname});
-  })
+    let barter_id=req.query.barter_id
+    console.log ("views Barter One: "+barter_id)
+    // console.log (req)
+    pool.query(`SELECT * FROM barter WHERE id=${barter_id}`, function(err, resDB){
+
+        if (!err)
+        {
+
+          if (resDB.rows.length>0)
+          {
+          
+            let barterData={
+              give:{
+                name: null,
+                category: null,
+                imagePath: null,
+                description: null,
+
+              },
+              get:{
+                name: null,
+                category: null,
+                imagePath: null,
+                description: null,
+                free: false,
+
+              }
+            };
+            console.log(resDB.rows[0]);
+            barterData.give.name=resDB.rows[0].give_name;
+            barterData.give.category=getNameCategoryToId(resDB.rows[0].give_category_id);
+            barterData.give.imagePath=resDB.rows[0].give_link_image;
+            barterData.give.description=resDB.rows[0].give_description;
+
+            barterData.get.name=resDB.rows[0].get_name;
+            barterData.get.category=getNameCategoryToId(resDB.rows[0].get_category_id);
+            barterData.get.imagePath=resDB.rows[0].get_link_image;
+            barterData.get.description=resDB.rows[0].get_description;
+
+            barterData.get.free=resDB.rows[0].free;
+
+            
+            res.render('viewsBarter',{categoryList: categoryListStr,  
+                                      dataUser: data, 
+                                      nameUser: nameSurname,
+
+                                      noViewsCity: true,
+                                      barterData: barterData});
+          }
+          else
+          {
+            res.send('Бартер не найден.')
+          }  
+        
+        }
+        else
+        {
+          res.send('Страница не найдена.')
+        }
+      });
+    })
   app.post('/listForCity/', function(req,res){
   let result=[];
   //console.log(req);

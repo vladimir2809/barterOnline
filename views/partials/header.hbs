@@ -33,9 +33,12 @@
             }
         </style>
     {{/if}} 
+
+    
     <div class="city-block" id="city-block">
+      
         <div class="city-block__close" id="city_block_close">
-            <img src="img/close_icon.png" alt="" class="city-block__img-close">
+            <img src="/img/close_icon.png" alt="" class="city-block__img-close">
         </div>
         <div class="city-block__cont-text">
             <label for="city-text">Введете ваш город</label>
@@ -49,6 +52,7 @@
             </ul>
         </div>
     </div>   
+    
     <div class="header">
         <div class="header__logoAndCity" >
             <div class="logo" id="logo">
@@ -56,8 +60,10 @@
                 <span class="logo__title-span">ONLINE</span>
                 </h1>
             </div>
-            <h4 class="header__city" id="city-selected">&nbsp;</h4>
-            
+            {{#if noViewsCity}}
+            {{else}}
+                <h4 class="header__city" id="city-selected">&nbsp;</h4>
+             {{/if}}
         </div>
         {{!-- <h4 class="header__city" id="city-selected">Москва</h4> --}}
         <div class="avatar" id="avatar">

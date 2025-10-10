@@ -1,32 +1,47 @@
 <div class="views-barter">
     <div class="barter">
         <h1 class="barter__header">Просмотр бартера</h1>
-        <h2 class="barter__author">Бартер от {{nameUser}}</h2>
+        <h2 class="barter__author">Автор бартера:
+            <a title='Написать' href="" class="barter__author-link">
+                {{nameUser}}
+            </a>
+
+        </h2>
+        {{!-- <h2 class="barter__author">Город:
+            <a title='Написать' href="" class="barter__author-link">
+                {{nameUser}}
+            </a>
+
+        </h2> --}}
         <div class="stuff-views">
             <h2 class="stuff-views__action">Отдаю</h2>
             <h3 class="stuff-views__name-title">название</h3>
-            <p class="stuff-views__name">Машина x-ray</p>
+            <p class="stuff-views__name">{{barterData.give.name}}</p>
             <h3 class="stuff-views__category"> Категория:
-                <span class="stuff-views__category-text">без категории</span>
+                <span class="stuff-views__category-text">{{barterData.give.category}}</span>
             </h3>
-            <img src="/img/category0.png" alt="barter-img" class="stuff-views__image">
+            <img src="{{barterData.give.imagePath}}" alt="barter-img" class="stuff-views__image">
             <h3 class="stuff-views__descrioption-title">Описание</h3>
             <div class="stuff-views__description">
-
+                {{barterData.give.description}}
             </div>
         </div>
         <div class="stuff-views">
-            <h2 class="stuff-views__action">Хочу получить</h2>
-            <h3 class="stuff-views__name-title">название</h3>
-            <p class="stuff-views__name">трактор обычный</p>
-            <h3 class="stuff-views__category">Категория: 
-                <span class="stuff-views__category-text">без категории</span>
-            </h3>
-            <img src="/img/category0.png" alt="barter-img" class="stuff-views__image">
-            <h3 class="stuff-views__descrioption-title">Описание</h3>
-            <div class="stuff-views__description">
-                
-            </div>
+            {{#if barterData.get.free}}
+                <img src="{{barterData.get.imagePath}}" alt="barter-img" class="stuff-views__image">
+            {{else}}
+                <h2 class="stuff-views__action">Хочу получить</h2>
+                <h3 class="stuff-views__name-title">название</h3>
+                <p class="stuff-views__name">{{barterData.get.name}}</p>
+                <h3 class="stuff-views__category">Категория: 
+                    <span class="stuff-views__category-text">{{barterData.get.category}}</span>
+                </h3>
+                <img src="{{barterData.get.imagePath}}" alt="barter-img" class="stuff-views__image">
+                <h3 class="stuff-views__descrioption-title">Описание</h3>
+                <div class="stuff-views__description">
+                    {{barterData.get.description}}
+                </div>
+            {{/if}}
         </div>
     </div>
 </div>

@@ -114,7 +114,7 @@ if (resultItemNode!=undefined)
     Array.from(resultNode.children).forEach(element => {
       element.addEventListener('click', function(event){
         let id=element.barterId;
-        location.href='/viewsBarter/?barter_id='+id;
+        location.href='/viewsBarter?barter_id='+id;
         // SendRequest('get', "/viewsBarter/", "id="+id, function(request){
 
         // });
