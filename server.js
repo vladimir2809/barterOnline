@@ -146,8 +146,9 @@ app.get("/",function(req,res){
     res.cookie('city', cityStart, {maxAge: 1000 * 60 * 60 *24 * 30})
     dataCity=true;
   }
+  let cityName=req.cookies.city==undefined ? cityStart : req.cookies.city;
   res.render('index',{categoryList: categoryListStr, dataUser: data, noViewsCity: false, 
-                  dataCity: dataCity, cityStart:cityStart});
+                  dataCity: dataCity, cityStart:cityStart, cityName: cityName });
   //console.log(req.cookies);
 })
 app.get("/newBarter/",function(req,res){
@@ -474,7 +475,12 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
 })
 var countSearchQuery=0;
 app.get('/getBarterArr/', function(req, res){
-    let query=` SELECT * FROM barter;`
+    // let query=`SELECT * FROM barter;`
+    let cityCurrent = req.cookies.city;
+    let query=`SELECT *, city.id AS numcityId FROM barter 
+                JOIN city ON barter.city_id = city.id
+                WHERE city.name = '${cityCurrent}';`
+
 
     pool.query(query, function(err, resDB){
       if (!err)
@@ -491,6 +497,7 @@ app.get('/getBarterArr/', function(req, res){
     });
 });
 app.post('/querySearch/', function(req, res){
+    let cityCurrent = req.cookies.city;
     let data=JSON.parse(req.body.data)
     data.nameGive=data.nameGive.toLowerCase();
     data.nameGet=data.nameGet.toLowerCase();
@@ -498,7 +505,8 @@ app.post('/querySearch/', function(req, res){
                  data.categoryGive,data.categoryGet ,data.freeGet )
     countSearchQuery++;
     console.log('count search query: '+countSearchQuery);
-    let query=`SELECT * FROM barter`;
+    let query=`SELECT *, city.id AS numcityId FROM barter
+               JOIN city ON barter.city_id = city.id`;
     let where='';
     let where2='';
     if (data.nameGive=='' && data.nameGet=='' &&
@@ -561,16 +569,17 @@ app.post('/querySearch/', function(req, res){
     if ( (data.nameGive!='' || data.categoryGive!=0) &&
           ((data.categoryGet!=0 || data.nameGet!='') || data.freeGet==true))
     {
-      query=query+' WHERE '+where+' AND '+where2+';';
+      query=query+' WHERE '+where+' AND '+where2;//+';';
     }
     else if (where!='')
     {
-      query=query+' WHERE '+where+';';
+      query=query+' WHERE '+where;//+';';
     }
     else if (where2!='')
     {
-      query=query+' WHERE '+where2+';';
+      query=query+' WHERE '+where2;//+';';
     }
+    query = query+` AND city.name = '${cityCurrent}';`
 
 
 
@@ -744,7 +753,7 @@ app.post('/changeCity/',function(req,res){
   console.log(req.body);
   console.log(city);
   res.cookie('city',''+city,{
-    maxAge: 1000 * 60 * 60 * 24 *30,
+    maxAge: 1000 * 60 * 60 * 24 * 30,
   });
   res.send(city);
 })

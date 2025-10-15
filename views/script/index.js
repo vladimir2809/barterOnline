@@ -2,6 +2,7 @@ var resultNode=document.getElementsByClassName('result')[0];
 var resultItemNode=document.querySelector('.result-item');
 let timePressBtnSearch=0;
 let checkboxFree=document.getElementById("checkbox-free");
+let title=document.querySelector('.title-label');
 if (resultItemNode!=undefined)
     {
       
@@ -24,45 +25,62 @@ if (resultItemNode!=undefined)
         {      
           let response=JSON.parse(request.response);
           console.log(response)
+          if (response.length==0)
+          {
+            title.innerText='В этом городе бартеров нет!'
+
+          }
           viewsBarterArr(response);
         }
-        document.querySelector('.question-city__close').addEventListener('click',function(){
-          document.querySelector('.question-city').style.display='none';
-        });
-        document.querySelector('.question-city__ok').addEventListener('click',function(){
-          document.querySelector('.question-city').style.display='none';
-        });
-        document.querySelector('.question-city__select').addEventListener('click',function(){
-          document.querySelector('.question-city').style.display='none';
-          document.querySelector('.city-block').style.display='block';
-        });
-        let searchButton=document.querySelector('.search__button');
-        
-        searchButton.addEventListener("click", function(){
-            if (searchButton.classList.contains('search__button_disabled')==false)
-            {
-              timePressBtnSearch=new Date();
-              this.classList.add('search__button_disabled');
-              let nameGive=document.getElementById('query-search-give').value;
-              //query-search-get
-              let nameGet=document.getElementById('query-search-get').value;
-              let categoryGive=document.getElementById('category-give').value;
-              let categoryGet=document.getElementById('category-get').value;
-              let checkboxFree=document.getElementById('checkbox-free').checked;
+      });
 
-              let dataSearch=JSON.stringify({nameGive:nameGive,
-                                            nameGet:nameGet,
-                                            categoryGive:categoryGive,
-                                            categoryGet:categoryGet,
-                                            freeGet: checkboxFree })
-              SendRequest('post',"/querySearch/",`data=${dataSearch}`,function(request){
-                let response=JSON.parse(request.response);
-                console.log(response);
-                viewsBarterArr(response, JSON.parse(dataSearch))
-              });
-            }
-          });
-    });
+      document.querySelector('.question-city__close').addEventListener('click',function(){
+        document.querySelector('.question-city').style.display='none';
+      });
+      document.querySelector('.question-city__ok').addEventListener('click',function(){
+        document.querySelector('.question-city').style.display='none';
+      });
+      document.querySelector('.question-city__select').addEventListener('click',function(){
+        document.querySelector('.question-city').style.display='none';
+        document.querySelector('.city-block').style.display='block';
+      });
+
+      let searchButton=document.querySelector('.search__button');
+      
+      searchButton.addEventListener("click", function(){
+          if (searchButton.classList.contains('search__button_disabled')==false)
+          {
+            timePressBtnSearch=new Date();
+            this.classList.add('search__button_disabled');
+            let nameGive=document.getElementById('query-search-give').value;
+            //query-search-get
+            let nameGet=document.getElementById('query-search-get').value;
+            let categoryGive=document.getElementById('category-give').value;
+            let categoryGet=document.getElementById('category-get').value;
+            let checkboxFree=document.getElementById('checkbox-free').checked;
+
+            let dataSearch=JSON.stringify({nameGive:nameGive,
+                                          nameGet:nameGet,
+                                          categoryGive:categoryGive,
+                                          categoryGet:categoryGet,
+                                          freeGet: checkboxFree })
+            SendRequest('post',"/querySearch/",`data=${dataSearch}`,function(request){
+              let response=JSON.parse(request.response);
+              console.log(response);
+              if (response.length==0)
+              {
+                title.innerText='По результату поиска бартеров нет!'
+    
+              }
+              else
+              {
+                title.innerText='Результат поиска:'
+              }
+              viewsBarterArr(response, JSON.parse(dataSearch))
+            });
+          }
+        });
+    
   }
   setInterval(function(){
     let time=new Date();

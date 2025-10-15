@@ -181,7 +181,9 @@ window.addEventListener('load',()=>{
     document.getElementById("myBarter_mainMenu").addEventListener('click', ()=>{
       location.href='/getBarterArr/';
     })
-
+    document.getElementById("newBarter_mainMenu").addEventListener('click', ()=>{
+      location.href='/newBarter/';
+    })
 
 
     
@@ -412,7 +414,8 @@ function createEventCityList()
       resetCityBlock()
       cityBlock.style.display='none';
       SendRequest('POST','/changeCity/',"city=" + city,function(request){
-
+        // alert(window.location.pathname);
+        if (window.location.pathname=='/')  location.reload(); 
       });
     }); 
   });
