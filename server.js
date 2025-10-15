@@ -642,20 +642,19 @@ function calcBarterArr(rowsDB)
     if (dataUser[0]!=undefined)
     {
       data=dataUser[0][0];
-      nameSurname=dataUser[0];
+      // nameSurname=dataUser[0];
     }
     console.log (data)
     let barter_id=req.query.barter_id
     console.log ("views Barter One: "+barter_id)
     // console.log (req)
     let query=`
-    SELECT *,
-      (SELECT name 
+
+      SELECT *, city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
       FROM barter 
-      JOIN city ON barter.city_id = city.id
-      WHERE barter.id=${barter_id}) AS city_name
-    FROM barter 
-    WHERE id=${barter_id}`
+      JOIN city  ON barter.city_id = city.id 
+      JOIN tableuser ON barter.user_id = tableuser.id
+      WHERE barter.id=${barter_id}; `
     pool.query(query, function(err, resDB){
 
         if (!err)
@@ -694,6 +693,7 @@ function calcBarterArr(rowsDB)
 
             barterData.get.free=resDB.rows[0].free;
 
+            nameSurname=resDB.rows[0].name_user+" "+resDB.rows[0].surname_user;
             let city_name=resDB.rows[0].city_name;
             res.render('viewsBarter',{categoryList: categoryListStr,  
                                       dataUser: data, 
