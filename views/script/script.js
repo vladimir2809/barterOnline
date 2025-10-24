@@ -179,7 +179,9 @@ window.addEventListener('load',()=>{
 
 
     document.getElementById("myBarter_mainMenu").addEventListener('click', ()=>{
-      location.href='/getBarterArr/';
+      // location.href='/getBarterArr/';
+      location.href='/myBarter';
+
     })
     document.getElementById("newBarter_mainMenu").addEventListener('click', ()=>{
       location.href='/newBarter/';

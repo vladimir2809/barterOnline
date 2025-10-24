@@ -474,13 +474,22 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   res.redirect("/")
 })
 var countSearchQuery=0;
+app.get('/myBarter', function(req, res){
+  let data=null///*req.cookies[0]*/dataUser[0][0];
+  if (dataUser[0]!=undefined)
+  {
+    data=dataUser[0][0];
+  }
+  res.render('myBarter',{dataUser: data, noViewsCity: true})
+});
 app.get('/getBarterArr/', function(req, res){
     // let query=`SELECT * FROM barter;`
     let cityCurrent = req.cookies.city;
-    let query=`SELECT *, city.id AS numcityId FROM barter 
+    let query=`SELECT barter.*
+                FROM barter 
                 JOIN city ON barter.city_id = city.id
                 WHERE city.name = '${cityCurrent}';`
-
+                // , city.id AS numcityId, barter.id AS numbarterid
 
     pool.query(query, function(err, resDB){
       if (!err)
@@ -496,6 +505,29 @@ app.get('/getBarterArr/', function(req, res){
       }
     });
 });
+app.get('/getMyBarterArr/', function(req, res){
+  // let query=`SELECT * FROM barter;`
+  let cityCurrent = req.cookies.city;
+  let query=`SELECT barter.*
+              FROM barter 
+              JOIN tableuser ON barter.user_id = tableuser.id
+              WHERE barter.user_id = ${req.cookies.userID};`
+              // , city.id AS numcityId, barter.id AS numbarterid
+  console.log(query);
+  pool.query(query, function(err, resDB){
+    if (!err)
+    {
+      console.log(resDB.rows);
+
+      res.send(calcBarterArr(resDB.rows));
+    }
+    else
+    {
+      res.send('при чтении данных произошла ошибка')
+      console.log(err);
+    }
+  });
+});
 app.post('/querySearch/', function(req, res){
     let cityCurrent = req.cookies.city;
     let data=JSON.parse(req.body.data)
@@ -505,8 +537,10 @@ app.post('/querySearch/', function(req, res){
                  data.categoryGive,data.categoryGet ,data.freeGet )
     countSearchQuery++;
     console.log('count search query: '+countSearchQuery);
-    let query=`SELECT *, city.id AS numcityId FROM barter
+    let query=`SELECT barter.* 
+               FROM barter
                JOIN city ON barter.city_id = city.id`;
+              //  city.id AS numcityId, barter.id AS numbarterId
     let where='';
     let where2='';
     if (data.nameGive=='' && data.nameGet=='' &&
@@ -619,7 +653,7 @@ function calcBarterArr(rowsDB)
   {
     let barterGiveGetOne=JSON.parse(JSON.stringify(barterGiveGet));
 
-    barterGiveGetOne.barterId=rowsDB[i].id;
+    barterGiveGetOne.barterId=rowsDB[i].id//numbarterid;
     barterGiveGetOne.userId=rowsDB[i].user_id;
     barterGiveGetOne.cityId=rowsDB[i].city_id;
     barterGiveGetOne.free=rowsDB[i].free;
@@ -659,11 +693,12 @@ function calcBarterArr(rowsDB)
     // console.log (req)
     let query=`
 
-      SELECT *, city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
+      SELECT barter.*, city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
       FROM barter 
       JOIN city  ON barter.city_id = city.id 
       JOIN tableuser ON barter.user_id = tableuser.id
       WHERE barter.id=${barter_id}; `
+      // , city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
     pool.query(query, function(err, resDB){
 
         if (!err)
