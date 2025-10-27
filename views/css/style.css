@@ -468,6 +468,22 @@ html {
           justify-content: center;
   padding: 2rem;
 }
+.views-barter__cont-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.views-barter__button-change {
+  width: 10rem;
+  margin-bottom: 1rem;
+}
+.views-barter__button-delete {
+  width: 10rem;
+  margin-bottom: 1rem;
+}
 
 .barter > * {
   margin-bottom: 3rem;

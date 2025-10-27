@@ -1,4 +1,8 @@
 <div class="views-barter">
+    <div class="views-barter__cont-button">
+        <button class="views-barter__button-change">Изменить</button>
+        <button class="views-barter__button-delete">Удалить</button>
+    </div>
     <div class="barter">
         <h1 class="barter__header">Просмотр бартера</h1>
         <h2 class="barter__author">Автор бартера:
@@ -7,10 +11,8 @@
             </a>
 
         </h2>
-        <h2 class="barter__city">Город: {{city}}
-           
-
-        </h2>
+        <h2 class="barter__city">Город: {{city}} </h2>
+        
         <div class="stuff-views">
             <h2 class="stuff-views__action">Отдаю</h2>
             <h3 class="stuff-views__name-title">название</h3>
@@ -43,3 +45,10 @@
         </div>
     </div>
 </div>
+<script>
+    document.querySelector('.views-barter__button-change').addEventListener('click', function(){
+        const params = new URLSearchParams(window.location.search);
+        //alert(params.get('barter_id'));
+        window.location.href='/changebarter?barter_id='+params.get('barter_id');
+    });
+</script>

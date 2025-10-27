@@ -480,7 +480,7 @@ app.get('/myBarter', function(req, res){
   {
     data=dataUser[0][0];
   }
-  res.render('myBarter',{dataUser: data, noViewsCity: true})
+  res.render('myBarter',{dataUser: data, noViewsCity: true })
 });
 app.get('/getBarterArr/', function(req, res){
     // let query=`SELECT * FROM barter;`
@@ -527,6 +527,33 @@ app.get('/getMyBarterArr/', function(req, res){
       console.log(err);
     }
   });
+});
+app.get('/changebarter',function(req, res){
+  let barter_id=req.query.barter_id;
+  let query=`
+      SELECT * 
+      FROM barter
+      WHERE user_id=${req.cookies.userID} AND id=${barter_id}`;
+  console.log(query);
+  pool.query(query, function(err, resDB){
+    if (!err)
+    {
+      if (resDB.rows.length==1)
+      {
+        //res.send('query GOOD');
+        res.render('newBarter', {categoryList: categoryListStr});
+      }
+      else
+      {
+        res.send('defectQuery 1');
+      }
+    }
+    else
+    {
+      res.send('defectQuery 2');
+    }
+  });
+  // res.render('newBarter', {categoryList: categoryListStr});
 });
 app.post('/querySearch/', function(req, res){
     let cityCurrent = req.cookies.city;
