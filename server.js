@@ -530,18 +530,26 @@ app.get('/getMyBarterArr/', function(req, res){
 });
 app.get('/changebarter',function(req, res){
   let barter_id=req.query.barter_id;
+
+  let data=null///*req.cookies[0]*/dataUser[0][0];
+  if (dataUser[0]!=undefined)
+  {
+    data=dataUser[0][0];
+  }
+
   let query=`
       SELECT * 
       FROM barter
       WHERE user_id=${req.cookies.userID} AND id=${barter_id}`;
   console.log(query);
+  
   pool.query(query, function(err, resDB){
     if (!err)
     {
       if (resDB.rows.length==1)
       {
         //res.send('query GOOD');
-        res.render('newBarter', {categoryList: categoryListStr});
+        res.render('newBarter', {categoryList: categoryListStr, dataUser: data, changeBarter: true});
       }
       else
       {
@@ -558,10 +566,10 @@ app.get('/changebarter',function(req, res){
 app.post('/querySearch/', function(req, res){
     let cityCurrent = req.cookies.city;
     let data=JSON.parse(req.body.data)
-    data.nameGive=data.nameGive.toLowerCase();
-    data.nameGet=data.nameGet.toLowerCase();
+    data.nameGive=data.nameGive!=undefined ? data.nameGive.toLowerCase() : "";
+    data.nameGet=data.nameGet!=undefined ? data.nameGet.toLowerCase() : '';
     console.log (data.nameGive, data.nameGet, 
-                 data.categoryGive,data.categoryGet ,data.freeGet )
+                 data.categoryGive,data.categoryGet ,data.freeGet, data.barter_id )
     countSearchQuery++;
     console.log('count search query: '+countSearchQuery);
     let query=`SELECT barter.* 
@@ -625,9 +633,14 @@ app.post('/querySearch/', function(req, res){
     {
       where2 =`free = true`;
     }
+    let noCityName=false;
 
-
-    if ( (data.nameGive!='' || data.categoryGive!=0) &&
+    if (data.barter_id!=undefined)
+    {
+      query = query + ' WHERE' + " barter.id="+data.barter_id;
+      noCityName=true;
+    }
+    else if ( (data.nameGive!='' || data.categoryGive!=0) &&
           ((data.categoryGet!=0 || data.nameGet!='') || data.freeGet==true))
     {
       query=query+' WHERE '+where+' AND '+where2;//+';';
@@ -640,7 +653,7 @@ app.post('/querySearch/', function(req, res){
     {
       query=query+' WHERE '+where2;//+';';
     }
-    query = query+` AND city.name = '${cityCurrent}';`
+    if (noCityName==false) query = query+` AND city.name = '${cityCurrent}';`
 
 
 

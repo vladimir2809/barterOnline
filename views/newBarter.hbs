@@ -72,7 +72,7 @@
                     name="get_loadImg"
                     accept="image/png, image/jpeg" />
                 <br>
-                <img src="img/default.jpg" alt="" class="new-stuff__img-preload">
+                <img src="img/default.jpg" id="img-get-preload" alt="" class="new-stuff__img-preload">
                 <br>
                 <label for="enter-get-description" class="new-stuff__label-descriptin">Введите описание</label>
                 <br>
@@ -87,8 +87,32 @@
             </div>
         
         </div>
-        <input type="submit" class="newBarter__submit">
+        {{#if changeBarter}}
+            <button class="changeBarter__button">Измениить бартер</button>
+        {{else}}
+            <input type="submit" class="newBarter__submit">
+        {{/if}}
     </form>
     {{{result}}}
 </div>
 <script src="/script/newBarter.js" type="text/javascript"></script>
+{{#if changeBarter}}
+    <script>
+
+        let dataSearch=JSON.stringify({barter_id: 12 })
+        SendRequest('post',"/querySearch/",`data=${dataSearch}`,function(request){
+            let response=JSON.parse(request.response);
+            console.log(response)
+            document.getElementById('newStuff__giveName').value=response[0].give.name;
+            //document.getElementById('category-load-give');
+            document.getElementById('img-give-preload').src=response[0].give.imagePath;
+            document.getElementById('newBarter-give-description').innerHTML=response[0].give.description;
+
+
+            document.getElementById('newStuff__getName').value=response[0].get.name;
+            //document.getElementById('category-load-get');
+            document.getElementById('img-get-preload').src=response[0].get.imagePath;
+            document.getElementById('newBarter-get-description').innerHTML=response[0].get.description;;
+        });
+    </script>
+{{/if}}
