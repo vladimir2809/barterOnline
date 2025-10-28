@@ -147,11 +147,13 @@ if (newBarterForm!=undefined)
           if (i==0)
           {
             hiddenFlagImgCategoryGive.value = 1;
+            document.getElementById('give_loadImg').value='';
 
           }
           if (i==1)
           {
             hiddenFlagImgCategoryGet.value = 1;
+            document.getElementById('get_loadImg').value='';
 
           }
           imgPreloadStuff.src="img/category"+categoryStuff.value+".png";

@@ -98,21 +98,67 @@
 <script src="/script/newBarter.js" type="text/javascript"></script>
 {{#if changeBarter}}
     <script>
-
+        var listCategoryId=[];
+        getCatagoryListIdFromServer().then(function(res){
+            listCategoryId=JSON.parse(res);
+        })
         let dataSearch=JSON.stringify({barter_id: 12 })
         SendRequest('post',"/querySearch/",`data=${dataSearch}`,function(request){
             let response=JSON.parse(request.response);
             console.log(response)
             document.getElementById('newStuff__giveName').value=response[0].give.name;
-            //document.getElementById('category-load-give');
+            //console.log(listCategoryId, typeof(listCategoryId))
+
+            let categoryGiveSelect=document.getElementById('category-load-give');
+            setupOptionSelected(categoryGiveSelect, listCategoryId, response[0].give.category_id)
+            //console.log(categoryGiveSelect);
             document.getElementById('img-give-preload').src=response[0].give.imagePath;
             document.getElementById('newBarter-give-description').innerHTML=response[0].give.description;
 
 
+
+
             document.getElementById('newStuff__getName').value=response[0].get.name;
+
+            let categoryGetSelect=document.getElementById('category-load-get');
+            setupOptionSelected(categoryGetSelect, listCategoryId, response[0].get.category_id)
+
             //document.getElementById('category-load-get');
             document.getElementById('img-get-preload').src=response[0].get.imagePath;
             document.getElementById('newBarter-get-description').innerHTML=response[0].get.description;;
         });
+        function getCatagoryListIdFromServer() {
+            return new Promise(function(resolve) {
+                SendRequest('post', '/getListCategoryId',data='',function(request){
+                    if(request.response!=undefined)
+                    {
+                        resolve(request.response);
+                    }
+                    else
+                    {
+                        reject(null);
+                    }
+
+                })
+               // setTimeout(function() {
+               //    let num2=Math.random() * 10;
+               //     resolve(num * num2);
+               // }, 3000);
+            });
+        }
+        function setupOptionSelected(select, listId, category_id)
+        {
+            for (let i=0; i<select.options.length; i++)
+            {
+                select.options[i].selected=false;
+            }
+            for (let i=0; i<select.options.length; i++)
+            {
+                if (Number(listId[i])==category_id)
+                {
+                    select.options[i].selected=true;
+                }
+            }
+        }
     </script>
 {{/if}}

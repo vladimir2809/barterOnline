@@ -474,6 +474,9 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   res.redirect("/")
 })
 var countSearchQuery=0;
+app.post('/getListCategoryId', function(req, res){
+  res.send(categoryListId);
+})
 app.get('/myBarter', function(req, res){
   let data=null///*req.cookies[0]*/dataUser[0][0];
   if (dataUser[0]!=undefined)
