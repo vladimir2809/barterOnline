@@ -24,6 +24,7 @@
                 <label for="new-stuff__give-loadImg">Загрузите изображение</label>
                 <br>
                 <input type="hidden" name="flag_img_category_give" id="flag-img-category-give" value="null">
+                <input type="hidden" name="flag_change_img_give" id="flag-change-img-give" value="false">
                 <input type="file" id="give_loadImg" 
                     class="new-stuff__load-img"
                     name="give_loadImg"
@@ -67,6 +68,7 @@
                 <label for="new-stuff__get-loadImg">Загрузите изображение</label>
                 <br>
                 <input type="hidden" name="flag_img_category_get" id="flag-img-category-get" value="null">
+                <input type="hidden" name="flag_change_img_get" id="flag-change-img-get" value="false">
                 <input type="file" id="get_loadImg" 
                     class="new-stuff__load-img"
                     name="get_loadImg"
@@ -88,7 +90,7 @@
         
         </div>
         {{#if changeBarter}}
-            <button class="changeBarter__button">Измениить бартер</button>
+            <button class="changeBarter__button" id="changeBarterButton">Измениить бартер</button>
         {{else}}
             <input type="submit" class="newBarter__submit">
         {{/if}}
@@ -102,7 +104,25 @@
         getCatagoryListIdFromServer().then(function(res){
             listCategoryId=JSON.parse(res);
         })
-        let dataSearch=JSON.stringify({barter_id: 12 })
+        const params = new URLSearchParams(window.location.search);
+        const barter_value_id = params.get('barter_id'); 
+
+        // 2. Создаем новый скрытый элемент
+        const hiddenInputBarterId = document.createElement('input');
+
+        // 3. Устанавливаем тип hidden
+        hiddenInputBarterId.type = 'hidden';
+
+        // 4. Задаем имя и значение (например, для ID товара)
+        hiddenInputBarterId.name = 'barter_id';
+        hiddenInputBarterId.value = barter_value_id;
+
+        // 5. Добавляем элемент к форме
+        newBarterForm.appendChild(hiddenInputBarterId);
+
+
+        let dataSearch=JSON.stringify({barter_id: barter_value_id })
+
         SendRequest('post',"/querySearch/",`data=${dataSearch}`,function(request){
             let response=JSON.parse(request.response);
             console.log(response)
@@ -116,8 +136,13 @@
             document.getElementById('newBarter-give-description').innerHTML=response[0].give.description;
 
 
+                                   //new-stuff__get-checkbox
+            if (response[0].free==true)
+            {
+                document.getElementById("new-stuff__get-checkbox").checked=true;
+                updateElemsCheckboxFree(true);
 
-
+            }
             document.getElementById('newStuff__getName').value=response[0].get.name;
 
             let categoryGetSelect=document.getElementById('category-load-get');

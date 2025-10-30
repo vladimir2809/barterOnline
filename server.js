@@ -301,15 +301,17 @@ app.post('/userIn/', function(req, res){
     });
 
 });
-app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
+function getDataForRecordDb(req/*, files*/)
+{
+  //let req={body: body, files: files};
   let stuff={
     name: '',
     category: null,
     imagePath: '000',
     description: '',
   }
-  giveStuff=JSON.parse(JSON.stringify(stuff));
-  getStuff=JSON.parse(JSON.stringify(stuff));
+  let giveStuff=JSON.parse(JSON.stringify(stuff));
+  let getStuff=JSON.parse(JSON.stringify(stuff));
   let dataForDB={
     userId: null,
     cityName: null,
@@ -423,6 +425,136 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   
   dataForDB.userId=req.cookies.userID;
   dataForDB.cityName=req.cookies.city;
+  return {dataForDB: dataForDB, getStuff: getStuff, giveStuff: giveStuff};
+}
+app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
+  // let stuff={
+  //   name: '',
+  //   category: null,
+  //   imagePath: '000',
+  //   description: '',
+  // }
+  // giveStuff=JSON.parse(JSON.stringify(stuff));
+  // getStuff=JSON.parse(JSON.stringify(stuff));
+  // let dataForDB={
+  //   userId: null,
+  //   cityName: null,
+  //   // give: stuff,
+  //   // get: stuff,
+  // }
+
+  
+  // // Пример использования:
+  // // console.log(randomName); // Вывод случайного имени, например: "bQ7Z9fWkXp"
+  // function calcRouteImg(name,numCategory,flag)
+  // {
+  //   const randomName = generateRandomName(10);
+  //   let type=name.split('.')[1];
+  //   let imgCategory="category"+numCategory+".png";
+  //   if (flag==null) // если картинки нет
+  //   {
+  //     return 'img/default.jpg';
+  //   }
+  //   else if (flag==0)// если картинка есть
+  //   {
+  //     return 'imgUser/'+randomName+'.'+type;
+  //   }
+  //   else if (flag==1) // если картинка должна быть категорией
+  //   {
+  //     return 'img/'+imgCategory;
+  //   }
+  // }
+  // function calcPath(flagCategory, numCategory)
+  // {
+
+  //   if (flagCategory=='null')
+  //   {
+      
+  //     // console.log('not image GIVE + null');
+  //     console.log('image path privat null ');
+  //     return calcRouteImg('',0,null);
+  //   }
+  //   else if (flagCategory==1)
+  //   {
+  //     console.log('image path privat 1 ');
+  //     return calcRouteImg('',numCategory,1);
+  //   }
+  // }
+  // console.log(req.body);
+  // console.log(req.files);
+  // console.log(req.body.flag_img_category_give+' flag Give');
+  // console.log(req.body.flag_img_category_get+' flag Get');
+  // if (req.files!=null)
+  // {
+
+  //   if (req.files.give_loadImg!=undefined )
+  //   {
+  //     giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,'',0);
+  //     req.files.give_loadImg.mv('views/'+giveStuff.imagePath);
+  //     console.log('image path privat 0 ');      
+  //   }
+  //   else
+  //   {
+  //     giveStuff.imagePath=calcPath(req.body.flag_img_category_give ,req.body.category_load_give);
+  //   }
+
+  //   if (req.body.get_checkbox!='get_free')
+  //   {
+
+  //     if (req.files.get_loadImg!=undefined)
+  //     {
+  //       getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,'',0);
+  //       req.files.get_loadImg.mv('views/'+getStuff.imagePath);
+  //     }
+  //     else
+  //     {
+  //       getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
+  //     }
+  //   } 
+  //   else
+  //   {
+  //     getStuff.imagePath='img/getfree.png';
+  //   }
+
+  //   //res.send('success');
+  //   //res.render('newBarter');
+  // }
+  // if (req.files==null)
+  // {
+  //   giveStuff.imagePath=calcPath(req.body.flag_img_category_give,req.body.category_load_give);
+  //   if (req.body.get_checkbox!='get_free')
+  //   {
+  //     getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
+  //   }
+  //   else
+  //   {
+  //     getStuff.imagePath='img/getfree.png';
+  //   }
+  //   //res.send('not image file');
+  // }
+  // giveStuff.name=req.body.stuff__give__name;
+  // giveStuff.category=getIdCategoryFromDB(req.body.category_load_give);
+  // giveStuff.description=req.body.textareaContent_give;
+
+  // getStuff.name=req.body.stuff__get__name;
+  // if (req.body.get_checkbox!='get_free')
+  // {
+  //   getStuff.category=getIdCategoryFromDB(req.body.category_load_get);
+  // }
+  // else
+  // {
+  //   getStuff.category=getIdCategoryFromDB(0);
+  // }
+  // getStuff.description=req.body.textareaContent_get;
+  
+  // dataForDB.userId=req.cookies.userID;
+  // dataForDB.cityName=req.cookies.city;
+
+  let data=getDataForRecordDb(req/*, req.files*/);
+  let dataForDB=data.dataForDB;
+  let giveStuff=data.giveStuff;
+  let getStuff=data.getStuff;
+
   //queryDBcityToId(req.cookies.city/*+'kjh'*/);
 
   console.log('giveStuff', giveStuff);
@@ -473,6 +605,94 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   //queryDBcityToId(dataForDB.cityId);
   res.redirect("/")
 })
+app.post('/savechangebarter/', function (req, res){
+  console.log('CHANGE BARTER')
+  console.log(req.body);
+
+  let data=getDataForRecordDb(req/*, req.files*/);
+  let dataForDB=data.dataForDB;
+  let giveStuff=data.giveStuff;
+  let getStuff=data.getStuff;
+  let queryCheck=`
+      SELECT * 
+      FROM barter
+      WHERE user_id=${req.cookies.userID} AND id=${req.body.barter_id}`;
+  pool.query(queryCheck, function (err, resDB){
+    if (!err)
+    {
+     
+      if (resDB.rows.length==1)
+      {
+        
+        let query=` UPDATE barter
+                    SET city_id=(SELECT id FROM city WHERE '${dataForDB.cityName}' = name),
+                        give_name='${giveStuff.name}',`+
+                    
+                        (req.body.flag_change_img_give=='true' ? 
+                        `give_link_image='${giveStuff.imagePath}',` : '')+
+                        `give_description='${giveStuff.description}',
+                        give_category_id=${giveStuff.category},
+              
+                        get_name=`+
+                        (req.body.get_checkbox=='get_free' ? '\'null\'' : `'${getStuff.name}'`)+', '+
+                        ( req.body.flag_change_img_get=='true' ||
+                          req.body.get_checkbox=='get_free' ?
+                            `get_link_image='${getStuff.imagePath}',` : '')+
+                        `get_description='${getStuff.description}',`+
+                        // (req.body.get_checkbox!='get_free' ? 'null' : `${getStuff.description}`)+', '+
+                            `get_category_id=${getStuff.category},
+                        free=`+
+
+                        (req.body.get_checkbox!='get_free' ? 'false' : 'true')+' '+
+                      `WHERE id=${req.body.barter_id};`;
+        console.log(query);
+        pool.query(query, function (err2, resDB2){
+          if (!err2)
+          {
+            res.redirect("/myBarter");
+            //res.send(req.body);
+          }
+          else
+          {
+            console.log(err2);
+          }
+        });
+      }
+      else
+      {
+        res.send('defect query 2');
+      }
+    }
+    else
+    {
+      res.send('defect query 3');
+    };
+  })
+  // let query=` UPDATE barter
+  //             SET city_id=(SELECT id FROM city WHERE '${dataForDB.cityName}' = name)
+  //                 give_name='${giveStuff.name}',
+  //                 give_link_image='${giveStuff.imagePath}',
+  //                 give_description='${giveStuff.description}',
+  //                 give_category_id='${giveStuff.category}',
+
+  //                 get_name='${getStuff.name}',
+  //                 get_link_image='${getStuff.imagePath}',
+  //                 get_description='${getStuff.description}',
+  //                 get_category_id='${getStuff.category}',
+  //             WHERE id=${req.body.barter_id};
+  //              `
+//   query=`INSERT INTO barter(user_id, city_id, give_name, give_link_image,
+//     give_description, give_category_id,
+//     get_name, get_link_image,
+//     get_description, get_category_id, free) 
+// VALUES (${dataForDB.userId},
+// (SELECT id FROM city WHERE '${dataForDB.cityName}' = name),
+// '${giveStuff.name}','${giveStuff.imagePath}',
+// '${giveStuff.description}',${giveStuff.category},
+// '${getStuff.name}','${getStuff.imagePath}',
+// '${getStuff.description}',${getStuff.category},'false');
+  //res.send(req.body);
+});
 var countSearchQuery=0;
 app.post('/getListCategoryId', function(req, res){
   res.send(categoryListId);
@@ -497,7 +717,7 @@ app.get('/getBarterArr/', function(req, res){
     pool.query(query, function(err, resDB){
       if (!err)
       {
-        console.log(resDB.rows);
+        //console.log(resDB.rows);
 
         res.send(calcBarterArr(resDB.rows));
       }
@@ -520,7 +740,7 @@ app.get('/getMyBarterArr/', function(req, res){
   pool.query(query, function(err, resDB){
     if (!err)
     {
-      console.log(resDB.rows);
+      //console.log(resDB.rows);
 
       res.send(calcBarterArr(resDB.rows));
     }
@@ -904,4 +1124,6 @@ function generateRandomName(length)
 08.08.2025 останивился на том что подготавливал данные бартера для записи в БД
 
 12.09.2025 остановился на побдоре условий для поискка по категориям
+
+29.10.2025 остановился на том что делал изменение бартера update for DB
 */
