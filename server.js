@@ -365,9 +365,12 @@ function getDataForRecordDb(req/*, files*/)
 
     if (req.files.give_loadImg!=undefined )
     {
-      giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,'',0);
-      req.files.give_loadImg.mv('views/'+giveStuff.imagePath);
-      console.log('image path privat 0 ');      
+      if (req.body.flag_change_img_give=='true')
+      {
+        giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,'',0);
+        req.files.give_loadImg.mv('views/'+giveStuff.imagePath);
+        console.log('image path privat 0 ');      
+      }
     }
     else
     {
@@ -379,8 +382,12 @@ function getDataForRecordDb(req/*, files*/)
 
       if (req.files.get_loadImg!=undefined)
       {
-        getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,'',0);
-        req.files.get_loadImg.mv('views/'+getStuff.imagePath);
+        if (req.body.flag_change_img_get=='true')
+        {
+
+          getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,'',0);
+          req.files.get_loadImg.mv('views/'+getStuff.imagePath);
+        }
       }
       else
       {
@@ -428,127 +435,7 @@ function getDataForRecordDb(req/*, files*/)
   return {dataForDB: dataForDB, getStuff: getStuff, giveStuff: giveStuff};
 }
 app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
-  // let stuff={
-  //   name: '',
-  //   category: null,
-  //   imagePath: '000',
-  //   description: '',
-  // }
-  // giveStuff=JSON.parse(JSON.stringify(stuff));
-  // getStuff=JSON.parse(JSON.stringify(stuff));
-  // let dataForDB={
-  //   userId: null,
-  //   cityName: null,
-  //   // give: stuff,
-  //   // get: stuff,
-  // }
-
-  
-  // // Пример использования:
-  // // console.log(randomName); // Вывод случайного имени, например: "bQ7Z9fWkXp"
-  // function calcRouteImg(name,numCategory,flag)
-  // {
-  //   const randomName = generateRandomName(10);
-  //   let type=name.split('.')[1];
-  //   let imgCategory="category"+numCategory+".png";
-  //   if (flag==null) // если картинки нет
-  //   {
-  //     return 'img/default.jpg';
-  //   }
-  //   else if (flag==0)// если картинка есть
-  //   {
-  //     return 'imgUser/'+randomName+'.'+type;
-  //   }
-  //   else if (flag==1) // если картинка должна быть категорией
-  //   {
-  //     return 'img/'+imgCategory;
-  //   }
-  // }
-  // function calcPath(flagCategory, numCategory)
-  // {
-
-  //   if (flagCategory=='null')
-  //   {
-      
-  //     // console.log('not image GIVE + null');
-  //     console.log('image path privat null ');
-  //     return calcRouteImg('',0,null);
-  //   }
-  //   else if (flagCategory==1)
-  //   {
-  //     console.log('image path privat 1 ');
-  //     return calcRouteImg('',numCategory,1);
-  //   }
-  // }
-  // console.log(req.body);
-  // console.log(req.files);
-  // console.log(req.body.flag_img_category_give+' flag Give');
-  // console.log(req.body.flag_img_category_get+' flag Get');
-  // if (req.files!=null)
-  // {
-
-  //   if (req.files.give_loadImg!=undefined )
-  //   {
-  //     giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,'',0);
-  //     req.files.give_loadImg.mv('views/'+giveStuff.imagePath);
-  //     console.log('image path privat 0 ');      
-  //   }
-  //   else
-  //   {
-  //     giveStuff.imagePath=calcPath(req.body.flag_img_category_give ,req.body.category_load_give);
-  //   }
-
-  //   if (req.body.get_checkbox!='get_free')
-  //   {
-
-  //     if (req.files.get_loadImg!=undefined)
-  //     {
-  //       getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,'',0);
-  //       req.files.get_loadImg.mv('views/'+getStuff.imagePath);
-  //     }
-  //     else
-  //     {
-  //       getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
-  //     }
-  //   } 
-  //   else
-  //   {
-  //     getStuff.imagePath='img/getfree.png';
-  //   }
-
-  //   //res.send('success');
-  //   //res.render('newBarter');
-  // }
-  // if (req.files==null)
-  // {
-  //   giveStuff.imagePath=calcPath(req.body.flag_img_category_give,req.body.category_load_give);
-  //   if (req.body.get_checkbox!='get_free')
-  //   {
-  //     getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
-  //   }
-  //   else
-  //   {
-  //     getStuff.imagePath='img/getfree.png';
-  //   }
-  //   //res.send('not image file');
-  // }
-  // giveStuff.name=req.body.stuff__give__name;
-  // giveStuff.category=getIdCategoryFromDB(req.body.category_load_give);
-  // giveStuff.description=req.body.textareaContent_give;
-
-  // getStuff.name=req.body.stuff__get__name;
-  // if (req.body.get_checkbox!='get_free')
-  // {
-  //   getStuff.category=getIdCategoryFromDB(req.body.category_load_get);
-  // }
-  // else
-  // {
-  //   getStuff.category=getIdCategoryFromDB(0);
-  // }
-  // getStuff.description=req.body.textareaContent_get;
-  
-  // dataForDB.userId=req.cookies.userID;
-  // dataForDB.cityName=req.cookies.city;
+ 
 
   let data=getDataForRecordDb(req/*, req.files*/);
   let dataForDB=data.dataForDB;
@@ -650,6 +537,7 @@ app.post('/savechangebarter/', function (req, res){
           if (!err2)
           {
             res.redirect("/myBarter");
+            console.log(req.body);
             //res.send(req.body);
           }
           else
@@ -668,30 +556,6 @@ app.post('/savechangebarter/', function (req, res){
       res.send('defect query 3');
     };
   })
-  // let query=` UPDATE barter
-  //             SET city_id=(SELECT id FROM city WHERE '${dataForDB.cityName}' = name)
-  //                 give_name='${giveStuff.name}',
-  //                 give_link_image='${giveStuff.imagePath}',
-  //                 give_description='${giveStuff.description}',
-  //                 give_category_id='${giveStuff.category}',
-
-  //                 get_name='${getStuff.name}',
-  //                 get_link_image='${getStuff.imagePath}',
-  //                 get_description='${getStuff.description}',
-  //                 get_category_id='${getStuff.category}',
-  //             WHERE id=${req.body.barter_id};
-  //              `
-//   query=`INSERT INTO barter(user_id, city_id, give_name, give_link_image,
-//     give_description, give_category_id,
-//     get_name, get_link_image,
-//     get_description, get_category_id, free) 
-// VALUES (${dataForDB.userId},
-// (SELECT id FROM city WHERE '${dataForDB.cityName}' = name),
-// '${giveStuff.name}','${giveStuff.imagePath}',
-// '${giveStuff.description}',${giveStuff.category},
-// '${getStuff.name}','${getStuff.imagePath}',
-// '${getStuff.description}',${getStuff.category},'false');
-  //res.send(req.body);
 });
 var countSearchQuery=0;
 app.post('/getListCategoryId', function(req, res){
@@ -751,6 +615,39 @@ app.get('/getMyBarterArr/', function(req, res){
     }
   });
 });
+function checkDefectQuery(barter_id, userID)
+{
+  return new Promise(function (resolve){
+    let query=`
+    SELECT * 
+    FROM barter
+    WHERE user_id=${userID} AND id=${barter_id}`;
+    console.log(query);
+
+    pool.query(query, function(err, resDB){
+      if (!err)
+      {
+        if (resDB.rows.length==1)
+        {
+          resolve (true);
+          //res.send('query GOOD');
+         // res.render('newBarter', {categoryList: categoryListStr, dataUser: data, changeBarter: true});
+        }
+        else
+        {
+          //res.send('defectQuery 1');
+          resolve(false);
+        }
+      }
+      else
+      {
+        resolve(false);
+        // res.send('defectQuery 2');
+      }
+    });
+  });
+}
+
 app.get('/changebarter',function(req, res){
   let barter_id=req.query.barter_id;
 
@@ -760,30 +657,16 @@ app.get('/changebarter',function(req, res){
     data=dataUser[0][0];
   }
 
-  let query=`
-      SELECT * 
-      FROM barter
-      WHERE user_id=${req.cookies.userID} AND id=${barter_id}`;
-  console.log(query);
-  
-  pool.query(query, function(err, resDB){
-    if (!err)
+  checkDefectQuery(barter_id, req.cookies.userID).then(function(result){
+    if (result==true)
     {
-      if (resDB.rows.length==1)
-      {
-        //res.send('query GOOD');
-        res.render('newBarter', {categoryList: categoryListStr, dataUser: data, changeBarter: true});
-      }
-      else
-      {
-        res.send('defectQuery 1');
-      }
+      res.render('newBarter', {categoryList: categoryListStr, dataUser: data, changeBarter: true});
     }
     else
     {
-      res.send('defectQuery 2');
+      res.send('defect query ')
     }
-  });
+  })
   // res.render('newBarter', {categoryList: categoryListStr});
 });
 app.post('/querySearch/', function(req, res){
@@ -952,7 +835,19 @@ function calcBarterArr(rowsDB)
     }
     console.log (data)
     let barter_id=req.query.barter_id
+    let flagNoDefectQuery=false;
     console.log ("views Barter One: "+barter_id)
+    checkDefectQuery(barter_id, req.cookies.userID).then(function(result){
+      if (result==true)
+      {
+        flagNoDefectQuery=true;
+      }
+      else
+      {
+        flagNoDefectQuery=false;
+        //res.send('defect query')
+      }
+    })
     // console.log (req)
     let query=`
 
@@ -1007,7 +902,8 @@ function calcBarterArr(rowsDB)
                                       nameUser: nameSurname,
                                       city: city_name,
                                       noViewsCity: true,
-                                      barterData: barterData});
+                                      barterData: barterData,
+                                      defectNoQuery: flagNoDefectQuery});
           }
           else
           {

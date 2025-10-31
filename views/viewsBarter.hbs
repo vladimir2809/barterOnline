@@ -1,8 +1,10 @@
 <div class="views-barter">
-    <div class="views-barter__cont-button">
-        <button class="views-barter__button-change">Изменить</button>
-        <button class="views-barter__button-delete">Удалить</button>
-    </div>
+    {{#if defectNoQuery}}
+        <div class="views-barter__cont-button">
+            <button class="views-barter__button-change">Изменить</button>
+            <button class="views-barter__button-delete">Удалить</button>
+        </div>
+    {{/if}}
     <div class="barter">
         <h1 class="barter__header">Просмотр бартера</h1>
         <h2 class="barter__author">Автор бартера:

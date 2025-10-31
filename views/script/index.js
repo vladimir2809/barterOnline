@@ -106,7 +106,7 @@ if (resultItemNode!=undefined)
       get.querySelector(".stuff-get img").src=data[i].get.imagePath;
       let getName=get.querySelector(".stuff-get .stuff__name");
       getName.innerText=data[i].get.name !='null' ?  data[i].get.name : '\u00A0';;
-      getName.innerText=data[i].get.name !='undefined' ?  data[i].get.name : '\u00A0';;
+      //getName.innerText=data[i].get.name !='undefined' ?  data[i].get.name : '\u00A0';;
       get.querySelector(".stuff-get .stuff__paragraph").innerText=data[i].get.description != 'null'  ?
                                                                   data[i].get.description : '\u00A0';;
       let give=cloneResultItem.querySelector('.stuff-give');

@@ -29,6 +29,7 @@ function  updateElemsCheckboxFree(checked)
         let inputDescription=document.getElementById("newBarter-get-description");
         if (checked==true)
         {
+          document.getElementById("img-get-preload").src='img/getfree.png';
           inputText.disabled=true;
           inputCategory.disabled=true;
           inputFile.disabled=true;
@@ -74,48 +75,7 @@ if (newBarterForm!=undefined)
       // cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent;
       checkboxFree.addEventListener('change', function(event){
         updateElemsCheckboxFree(checkboxFree.checked)
-        // let inputText=document.getElementById("newStuff__getName");
-        // let inputCategory=document.getElementById("category-load-get");
-        // let inputFile=document.getElementById("get_loadImg");
-        // let inputDescription=document.getElementById("newBarter-get-description");
-        // if (checkboxFree.checked==true)
-        // {
-        //   inputText.disabled=true;
-        //   inputCategory.disabled=true;
-        //   inputFile.disabled=true;
-        //   inputDescription.contentEditable=false;
-
-        //   flagDisabledInputNameGet=true;
-        //   flagDisabledInputdescriptionGet=true;
-
-   
-        //   inputText.style.outlineColor='gray';
-        //   inputText.style.borderColor='gray';
-        //   memoryInputValue[0]= inputText.value;
-        //   inputText.value='';
-
-       
-        //   inputDescription.style.outlineColor='gray'
-        //   inputDescription.style.borderColor='gray'
-        //   memoryInputValue[1]=getDescription.innerText;
-        //   getDescription.innerText='';
-        // }
-        // else
-        // {
-        //   inputText.disabled=false;
-        //   inputCategory.disabled=false;
-        //   inputFile.disabled=false;
-        //   inputDescription.contentEditable=true;
-
-        //   flagDisabledInputNameGet=false;
-        //   flagDisabledInputdescriptionGet=false;
-
-        
-        //   inputText.value=memoryInputValue[0];
-
-          
-        //   getDescription.innerText=memoryInputValue[1]
-        // }
+        hiddenFlagChangeImgGet.value='true';
       })
       newBarterForm.addEventListener('submit',(event)=>{
         event.preventDefault();
