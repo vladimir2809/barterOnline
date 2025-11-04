@@ -934,6 +934,7 @@ function calcBarterArr(rowsDB)
     }
   }
   console.log(count);
+  
   if (count==0)
   {
     result=null;
@@ -942,6 +943,9 @@ function calcBarterArr(rowsDB)
   res.send(result);
   //res.send('Hello aim ajax response');
 });
+app.get('/messanger/', function (req, res){
+  res.render('messanger');
+})
 app.post('/changeCity/',function(req,res){
   let city=req.body.city;
   console.log(req.body);

@@ -460,6 +460,48 @@ html {
   font-size: 3rem;
 }
 
+.messanger {
+  grid-column: content-start/content-end;
+  padding: 1rem;
+}
+
+.contact-select {
+  width: 30rem;
+}
+
+.contact {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 0.5rem;
+  border: 1px solid black;
+  border-radius: 0.7rem;
+}
+.contact__literal {
+  width: 3.5rem;
+  height: 3.5rem;
+  padding-top: 0.7rem;
+  padding-left: 1rem;
+  border-radius: 50%;
+  margin-right: 0.6rem;
+  background-color: red;
+}
+.contact__literal > span {
+  font-size: 2rem;
+  color: white;
+}
+.contact__name {
+  margin-bottom: 0.7rem;
+}
+.contact__preview-text {
+  font-size: 1.2em;
+  overflow: hidden;
+  white-space: no-wrap;
+  text-overflow: ellipsis;
+  width: 23.5rem;
+  height: 1.2rem;
+}
+
 .views-barter {
   grid-column: content-start/content-end;
   display: grid;
