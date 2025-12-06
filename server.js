@@ -14,7 +14,6 @@ const upload = multer({ dest: 'uploads/' })
 
 var categoryList=[];
 var categoryListStr='';
-var categoryListId=[];
 var cityList=[];
 var dataUser=[];
 var cityStart="Москва";
@@ -31,6 +30,29 @@ pool.query('SELECT NOW()', (err, res) => {
   } else {
     console.log('Connected to the database:', res.rows);
   }
+  // pool.query("SELECT * FROM category", (err, resDB) =>{
+  //   if (!err)
+  //   {
+
+  //     for (let i=0;i<resDB.rows.length;i++)
+  //     {
+  //       categoryList.push(resDB.rows[i].name);
+        
+  //     }
+  //     console.log(categoryList);
+  //     categoryListStr = `<option value="1" class="search-block__option" selected>Все категории</option>`
+  //     for (let i=0;i<categoryList.length;i++)
+  //     {
+  //         categoryListStr+=`<option value="${i+2}" class="search-block__option">${categoryList[i]}</option>`
+  //     }
+  //     // console.log (SHA256("Сообщение")) ;
+  //     // console.log(categoryListStr);
+  //   }
+  //   else
+  //   {
+  //     console.log(err);
+  //   }
+  // })
 })
 pool.query("SELECT * FROM category", (err, resDB) =>{
   if (!err)
@@ -39,54 +61,22 @@ pool.query("SELECT * FROM category", (err, resDB) =>{
     for (let i=0;i<resDB.rows.length;i++)
     {
       categoryList.push(resDB.rows[i].name);
-      categoryListId.push(resDB.rows[i].id);
       
     }
+    console.log(categoryList);
+    categoryListStr = `<option value="0" class="search-block__option" selected>Все категории</option>`
     for (let i=0;i<categoryList.length;i++)
     {
-      console.log("i: "+i+" id: "+categoryListId[i]+" category: "+categoryList[i]);
-
-    }
-    // categoryListStr = `<option value="0" class="search-block__option" selected>Все категории</option>`
-    for (let i=0;i<categoryList.length;i++)
-    {
-        categoryListStr+=`<option value="${i}" class="search-block__option">${categoryList[i]}</option>`
+        categoryListStr+=`<option value="${i+1}" class="search-block__option">${categoryList[i]}</option>`
     }
     // console.log (SHA256("Сообщение")) ;
-     console.log(categoryListStr);
+    // console.log(categoryListStr);
   }
   else
   {
     console.log(err);
   }
 });
-function getIdCategoryFromDB(num)
-{
-  
-  for (let i=0;i<categoryListId.length;i++)
-  {
-    if (num==i)
-    {
-      return categoryListId[i];
-    }
-  }
-}
-
-function getNameCategoryToId(id)
-{
-  for (let i=0; i<categoryListId.length; i++)
-  {
-
-    if (categoryListId[i]==id)
-    {
-      return categoryList[i];
-    }
-  }
-}
-// setTimeout(() => {
-//   console.log ("category id=43, name="+getNameCategoryToId(43))
-  
-// }, 1000);
 pool.query('SELECT * FROM city ORDER BY name',function(err, resDB){
   if (!err)
   {
@@ -146,9 +136,8 @@ app.get("/",function(req,res){
     res.cookie('city', cityStart, {maxAge: 1000 * 60 * 60 *24 * 30})
     dataCity=true;
   }
-  let cityName=req.cookies.city==undefined ? cityStart : req.cookies.city;
-  res.render('index',{categoryList: categoryListStr, dataUser: data, noViewsCity: false, 
-                  dataCity: dataCity, cityStart:cityStart, cityName: cityName });
+  res.render('index',{categoryList: categoryListStr, dataUser: data, 
+                  dataCity: dataCity, cityStart:cityStart});
   //console.log(req.cookies);
 })
 app.get("/newBarter/",function(req,res){
@@ -301,17 +290,15 @@ app.post('/userIn/', function(req, res){
     });
 
 });
-function getDataForRecordDb(req/*, files*/)
-{
-  //let req={body: body, files: files};
+app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
   let stuff={
     name: '',
     category: null,
     imagePath: '000',
     description: '',
   }
-  let giveStuff=JSON.parse(JSON.stringify(stuff));
-  let getStuff=JSON.parse(JSON.stringify(stuff));
+  giveStuff=JSON.parse(JSON.stringify(stuff));
+  getStuff=JSON.parse(JSON.stringify(stuff));
   let dataForDB={
     userId: null,
     cityName: null,
@@ -365,38 +352,23 @@ function getDataForRecordDb(req/*, files*/)
 
     if (req.files.give_loadImg!=undefined )
     {
-      if (req.body.flag_change_img_give=='true')
-      {
-        giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,'',0);
-        req.files.give_loadImg.mv('views/'+giveStuff.imagePath);
-        console.log('image path privat 0 ');      
-      }
+      giveStuff.imagePath=calcRouteImg(req.files.give_loadImg.name,'',0);
+      req.files.give_loadImg.mv('views/'+giveStuff.imagePath);
+      console.log('image path privat 0 ');      
     }
     else
     {
       giveStuff.imagePath=calcPath(req.body.flag_img_category_give ,req.body.category_load_give);
     }
 
-    if (req.body.get_checkbox!='get_free')
+    if (req.files.get_loadImg!=undefined)
     {
-
-      if (req.files.get_loadImg!=undefined)
-      {
-        if (req.body.flag_change_img_get=='true')
-        {
-
-          getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,'',0);
-          req.files.get_loadImg.mv('views/'+getStuff.imagePath);
-        }
-      }
-      else
-      {
-        getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
-      }
-    } 
+      getStuff.imagePath=calcRouteImg(req.files.get_loadImg.name,'',0);
+      req.files.get_loadImg.mv('views/'+getStuff.imagePath);
+    }
     else
     {
-      getStuff.imagePath='img/getfree.png';
+      getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
     }
 
     //res.send('success');
@@ -404,80 +376,56 @@ function getDataForRecordDb(req/*, files*/)
   }
   if (req.files==null)
   {
+
+
     giveStuff.imagePath=calcPath(req.body.flag_img_category_give,req.body.category_load_give);
-    if (req.body.get_checkbox!='get_free')
-    {
-      getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
-    }
-    else
-    {
-      getStuff.imagePath='img/getfree.png';
-    }
+    getStuff.imagePath=calcPath(req.body.flag_img_category_get, req.body.category_load_get);
+
     //res.send('not image file');
   }
+
   giveStuff.name=req.body.stuff__give__name;
-  giveStuff.category=getIdCategoryFromDB(req.body.category_load_give);
+  giveStuff.category=req.body.category_load_give;
   giveStuff.description=req.body.textareaContent_give;
 
   getStuff.name=req.body.stuff__get__name;
-  if (req.body.get_checkbox!='get_free')
-  {
-    getStuff.category=getIdCategoryFromDB(req.body.category_load_get);
-  }
-  else
-  {
-    getStuff.category=getIdCategoryFromDB(0);
-  }
+  getStuff.category=req.body.category_load_get;
   getStuff.description=req.body.textareaContent_get;
   
   dataForDB.userId=req.cookies.userID;
   dataForDB.cityName=req.cookies.city;
-  return {dataForDB: dataForDB, getStuff: getStuff, giveStuff: giveStuff};
-}
-app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
- 
-
-  let data=getDataForRecordDb(req/*, req.files*/);
-  let dataForDB=data.dataForDB;
-  let giveStuff=data.giveStuff;
-  let getStuff=data.getStuff;
-
   //queryDBcityToId(req.cookies.city/*+'kjh'*/);
 
   console.log('giveStuff', giveStuff);
   console.log('getStuff', getStuff);
   console.log('dataForDB', dataForDB);
-  let query='';
-  if (req.body.get_checkbox!='get_free')
-  {
-    query=`INSERT INTO barter(user_id, city_id, give_name, give_link_image,
-                                give_description, give_category_id,
-                                get_name, get_link_image,
-                                get_description, get_category_id, free) 
-              VALUES (${dataForDB.userId},
-                      (SELECT id FROM city WHERE '${dataForDB.cityName}' = name),
-                      '${giveStuff.name}','${giveStuff.imagePath}',
-                      '${giveStuff.description}',${giveStuff.category},
-                      '${getStuff.name}','${getStuff.imagePath}',
-                      '${getStuff.description}',${getStuff.category},'false');
-            `
-  }
-  else
-  {
-    query=`INSERT INTO barter(user_id, city_id, give_name, give_link_image,
-      give_description, give_category_id,
-      get_name, get_link_image,
-      get_description, get_category_id, free) 
-      VALUES (${dataForDB.userId},
-              (SELECT id FROM city WHERE '${dataForDB.cityName}' = name),
-              '${giveStuff.name}','${giveStuff.imagePath}',
-              '${giveStuff.description}',${giveStuff.category},
-              'null','${getStuff.imagePath}',
-              'null', ${getStuff.category}, 'true');
-      `
-  }
-  console.log(query);
+  let query=`
+  BEGIN TRANSACTION;
 
+  INSERT INTO stuff(name, link_image, description, category_id, type)
+  VALUES ('${giveStuff.name}', '${giveStuff.imagePath}',
+          '${giveStuff.description}', ${giveStuff.category}, 'give');
+
+  INSERT INTO stuff(name, link_image, description, category_id,  type)
+  VALUES ('${getStuff.name}', '${getStuff.imagePath}',
+          '${getStuff.description}', ${getStuff.category}, 'get');
+
+  INSERT INTO barter(user_id, city_id, give_stuff, get_stuff)
+  VALUES (${dataForDB.userId}, 
+    (SELECT id FROM city WHERE '${dataForDB.cityName}' = name), 
+
+    (SELECT id
+      FROM stuff
+      ORDER BY id DESC
+      LIMIT 1)-1,
+    
+    (SELECT id
+      FROM stuff
+      ORDER BY id DESC
+      LIMIT 1)
+  );
+
+  COMMIT TRANSACTION;`
   pool.query(query, (err, resDB) =>{
     if (!err)
     {
@@ -492,431 +440,425 @@ app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, n
   //queryDBcityToId(dataForDB.cityId);
   res.redirect("/")
 })
-app.post('/savechangebarter/', function (req, res){
-  console.log('CHANGE BARTER')
-  console.log(req.body);
-
-  let data=getDataForRecordDb(req/*, req.files*/);
-  let dataForDB=data.dataForDB;
-  let giveStuff=data.giveStuff;
-  let getStuff=data.getStuff;
-  let queryCheck=`
-      SELECT * 
-      FROM barter
-      WHERE user_id=${req.cookies.userID} AND id=${req.body.barter_id}`;
-  pool.query(queryCheck, function (err, resDB){
-    if (!err)
-    {
-     
-      if (resDB.rows.length==1)
-      {
-        
-        let query=` UPDATE barter
-                    SET city_id=(SELECT id FROM city WHERE '${dataForDB.cityName}' = name),
-                        give_name='${giveStuff.name}',`+
-                    
-                        (req.body.flag_change_img_give=='true' ? 
-                        `give_link_image='${giveStuff.imagePath}',` : '')+
-                        `give_description='${giveStuff.description}',
-                        give_category_id=${giveStuff.category},
-              
-                        get_name=`+
-                        (req.body.get_checkbox=='get_free' ? '\'null\'' : `'${getStuff.name}'`)+', '+
-                        ( req.body.flag_change_img_get=='true' ||
-                          req.body.get_checkbox=='get_free' ?
-                            `get_link_image='${getStuff.imagePath}',` : '')+
-                        `get_description='${getStuff.description}',`+
-                        // (req.body.get_checkbox!='get_free' ? 'null' : `${getStuff.description}`)+', '+
-                            `get_category_id=${getStuff.category},
-                        free=`+
-
-                        (req.body.get_checkbox!='get_free' ? 'false' : 'true')+' '+
-                      `WHERE id=${req.body.barter_id};`;
-        console.log(query);
-        pool.query(query, function (err2, resDB2){
-          if (!err2)
-          {
-            res.redirect("/myBarter");
-            console.log(req.body);
-            //res.send(req.body);
-          }
-          else
-          {
-            console.log(err2);
-          }
-        });
-      }
-      else
-      {
-        res.send('defect query 2');
-      }
-    }
-    else
-    {
-      res.send('defect query 3');
-    };
-  })
-});
-var countSearchQuery=0;
-app.post('/getListCategoryId', function(req, res){
-  res.send(categoryListId);
-})
-app.get('/myBarter', function(req, res){
-  let data=null///*req.cookies[0]*/dataUser[0][0];
-  if (dataUser[0]!=undefined)
-  {
-    data=dataUser[0][0];
-  }
-  res.render('myBarter',{dataUser: data, noViewsCity: true })
-});
 app.get('/getBarterArr/', function(req, res){
-    // let query=`SELECT * FROM barter;`
-    let cityCurrent = req.cookies.city;
-    let query=`SELECT barter.*
-                FROM barter 
-                JOIN city ON barter.city_id = city.id
-                WHERE city.name = '${cityCurrent}';`
-                // , city.id AS numcityId, barter.id AS numbarterid
+  getBarterGiveGet().then(function(result){
 
+
+    console.log('get Barter ARR ',result)
+    res.send(result);
+  })
+  //res.send({kkk:'0'});
+});
+function getBarterGiveGet(listIdBarter=null)
+{
+
+  return new Promise(function(resolve,reject){
+    let stuff={
+      id:null,
+      name: '',
+      imagePath: '000',
+      description: '',
+      category_id: null,
+    };
+    barter={
+      userId: null,
+      cityId: null,
+      giveStuffId: null,
+      getStuffId: null,
+    }
+    let barterGiveGet={
+      userId:null,
+      cityId:null,
+      give:null,
+      get: null,
+    }
+    let stuffArr=[];
+    let barterArr=[];
+    let barterGiveGetArr=[];
+    let responceBeing=false;
+    let query=`SELECT * FROM barter;`;
+    if (listIdBarter==null || listIdBarter.length==0)
+    {
+        resolve([]);
+    }
+    else if (listIdBarter!=null )
+    {
+      let strIdBarter=listIdBarter.join(', ');
+      query=`SELECT * FROM barter WHERE id IN (${strIdBarter});`;
+    }
+    console.log(query);
     pool.query(query, function(err, resDB){
       if (!err)
       {
-        //console.log(resDB.rows);
+        for (let i = 0; i < resDB.rows.length; i++)
+        {
+            let barterOne=JSON.parse(JSON.stringify(barter));
+            barterOne.userId=resDB.rows[i].user_id;
+            barterOne.cityId=resDB.rows[i].city_id;
+            barterOne.giveStuffId=resDB.rows[i].give_stuff;
+            barterOne.getStuffId=resDB.rows[i].get_stuff;
+            barterArr.push(barterOne);
 
-        res.send(calcBarterArr(resDB.rows));
+        }
+        let result=getStuff(barterArr);// внимание тут выполняетя ко\
+        if (result==null) res.send('');
+        return barterGiveGetArr;
       }
       else
-      {
-        res.send('при чтении данных произошла ошибка')
+      { 
         console.log(err);
       }
+      
+      // res.send(barterArr,stuffArr);
     });
-});
-app.get('/getMyBarterArr/', function(req, res){
-  // let query=`SELECT * FROM barter;`
-  let cityCurrent = req.cookies.city;
-  let query=`SELECT barter.*
-              FROM barter 
-              JOIN tableuser ON barter.user_id = tableuser.id
-              WHERE barter.user_id = ${req.cookies.userID};`
-              // , city.id AS numcityId, barter.id AS numbarterid
-  console.log(query);
-  pool.query(query, function(err, resDB){
-    if (!err)
+    function getStuff(brtArr, res)
     {
-      //console.log(resDB.rows);
-
-      res.send(calcBarterArr(resDB.rows));
-    }
-    else
-    {
-      res.send('при чтении данных произошла ошибка')
-      console.log(err);
-    }
-  });
-});
-function checkDefectQuery(barter_id, userID)
-{
-  return new Promise(function (resolve){
-    let query=`
-    SELECT * 
-    FROM barter
-    WHERE user_id=${userID} AND id=${barter_id}`;
-    console.log(query);
-
-    pool.query(query, function(err, resDB){
-      if (!err)
+      if (brtArr.length==0) 
       {
-        if (resDB.rows.length==1)
+        //res.send('');
+        return null;
+      }
+      let listIdStuff=[];
+      for (let i=0;i<brtArr.length;i++)
+      {
+        listIdStuff.push(brtArr[i].giveStuffId);
+        listIdStuff.push(brtArr[i].getStuffId);
+      }
+      let strIdStuff=listIdStuff.join(', ');
+      let query=`SELECT * FROM stuff WHERE id IN (${strIdStuff})`;
+      console.log(query);
+      pool.query(query,  function(err, resDB){
+        if(!err)
         {
-          resolve (true);
-          //res.send('query GOOD');
-         // res.render('newBarter', {categoryList: categoryListStr, dataUser: data, changeBarter: true});
+          for (let i = 0; i < resDB.rows.length; i++)
+          {
+            let stuffOne=JSON.parse(JSON.stringify(stuff));
+            stuffOne.id=resDB.rows[i].id;
+            stuffOne.name=resDB.rows[i].name;
+            stuffOne.imagePath=resDB.rows[i].link_image;
+            stuffOne.description=resDB.rows[i].description;
+            stuffOne.category_id=resDB.rows[i].category_id;
+            stuffArr.push(stuffOne);
+          }
+
+          //res.send(barterArr,/*stuffArr*/);
+          createBarterGiveGet(barterArr, stuffArr);
+          resolve(barterGiveGetArr);
+          //res.send(barterGiveGetArr);
+          
+          //return barterGiveGetArr;
         }
         else
-        {
-          //res.send('defectQuery 1');
-          resolve(false);
+        { 
+          console.log(err);
         }
-      }
-      else
+        responceBeing=true;
+
+
+      });
+      
+    }
+    function createBarterGiveGet(brtArr, stfArr)
+    {
+      for( i=0;i<brtArr.length;i++)
       {
-        resolve(false);
-        // res.send('defectQuery 2');
+        let giveGetOne=JSON.parse(JSON.stringify(barterGiveGet)); 
+        giveGetOne.give=JSON.parse(JSON.stringify(stuff));
+        giveGetOne.get=JSON.parse(JSON.stringify(stuff));
+        giveGetOne.userId=brtArr[i].userId;
+        giveGetOne.cityId=brtArr[i].cityId;
+        for (let j=0;j<stfArr.length;j++)
+        {
+
+          
+          if (brtArr[i].giveStuffId==stfArr[j].id)
+          {
+            for (var attr1 in giveGetOne.give)
+            {
+              for (var attr2 in stfArr[j])
+              {
+                if (attr1==attr2) 
+                {
+                  giveGetOne.give[attr1]=stfArr[j][attr2];
+                }
+              }
+            } 
+            // giveGetOne.give.id=stfArr[j].id;
+
+            // giveGetOne.give.name=stfArr[j].name;
+          
+            // giveGetOne.give.imagePath=stfArr[j].imagePath;
+        
+            // giveGetOne.give.description=stfArr[j].description;
+        
+            // giveGetOne.give.category_id=stfArr[j].category_id;
+        
+          }
+          if (brtArr[i].getStuffId==stfArr[j].id)
+          {
+            for (var attr1 in giveGetOne.get)
+            {
+              for (var attr2 in stfArr[j])
+              {
+                if (attr1==attr2) 
+                {
+                  giveGetOne.get[attr1]=stfArr[j][attr2];
+                }
+              }
+            }
+            // giveGetOne.get.id=stfArr[j].id;
+            
+            // giveGetOne.get.name=stfArr[j].name;
+          
+            // giveGetOne.get.imagePath=stfArr[j].imagePath;
+        
+            // giveGetOne.get.description=stfArr[j].description;
+        
+            // giveGetOne.get.category_id=stfArr[j].category_id;
+        
+          }
+        }
+        barterGiveGetArr.push(giveGetOne);
+
       }
-    });
+    }
   });
 }
 
-app.get('/changebarter',function(req, res){
-  let barter_id=req.query.barter_id;
 
-  let data=null///*req.cookies[0]*/dataUser[0][0];
-  if (dataUser[0]!=undefined)
-  {
-    data=dataUser[0][0];
-  }
-
-  checkDefectQuery(barter_id, req.cookies.userID).then(function(result){
-    if (result==true)
-    {
-      res.render('newBarter', {categoryList: categoryListStr, dataUser: data, changeBarter: true});
-    }
-    else
-    {
-      res.send('defect query ')
-    }
-  })
-  // res.render('newBarter', {categoryList: categoryListStr});
-});
-app.post('/querySearch/', function(req, res){
-    let cityCurrent = req.cookies.city;
+/*
+    ПОИСК
+*/
+  var countSearchQuery=0;
+  app.post('/querySearch/', function(req, res){
     let data=JSON.parse(req.body.data)
-    data.nameGive=data.nameGive!=undefined ? data.nameGive.toLowerCase() : "";
-    data.nameGet=data.nameGet!=undefined ? data.nameGet.toLowerCase() : '';
-    console.log (data.nameGive, data.nameGet, 
-                 data.categoryGive,data.categoryGet ,data.freeGet, data.barter_id )
+    data.nameGive=data.nameGive.toLowerCase();
+    data.nameGet=data.nameGet.toLowerCase();
+    console.log (data.nameGive, data.nameGet, data.categoryGive,data.categoryGet)
     countSearchQuery++;
     console.log('count search query: '+countSearchQuery);
-    let query=`SELECT barter.* 
-               FROM barter
-               JOIN city ON barter.city_id = city.id`;
-              //  city.id AS numcityId, barter.id AS numbarterId
-    let where='';
-    let where2='';
-    if (data.nameGive=='' && data.nameGet=='' &&
-    data.categoryGive==0 && data.categoryGet==0)
-    {
-      //query=`SELECT * FROM barter;`
-      where='';
-    }
-    if (data.nameGive!=''  &&  data.categoryGive==0 )
-    {
-      //query=`SELECT * FROM barter WHERE LOWER(give_name) LIKE '%${data.nameGive}%';`
-      where=`LOWER(give_name) LIKE '%${data.nameGive}%'`
 
-    }
-    if (data.nameGive==''  &&  data.categoryGive!=0 )
-    {
-      let categoryGive=getIdCategoryFromDB(data.categoryGive)
-      //query=`SELECT * FROM barter   WHERE give_category_id = ${categoryGive};`
-      where=`give_category_id = ${categoryGive}`;
-    }
-    if (data.nameGive!='' &&  data.categoryGive!=0 )
-    {
-      let categoryGive=getIdCategoryFromDB(data.categoryGive)
-      // query=`SELECT * FROM barter 
-      //       WHERE LOWER(give_name) LIKE '%${data.nameGive}%' AND
-      //       give_category_id = ${categoryGive};`
-      where =`LOWER(give_name) LIKE '%${data.nameGive}%' AND
-              give_category_id = ${categoryGive}`;
-    }
-    if ( data.nameGet!='' && data.categoryGet==0)
-    {
-      where2=`LOWER(get_name) LIKE '%${data.nameGet}%'`
-    }
-
-    if ( data.nameGet=='' &&  data.categoryGet!=0)
-    {
-      let categoryGet=getIdCategoryFromDB(data.categoryGet)
-      where2=`get_category_id = ${categoryGet}`;
-    }
-    if ( data.nameGet=='' &&  data.categoryGet!=0)
-    {
-      let categoryGet=getIdCategoryFromDB(data.categoryGet)
-      where2=`get_category_id = ${categoryGet}`;
-    }
-    if ( data.nameGet!='' &&  data.categoryGet!=0)
-    {
-      let categoryGet=getIdCategoryFromDB(data.categoryGet)
-      // query=`SELECT * FROM barter 
-      //       WHERE LOWER(give_name) LIKE '%${data.nameGive}%' AND
-      //       give_category_id = ${categoryGive};`
-      where2 =`LOWER(get_name) LIKE '%${data.nameGet}%' AND
-              get_category_id = ${categoryGet}`;
-    }
-    if (data.freeGet==true)
-    {
-      where2 =`free = true`;
-    }
-    let noCityName=false;
-
-    if (data.barter_id!=undefined)
-    {
-      query = query + ' WHERE' + " barter.id="+data.barter_id;
-      noCityName=true;
-    }
-    else if ( (data.nameGive!='' || data.categoryGive!=0) &&
-          ((data.categoryGet!=0 || data.nameGet!='') || data.freeGet==true))
-    {
-      query=query+' WHERE '+where+' AND '+where2;//+';';
-    }
-    else if (where!='')
-    {
-      query=query+' WHERE '+where;//+';';
-    }
-    else if (where2!='')
-    {
-      query=query+' WHERE '+where2;//+';';
-    }
-    if (noCityName==false) query = query+` AND city.name = '${cityCurrent}';`
+    // getBarterGiveGet([23]).then(function(result2){
 
 
+    //   console.log('get Barter ARR ',result2)
+    //   res.send(result2);
+    // }).catch(function(err){
 
-    // query=query+' WHERE '+where+';';
-    console.log(query);
-    pool.query(query, function(err, resDB){
-      if (!err)
+      
+    //     console.log('get barter ERROR ',err)
+    //     res.send('error promise');
+    // })
+
+    searchByStuff(data);
+    //res.send('result query')
+    function searchByStuff(data) // функция которая ищет бартеры по данным
+    {
+      
+      let query='';
+      let giveAndGet=false;
+      let giveAndCatGet=false;
+      if  ( (data.nameGive!='' &&  data.nameGet=='') || // GIVE
+            (data.nameGive!='' &&  data.nameGet!='') ) 
       {
-        console.log(resDB.rows);
-        res.send(calcBarterArr(resDB.rows));
-      }
-      else
-      {
-        console.log(err);
-      }
-    })
-})
-function calcBarterArr(rowsDB)
-{
-  let stuff={
-    id:null,
-    name: '',
-    imagePath: '000',
-    description: '',
-    category_id: null,
-  };
-  let barterGiveGet={
-    barterId: null,
-    userId:null,
-    cityId:null,
-    free: null,
-    give:null,
-    get: null,
-  }
-  let barterGiveGetArr=[];
-  for (let i=0;i<rowsDB.length;i++)
-  {
-    let barterGiveGetOne=JSON.parse(JSON.stringify(barterGiveGet));
-
-    barterGiveGetOne.barterId=rowsDB[i].id//numbarterid;
-    barterGiveGetOne.userId=rowsDB[i].user_id;
-    barterGiveGetOne.cityId=rowsDB[i].city_id;
-    barterGiveGetOne.free=rowsDB[i].free;
-    
-
-    let stuffGive=JSON.parse(JSON.stringify(stuff));
-    stuffGive.name=rowsDB[i].give_name;
-    stuffGive.imagePath=rowsDB[i].give_link_image;
-    stuffGive.description=rowsDB[i].give_description;
-    stuffGive.category_id=rowsDB[i].give_category_id;
-    
-    let stuffGet=JSON.parse(JSON.stringify(stuff));
-    stuffGet.name=rowsDB[i].get_name;
-    stuffGet.imagePath=rowsDB[i].get_link_image;
-    stuffGet.description=rowsDB[i].get_description;
-    stuffGet.category_id=rowsDB[i].get_category_id;
-    
-    barterGiveGetOne.give=stuffGive;
-    barterGiveGetOne.get=stuffGet;
-
-    barterGiveGetArr.push(barterGiveGetOne);
-  }
-  return barterGiveGetArr;
-}
-  app.get('/viewsBarter', function(req, res){
-    initDataUser(req.cookies)
-    let data=null;
-    let nameSurname=null;
-    if (dataUser[0]!=undefined)
-    {
-      data=dataUser[0][0];
-      // nameSurname=dataUser[0];
-    }
-    console.log (data)
-    let barter_id=req.query.barter_id
-    let flagNoDefectQuery=false;
-    console.log ("views Barter One: "+barter_id)
-    checkDefectQuery(barter_id, req.cookies.userID).then(function(result){
-      if (result==true)
-      {
-        flagNoDefectQuery=true;
-      }
-      else
-      {
-        flagNoDefectQuery=false;
-        //res.send('defect query')
-      }
-    })
-    // console.log (req)
-    let query=`
-
-      SELECT barter.*, city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
-      FROM barter 
-      JOIN city  ON barter.city_id = city.id 
-      JOIN tableuser ON barter.user_id = tableuser.id
-      WHERE barter.id=${barter_id}; `
-      // , city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
-    pool.query(query, function(err, resDB){
-
-        if (!err)
+        if (data.categoryGive==0)
         {
 
-          if (resDB.rows.length>0)
+          query=`
+            SELECT *, barter.id AS barterId
+            FROM barter 
+            JOIN stuff ON barter.give_stuff = stuff.id
+            WHERE LOWER(stuff.name) LIKE '%${data.nameGive}%';`;
+        }
+        else 
+        {
+          query=`
+            SELECT *, barter.id AS barterId
+            FROM barter 
+            JOIN stuff ON barter.give_stuff = stuff.id
+            WHERE stuff.category_id = ${data.categoryGive} AND
+                  LOWER(stuff.name) LIKE '%${data.nameGive}%'`;
+        }
+        if (data.nameGive!='' &&  data.nameGet!='') //GIVE AND GET
+        {
+          //query=queryGive
+          giveAndGet=true;
+
+        }
+        else if (data.nameGive!='' && data.categoryGet!=0)
+        {
+          console.log('giveAndCatGet 1111');
+          giveAndCatGet=true;
+        }
+        
+      }
+      else if (data.categoryGive!=0)
+      {
+        //queryGive;
+        query=`
+            SELECT *, barter.id AS barterId
+            FROM barter 
+            JOIN stuff ON barter.give_stuff = stuff.id
+            WHERE stuff.category_id = ${data.categoryGive};`;
+        if (data.nameGive=='' && data.categoryGet!=0)
+        {
+          giveAndCatGet=true;
+          console.log('giveAndCatGet 2222');
+        }
+      }
+      else if  (data.nameGive=='' &&  data.nameGet!='') // GET
+      {
+        if (data.categoryGet==0)
+        { 
+          query=`
+            SELECT *, barter.id AS barterId 
+            FROM barter 
+            JOIN stuff ON barter.get_stuff = stuff.id
+            WHERE LOWER(stuff.name) LIKE '%${data.nameGet}%';`
+        }
+        else // GET AND CATEGORY
+        {
+          query=`
+            SELECT *, barter.id AS barterId 
+            FROM barter 
+            JOIN stuff ON barter.get_stuff = stuff.id
+            WHERE stuff.category_id = ${data.categoryGet} AND
+                  LOWER(stuff.name) LIKE '%${data.nameGet}%';`;
+        }
+       
+      }
+      else if  (data.categoryGet!=0)
+      {
+        // queryGet;
+        query=`SELECT *, barter.id AS barterId 
+        FROM barter 
+        JOIN stuff ON barter.get_stuff = stuff.id
+        WHERE stuff.category_id = ${data.categoryGet};`
+      }
+      pool.query(query, function(err, resDB){
+        if (!err)
+        {
+          result=[];
+          if (giveAndGet==true || giveAndCatGet==true)
           {
-          
-            let barterData={
-              give:{
-                name: null,
-                category: null,
-                imagePath: null,
-                description: null,
+            let listStuffNum=[];
+            for (let i=0;i<resDB.rows.length;i++)
+            {
+              listStuffNum.push(resDB.rows[i].get_stuff)
+            }
+            if (listStuffNum.length>0)
+            {
+              console.log('listStuffNum '+listStuffNum)
+              let strStuffArr=listStuffNum.join(",");
+              console.log ("strStuffArr "+strStuffArr);
+              let query2= `
+                    SELECT *, barter.id AS barterid
+                    FROM barter
+                    JOIN stuff ON barter.get_stuff = stuff.id
+                    WHERE stuff.id IN (${strStuffArr}) AND stuff.type = 'get';`
+              console.log (query2);
+              pool.query(query2, function(err,resDB){
+                if (!err)
+                {
 
-              },
-              get:{
-                name: null,
-                category: null,
-                imagePath: null,
-                description: null,
-                free: false,
+                  
+                  for (let i=0;i<resDB.rows.length;i++)
+                  {
+                    let getResult=resDB.rows[i].name.toLowerCase();
+                    let categoryResult=resDB.rows[i].category_id;
+                    console.log (resDB.rows[i].name);
+                    if (giveAndGet==true)
+                    {
 
-              }
-            };
-            console.log(resDB.rows[0]);
-            barterData.give.name=resDB.rows[0].give_name;
-            barterData.give.category=getNameCategoryToId(resDB.rows[0].give_category_id);
-            barterData.give.imagePath=resDB.rows[0].give_link_image;
-            barterData.give.description=resDB.rows[0].give_description;
+                      if ((getResult.indexOf(data.nameGet)!=-1 && data.categoryGet==0)||
+                        ( getResult.indexOf(data.nameGet)!=-1 &&
+                        data.categoryGet!=0 && 
+                        categoryResult==data.categoryGet))
+                      {
+                        result.push(resDB.rows[i]);
+                      }
+                    }
+                    else if (giveAndCatGet==true)
+                    {
+                      if (( resDB.rows[i].category_id==data.categoryGet &&
+                            data.nameGet=='')
+                            ||
+                            ( getResult.indexOf(data.nameGet)!=-1 &&
+                              data.nameGet!='' && 
+                              categoryResult==data.categoryGet )
+                          )
+                      {
+                        result.push(resDB.rows[i]);
+                      }
+                    }
+                    
+                  }
+                }
+                else
+                {
+                  console.log(err)
+                }
+                console.log(result);
 
-            barterData.get.name=resDB.rows[0].get_name;
-            barterData.get.category=getNameCategoryToId(resDB.rows[0].get_category_id);
-            barterData.get.imagePath=resDB.rows[0].get_link_image;
-            barterData.get.description=resDB.rows[0].get_description;
 
-            barterData.get.free=resDB.rows[0].free;
+                getResponceBarter(result)
 
-            nameSurname=resDB.rows[0].name_user+" "+resDB.rows[0].surname_user;
-            let city_name=resDB.rows[0].city_name;
-            res.render('viewsBarter',{categoryList: categoryListStr,  
-                                      dataUser: data, 
-                                      nameUser: nameSurname,
-                                      city: city_name,
-                                      noViewsCity: true,
-                                      barterData: barterData,
-                                      defectNoQuery: flagNoDefectQuery});
-          }
+                // let barterListId=[];
+                // for (let i=0;i<result.length;i++)
+                // {
+                //   barterListId.push(result[i].barterid);
+                // }
+                // getBarterGiveGet(barterListId).then(function(result2){
+
+
+                //   console.log('get Barter ARR PROMISE',result2)
+                //   res.send(result2);
+                // }).catch(function(err){
+
+                  
+                //     console.log('get barter ERROR PROMISE',err)
+                // })
+                //res.send('result query gg')
+                  
+              });
+            }
+
+          }   
           else
           {
-            res.send('Бартер не найден.')
-          }  
-        
+            result=resDB.rows;
+          }
+          console.log(result);
+          if (giveAndGet==false && giveAndCatGet==false) getResponceBarter(result)//res.send('result none ')
         }
         else
         {
-          res.send('Страница не найдена.')
+          console.log(err);
+          res.send('errorResult')
         }
-      });
-    })
+
+
+      })
+    } 
+    function getResponceBarter(result)
+    {
+      let barterListId=[];
+      for (let i=0;i<result.length;i++)
+      {
+        barterListId.push(result[i].barterid);
+      }
+      getBarterGiveGet(barterListId).then(function(result2){
+        
+        
+        console.log('get Barter ARR PROMISE',result2)
+        res.send(result2);
+      }).catch(function(err){
+        
+        
+        console.log('get barter ERROR PROMISE',err)
+      })
+    }
+  });
   app.post('/listForCity/', function(req,res){
   let result=[];
   //console.log(req);
@@ -934,7 +876,6 @@ function calcBarterArr(rowsDB)
     }
   }
   console.log(count);
-  
   if (count==0)
   {
     result=null;
@@ -943,15 +884,12 @@ function calcBarterArr(rowsDB)
   res.send(result);
   //res.send('Hello aim ajax response');
 });
-app.get('/messanger/', function (req, res){
-  res.render('messanger');
-})
 app.post('/changeCity/',function(req,res){
   let city=req.body.city;
   console.log(req.body);
   console.log(city);
   res.cookie('city',''+city,{
-    maxAge: 1000 * 60 * 60 * 24 * 30,
+    maxAge: 1000 * 60 * 60 * 24 *30,
   });
   res.send(city);
 })
@@ -1024,6 +962,4 @@ function generateRandomName(length)
 08.08.2025 останивился на том что подготавливал данные бартера для записи в БД
 
 12.09.2025 остановился на побдоре условий для поискка по категориям
-
-29.10.2025 остановился на том что делал изменение бартера update for DB
 */
