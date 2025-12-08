@@ -434,6 +434,16 @@ function getDataForRecordDb(req/*, files*/)
   dataForDB.cityName=req.cookies.city;
   return {dataForDB: dataForDB, getStuff: getStuff, giveStuff: giveStuff};
 }
+app.get('/messanger/', function(req, res){
+  // res.send('messanger PAGE')
+   let data=null///*req.cookies[0]*/dataUser[0][0];
+  if (dataUser[0]!=undefined)
+  {
+    data=dataUser[0][0];
+  }
+   res.render('messanger',{dataUser: data, noViewsCity: true })
+  // render.page
+})
 app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
  
 
