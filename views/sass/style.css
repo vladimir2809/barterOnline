@@ -425,6 +425,7 @@ html {
 
 .contact-select {
   width: 30rem;
+  border: 0.1rem solid black;
 }
 
 .contact {
@@ -440,7 +441,7 @@ html {
   padding-left: 1rem;
   border-radius: 50%;
   margin-right: 0.6rem;
-  background-color: red;
+  background-color: green;
 }
 .contact__literal > span {
   font-size: 2rem;
