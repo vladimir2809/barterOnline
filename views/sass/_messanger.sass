@@ -6,6 +6,8 @@
     display: grid
     grid-template-columns: 31rem 1fr 
     border-top: .1rem solid black
+    @include respond(phone)
+        grid-template-columns: 1fr 
 .contact-select
     grid-column: 1 / 2
     width: 31rem
@@ -13,13 +15,18 @@
     padding-right: 1rem
     padding-top: 1rem
     border-right: .1rem solid black
-    // border-top: .1rem solid black
+    @include respond (phone)
+        width: 100%
+        padding-right: 0 
+        border-right: none
+
      
 .contact
     display: flex
     padding: .5rem
     border: 1px solid black
     border-radius: .7rem
+    margin-bottom: 1rem
    
    
     &__cont
@@ -48,17 +55,22 @@
         width: 23.5rem
         height: 1.2rem
 .text-block
-    grid-column: 2 / 3
-    width: 100%
-    padding: 0 1.5rem 1.5rem 1.5rem
-    // border-top: .1rem solid black
+    @include respond(nophone)
+        grid-column: 2 / 3
+        width: 100%
+        padding: 0 1.5rem 1.5rem 1.5rem
+    @include respond(phone)
+        display: none
+        width: 0%
 .text-item
     width: 70%
     padding: 1.2rem
     margin-top: 1rem
     border-radius: 1rem
     &__message
+        word-break: break-all
         font-size: 1.8rem
+
 .noaim-send
     float: left
     background-color: #AFA

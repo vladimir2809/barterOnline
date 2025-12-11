@@ -78,18 +78,20 @@ window.addEventListener('load',()=>{
       }
     });
 
-
-    SendRequest('POST','/getCity/',"",function(request){
-      cityCurrent=request.response;
-      citySelected.innerText=cityCurrent;
-      
-      // let cityBarterHTML=document.getElementById('newBarter-city');
-      if (cityBarterHTML!=undefined)
-      {
-        cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent+"?";
-
-      }
-    });
+    if (citySelected!=null)
+    {
+      SendRequest('POST','/getCity/',"",function(request){
+        cityCurrent=request.response;
+        citySelected.innerText=cityCurrent;
+        
+        // let cityBarterHTML=document.getElementById('newBarter-city');
+        if (cityBarterHTML!=undefined)
+        {
+          cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent+"?";
+          
+        }
+      });
+    }
 
 
 

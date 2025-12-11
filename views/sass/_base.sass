@@ -7,6 +7,9 @@
 html
     font-size: 62.5%
 @mixin respond($breakpoint)
+    @if $breakpoint == nophone
+        @media only screen and (min-width: 430px) //758
+            @content
     @if $breakpoint == phone
         @media only screen and (max-width: 430px) //758
             @content

@@ -426,6 +426,11 @@ html {
   grid-template-columns: 31rem 1fr;
   border-top: 0.1rem solid black;
 }
+@media only screen and (max-width: 430px) {
+  .messanger {
+    grid-template-columns: 1fr;
+  }
+}
 
 .contact-select {
   grid-column: 1/2;
@@ -435,12 +440,20 @@ html {
   padding-top: 1rem;
   border-right: 0.1rem solid black;
 }
+@media only screen and (max-width: 430px) {
+  .contact-select {
+    width: 100%;
+    padding-right: 0;
+    border-right: none;
+  }
+}
 
 .contact {
   display: flex;
   padding: 0.5rem;
   border: 1px solid black;
   border-radius: 0.7rem;
+  margin-bottom: 1rem;
 }
 .contact__literal {
   width: 3.5rem;
@@ -467,10 +480,18 @@ html {
   height: 1.2rem;
 }
 
-.text-block {
-  grid-column: 2/3;
-  width: 100%;
-  padding: 0 1.5rem 1.5rem 1.5rem;
+@media only screen and (min-width: 430px) {
+  .text-block {
+    grid-column: 2/3;
+    width: 100%;
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+}
+@media only screen and (max-width: 430px) {
+  .text-block {
+    display: none;
+    width: 0%;
+  }
 }
 
 .text-item {
@@ -480,6 +501,7 @@ html {
   border-radius: 1rem;
 }
 .text-item__message {
+  word-break: break-all;
   font-size: 1.8rem;
 }
 
