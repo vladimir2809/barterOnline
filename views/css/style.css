@@ -480,6 +480,10 @@ html {
   height: 1.2rem;
 }
 
+.text-block {
+  display: grid;
+  grid-template-rows: 80% 20%;
+}
 @media only screen and (min-width: 430px) {
   .text-block {
     grid-column: 2/3;
@@ -492,6 +496,28 @@ html {
     display: none;
     width: 0%;
   }
+}
+.text-block__cont {
+  grid-rows: 1/2;
+}
+
+.input-block {
+  grid-rows: 2/3;
+  display: flex;
+  position: fixed;
+  justify-content: space-between;
+  align-items: center;
+  bottom: 0rem;
+}
+.input-block__input {
+  margin-right: 0.5rem;
+  border: 0.2rem solid gray;
+  width: calc(100% - 4rem - 0.5rem);
+  background-color: white;
+}
+.input-block__button-img {
+  width: 4rem;
+  height: 4rem;
 }
 
 .text-item {

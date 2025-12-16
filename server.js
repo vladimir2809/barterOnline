@@ -434,6 +434,7 @@ function getDataForRecordDb(req/*, files*/)
   dataForDB.cityName=req.cookies.city;
   return {dataForDB: dataForDB, getStuff: getStuff, giveStuff: giveStuff};
 }
+// КОД ОТВЕЧАЮШИЙ ЗА СТРАНИЦУ МЕССАНДЖЕР
 app.get('/messanger/', function(req, res){
   // res.send('messanger PAGE')
    let data=null///*req.cookies[0]*/dataUser[0][0];

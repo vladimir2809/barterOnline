@@ -55,6 +55,8 @@
         width: 23.5rem
         height: 1.2rem
 .text-block
+    display: grid
+    grid-template-rows: 80% 20%
     @include respond(nophone)
         grid-column: 2 / 3
         width: 100%
@@ -62,6 +64,28 @@
     @include respond(phone)
         display: none
         width: 0%
+    &__cont
+        grid-rows: 1 / 2
+.input-block
+    grid-rows: 2 / 3
+    display: flex
+    position: fixed
+    justify-content: space-between
+    align-items: center
+    //min-width: 60%
+    // max-width: 120rem
+    //width: 20rem
+    bottom: 0rem
+    // background-color: #AAA
+    
+    &__input
+        margin-right: .5rem
+        border: .2rem solid gray
+        width: calc(100% - 4rem - .5rem)
+        background-color: white
+    &__button-img
+        width: 4rem
+        height: 4rem
 .text-item
     width: 70%
     padding: 1.2rem
