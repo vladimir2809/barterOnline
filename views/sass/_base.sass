@@ -13,7 +13,9 @@ html
     @if $breakpoint == phone
         @media only screen and (max-width: 430px) //758
             @content
-
+    @if $breakpoint == messanger
+        @media only screen and (max-width: 500px) //758
+            @content
     @if $breakpoint == tab-port
         @media only screen and (max-width: 1024px)// 834
             @content
