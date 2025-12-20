@@ -56,7 +56,8 @@
         height: 1.2rem
 .text-block
     display: grid
-    grid-template-rows: 80% 20%
+    grid-template-rows: 5% 75% 20%
+    grid-gap: 2rem
     @include respond(nophone)
         grid-column: 2 / 3
         width: 100%
@@ -64,8 +65,21 @@
     @include respond(messanger)
         display: none
         width: 0%
+    &__info
+        display: flex
+        align-items: center  
+        padding: .3rem  
+        height: 3.5rem
+        margin: .75rem 0 .75rem 0
+    &__info-back
+        width: 3rem
+        height: 3rem
+        margin-right: 5rem
+    &__info-name
+        font-size: 1.6rem
     &__cont
         grid-rows: 1 / 2
+
 .input-block
     grid-rows: 2 / 3
     display: flex
@@ -76,7 +90,7 @@
     // max-width: 120rem
     //width: 20rem
     bottom: 0rem
-    // background-color: #AAA
+    background-color: #AAA
     
     &__input
         margin-right: .5rem
@@ -91,8 +105,10 @@
 .text-item
     width: 70%
     padding: 1.2rem
-    margin-top: 1rem
+    // margin-top: 1rem
     border-radius: 1rem
+    &:last-child
+        margin-bottom: 2.5rem
     &__message
         word-break: break-all
         font-size: 1.8rem
