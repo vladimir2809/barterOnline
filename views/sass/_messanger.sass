@@ -1,15 +1,21 @@
 .messanger
     grid-column: content-start / content-end
     // grid-rows: 2 / 3
-    margin-top: 1rem
-    padding: 0 1rem 1rem 1rem
     display: grid
     grid-template-columns: 31rem 1fr 
+    height: 100vh
+    margin-top: 1rem
+    padding: 0 1rem 1rem 1rem
+    
     border-top: .1rem solid black
     @include respond(messanger)
         grid-template-columns: 1fr 
 .contact-select
-    grid-column: 1 / 2
+    //grid-column: 1 / 2
+    position: sticky
+    overflow: hidden
+    overflow-y: scroll
+    // top: 8rem
     width: 31rem
     height: 100vh
     padding-right: 1rem
@@ -56,8 +62,13 @@
         height: 1.2rem
 .text-block
     display: grid
-    grid-template-rows: 5% 75% 20%
+    grid-template-rows: 5rem max-content 4rem
+    // position: fixed
+    height: 100vh
+    // left: 31rem
     grid-gap: 2rem
+    // overflow: hidden
+    // overflow-y: scroll
     @include respond(nophone)
         grid-column: 2 / 3
         width: 100%
@@ -78,7 +89,12 @@
     &__info-name
         font-size: 1.6rem
     &__cont
-        grid-rows: 1 / 2
+        // grid-rows: 2 / 3
+        height: 75vh
+        position: sticky
+        left: 31rem
+        overflow: hidden
+        overflow-y: scroll
 
 .input-block
     grid-rows: 2 / 3
@@ -107,8 +123,9 @@
     padding: 1.2rem
     // margin-top: 1rem
     border-radius: 1rem
+    margin-bottom: .5rem
     &:last-child
-        margin-bottom: 2.5rem
+        margin-bottom: 4.5rem
     &__message
         word-break: break-all
         font-size: 1.8rem

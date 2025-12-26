@@ -420,10 +420,11 @@ html {
 
 .messanger {
   grid-column: content-start/content-end;
-  margin-top: 1rem;
-  padding: 0 1rem 1rem 1rem;
   display: grid;
   grid-template-columns: 31rem 1fr;
+  height: 100vh;
+  margin-top: 1rem;
+  padding: 0 1rem 1rem 1rem;
   border-top: 0.1rem solid black;
 }
 @media only screen and (max-width: 500px) {
@@ -433,7 +434,9 @@ html {
 }
 
 .contact-select {
-  grid-column: 1/2;
+  position: sticky;
+  overflow: hidden;
+  overflow-y: scroll;
   width: 31rem;
   height: 100vh;
   padding-right: 1rem;
@@ -482,7 +485,8 @@ html {
 
 .text-block {
   display: grid;
-  grid-template-rows: 5% 75% 20%;
+  grid-template-rows: 5rem max-content 4rem;
+  height: 100vh;
   grid-gap: 2rem;
 }
 @media only screen and (min-width: 430px) {
@@ -514,7 +518,11 @@ html {
   font-size: 1.6rem;
 }
 .text-block__cont {
-  grid-rows: 1/2;
+  height: 75vh;
+  position: sticky;
+  left: 31rem;
+  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .input-block {
@@ -541,9 +549,10 @@ html {
   width: 70%;
   padding: 1.2rem;
   border-radius: 1rem;
+  margin-bottom: 0.5rem;
 }
 .text-item:last-child {
-  margin-bottom: 2.5rem;
+  margin-bottom: 4.5rem;
 }
 .text-item__message {
   word-break: break-all;
