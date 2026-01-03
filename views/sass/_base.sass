@@ -6,15 +6,17 @@
     //border: 1px solid red !important
 html
     font-size: 62.5%
+ 
+
 @mixin respond($breakpoint)
     @if $breakpoint == nophone
-        @media only screen and (min-width: 430px) //758
+        @media only screen and (min-width: 429px) //758
             @content
     @if $breakpoint == phone
         @media only screen and (max-width: 430px) //758
             @content
     @if $breakpoint == messanger
-        @media only screen and (max-width: 500px) //758
+        @media only screen and (max-width: 550px) //758
             @content
     @if $breakpoint == tab-port
         @media only screen and (max-width: 1024px)// 834

@@ -427,7 +427,7 @@ html {
   padding: 0 1rem 1rem 1rem;
   border-top: 0.1rem solid black;
 }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 550px) {
   .messanger {
     grid-template-columns: 1fr;
   }
@@ -437,13 +437,14 @@ html {
   position: sticky;
   overflow: hidden;
   overflow-y: scroll;
+  scrollbar-width: none;
   width: 31rem;
   height: 100vh;
   padding-right: 1rem;
   padding-top: 1rem;
   border-right: 0.1rem solid black;
 }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 550px) {
   .contact-select {
     width: 100%;
     padding-right: 0;
@@ -485,18 +486,18 @@ html {
 
 .text-block {
   display: grid;
-  grid-template-rows: 5rem max-content 4rem;
+  grid-template-rows: 5rem 25rem 4rem;
   height: 100vh;
   grid-gap: 2rem;
+  padding: 0 1.5rem 1.5rem 1.5rem;
 }
-@media only screen and (min-width: 430px) {
+@media only screen and (min-width: 429px) {
   .text-block {
     grid-column: 2/3;
     width: 100%;
-    padding: 0 1.5rem 1.5rem 1.5rem;
   }
 }
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 550px) {
   .text-block {
     display: none;
     width: 0%;
@@ -518,11 +519,12 @@ html {
   font-size: 1.6rem;
 }
 .text-block__cont {
-  height: 75vh;
+  height: 72vh;
   position: sticky;
   left: 31rem;
   overflow: hidden;
   overflow-y: scroll;
+  scrollbar-width: none;
 }
 
 .input-block {
@@ -530,19 +532,27 @@ html {
   display: flex;
   position: fixed;
   justify-content: space-between;
-  align-items: center;
-  bottom: 0rem;
-  background-color: #AAA;
+  align-items: flex-end;
+  bottom: 3rem;
+  border: 1px solid #BFB;
+  border-radius: 1rem;
+  background-color: #BFB;
 }
 .input-block__input {
   margin-right: 0.5rem;
-  border: 0.2rem solid gray;
-  background-color: white;
+  padding: 0.7rem 0.4rem;
+  border: 0.2rem solid #BFB;
+  border-radius: 1rem;
+  background-color: #BFB;
+  outline: 0.2rem solid #BFB;
   font-size: 1.8rem;
+  overflow: hidden;
 }
 .input-block__button-img {
   width: 4rem;
   height: 4rem;
+  border: 2px solid blue;
+  border-radius: 2rem;
 }
 
 .text-item {
@@ -551,11 +561,8 @@ html {
   border-radius: 1rem;
   margin-bottom: 0.5rem;
 }
-.text-item:last-child {
-  margin-bottom: 4.5rem;
-}
 .text-item__message {
-  word-break: break-all;
+  overflow-wrap: break-word;
   font-size: 1.8rem;
 }
 

@@ -1,5 +1,5 @@
-var widthScreenValue=500//430;
-var widthOnlyCantacts=500;
+var widthScreenValue=550//430;
+var widthOnlyCantacts=550;
 var widthButtonSend=40;
 var flagNoContactView=false;
 var widthScreen=window.innerWidth;
@@ -7,6 +7,7 @@ var widthScreen=window.innerWidth;
 var contacts = document.getElementsByClassName('contact');
 var contactSelect = document.getElementsByClassName('contact-select')[0];
 var textBlock = document.getElementsByClassName('text-block')[0];
+var textBlockCont = document.getElementsByClassName('text-block__cont')[0];
 var arrowBack=document.getElementsByClassName('text-block__info-back')[0];
 
 // alert('AIM MESSANGER JS');
@@ -26,8 +27,8 @@ for (let i=0; i < contacts.length;i++)
 setInterval(function(){
     widthScreen=window.innerWidth;
     let heightScreen=window.innerHeight;
-    console.log(widthScreen);
-    if (widthScreen < widthOnlyCantacts)
+    // console.log(widthScreen);
+    if (widthScreen <= widthOnlyCantacts)
     {
         arrowBack.style.display='block';
         if (flagNoContactView==false)
@@ -37,7 +38,7 @@ setInterval(function(){
             textBlock.style.gridColumn="1 / 3";
         }
     }
-    if (flagNoContactView==true && widthScreen < widthOnlyCantacts)
+    if (flagNoContactView==true && widthScreen <= widthOnlyCantacts)
     {
         goPressContactsOnly()
         // flagNoContactView=true;
@@ -46,7 +47,7 @@ setInterval(function(){
         // textBlock.style.display="block";
         // textBlock.style.gridColumn="1 / 3";
     }
-    if (widthScreen >= widthOnlyCantacts) 
+    if (widthScreen > widthOnlyCantacts) 
     {
         arrowBack.style.display='none';
         // goPressButtonBack()
@@ -62,16 +63,18 @@ setInterval(function(){
    
     if (widthScreen > widthScreenValue)
     {
-        if(flagNoContactView==false)
+        //if(flagNoContactView==false)// Когда видны контакты и сообшения
         {   
-            let widthInput=widthScreen-(widthScreenValue-widthButtonSend*0.25/*0.875*/)
+            let widthInput=widthScreen-(widthScreenValue*0.738/*-widthButtonSend*3.35/*1.75/*0.875*/)
+            //console.log("flagNoContactView==false")
             sendInput.style.width=`${widthInput}px`;
         }
     }
+    else// ATENTION !!!
     {
-        if(flagNoContactView==true)
+        //if(flagNoContactView==true)
         {   
-            let widthInput=widthScreen-widthButtonSend *.8//2.2;
+            let widthInput=widthScreen-widthButtonSend*2.38 //*1.8//2.2;
             sendInput.style.width=`${widthInput}px`;
         }
     }
@@ -82,7 +85,7 @@ for (let i=0; i < contacts.length;i++)
 {
     
     contacts[i].addEventListener("click", function(event){
-        if (widthScreen < widthOnlyCantacts)
+        if (widthScreen <= widthOnlyCantacts)
         {
 
             flagNoContactView=true;
@@ -108,6 +111,34 @@ arrowBack.addEventListener('click', function(event){
         // textBlock.style.width='100%';
     }
 })
+sendInput.addEventListener("focus", noScroll);
+sendInput.addEventListener("focusout", function(){
+    yesScroll();
+});
+ 
+function noScroll()
+{   
+    // Предотвратить прокрутку колесиком мыши
+    textBlockCont.addEventListener('wheel',  noScrollFunc1, { passive: false }); // { passive: false } необходимо для отмены прокрутки
+    
+    // Предотвратить прокрутку пальцем на мобильных (touchmove)
+    textBlockCont.addEventListener('touchmove',  noScrollFunc2, { passive: false });
+    // sendInput.removeEventListener("wheel", noScrollFunc1, { passive: false });
+}
+function yesScroll()
+{
+    textBlockCont.removeEventListener("wheel", noScrollFunc1, { passive: true });
+    textBlockCont.removeEventListener("touchmove", noScrollFunc2, { passive: true });
+}
+
+function noScrollFunc1(event)
+{
+    event.preventDefault();
+}
+function noScrollFunc2(event)
+{
+    event.preventDefault();
+}
 function goPressButtonBack()// когда нажимаю на стрелочку назад
 {
     flagNoContactView=false;
