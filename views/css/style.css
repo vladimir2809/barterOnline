@@ -11,8 +11,26 @@ html {
 
 .container {
   display: grid;
-  grid-template-columns: [full-start] 1fr [content-start] minmax(42rem, 136rem) [content-end] 1fr [full-end];
+  width: 100%;
+  grid-template-columns: [full-start] 1fr [content-start] minmax(43rem, 136rem) [content-end] 1fr [full-end];
   grid-template-rows: max-content max-content;
+}
+
+.developer {
+  position: absolute;
+  top: 12rem;
+  left: 2rem;
+  font-size: 1.6rem;
+  font-weight: 900;
+  z-index: 100;
+}
+.developer__WScreen {
+  color: red;
+  width: 15rem;
+}
+.developer__scale {
+  color: green;
+  width: 15rem;
 }
 
 .header {
@@ -420,14 +438,14 @@ html {
 
 .messanger {
   grid-column: content-start/content-end;
+  grid-rows: 2/3;
   display: grid;
   grid-template-columns: 31rem 1fr;
-  height: 100vh;
   margin-top: 1rem;
   padding: 0 1rem 1rem 1rem;
   border-top: 0.1rem solid black;
 }
-@media only screen and (max-width: 550px) {
+@media only screen and (max-width: 925px) {
   .messanger {
     grid-template-columns: 1fr;
   }
@@ -439,12 +457,12 @@ html {
   overflow-y: scroll;
   scrollbar-width: none;
   width: 31rem;
-  height: 100vh;
+  height: 88vh;
   padding-right: 1rem;
   padding-top: 1rem;
   border-right: 0.1rem solid black;
 }
-@media only screen and (max-width: 550px) {
+@media only screen and (max-width: 925px) {
   .contact-select {
     width: 100%;
     padding-right: 0;
@@ -487,17 +505,17 @@ html {
 .text-block {
   display: grid;
   grid-template-rows: 5rem 25rem 4rem;
-  height: 100vh;
+  height: 70%;
   grid-gap: 2rem;
   padding: 0 1.5rem 1.5rem 1.5rem;
 }
-@media only screen and (min-width: 429px) {
+@media only screen and (min-width: 431px) {
   .text-block {
     grid-column: 2/3;
     width: 100%;
   }
 }
-@media only screen and (max-width: 550px) {
+@media only screen and (max-width: 925px) {
   .text-block {
     display: none;
     width: 0%;
@@ -519,7 +537,7 @@ html {
   font-size: 1.6rem;
 }
 .text-block__cont {
-  height: 72vh;
+  height: 85%;
   position: sticky;
   left: 31rem;
   overflow: hidden;
@@ -528,23 +546,22 @@ html {
 }
 
 .input-block {
-  grid-rows: 2/3;
   display: flex;
   position: fixed;
   justify-content: space-between;
   align-items: flex-end;
-  bottom: 3rem;
-  border: 1px solid #BFB;
+  bottom: 5vh;
+  border: 1px solid #CCC;
   border-radius: 1rem;
-  background-color: #BFB;
+  background-color: #CCC;
 }
 .input-block__input {
   margin-right: 0.5rem;
   padding: 0.7rem 0.4rem;
-  border: 0.2rem solid #BFB;
+  border: 0.2rem solid #CCC;
   border-radius: 1rem;
-  background-color: #BFB;
-  outline: 0.2rem solid #BFB;
+  background-color: #CCC;
+  outline: 0.2rem solid #CCC;
   font-size: 1.8rem;
   overflow: hidden;
 }

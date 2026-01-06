@@ -3,20 +3,16 @@
     padding: 0
     box-sizing: border-box
     line-height: 100%
-    //border: 1px solid red !important
-html
-    font-size: 62.5%
- 
-
+    // border: 1px solid red !important
 @mixin respond($breakpoint)
     @if $breakpoint == nophone
-        @media only screen and (min-width: 429px) //758
+        @media only screen and (min-width: 431px) //758
             @content
     @if $breakpoint == phone
-        @media only screen and (max-width: 430px) //758
+        @media only screen and (max-width: 430px) //430 //758
             @content
     @if $breakpoint == messanger
-        @media only screen and (max-width: 550px) //758
+        @media only screen and (max-width: 925px) //758
             @content
     @if $breakpoint == tab-port
         @media only screen and (max-width: 1024px)// 834
@@ -25,7 +21,11 @@ html
     @if $breakpoint == big-screen
         @media only screen and (min-width: 1340px)
             @content
+html
+    font-size: 62.5%
+
 .container
     display: grid
-    grid-template-columns: [full-start] 1fr  [content-start] minmax(42rem, 136rem) [content-end] 1fr [full-end]
+    width: 100%
+    grid-template-columns: [full-start] 1fr  [content-start] minmax(43rem, 136rem) [content-end] 1fr [full-end]
     grid-template-rows:  max-content max-content

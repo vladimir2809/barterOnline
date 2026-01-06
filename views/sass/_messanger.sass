@@ -1,10 +1,10 @@
-$colorInputMessage: #BFB
+$colorInputMessage: #CCC
 .messanger
     grid-column: content-start / content-end
-    // grid-rows: 2 / 3
+    grid-rows: 2 / 3
     display: grid
-    grid-template-columns: 31rem 1fr 
-    height: 100vh
+    grid-template-columns: 31rem 1fr //max-content 1fr
+    // height: 88vh//75vh
     margin-top: 1rem
     padding: 0 1rem 1rem 1rem
     
@@ -20,7 +20,7 @@ $colorInputMessage: #BFB
     scrollbar-width: none
     // top: 8rem
     width: 31rem
-    height: 100vh
+    height: 88vh
     padding-right: 1rem
     padding-top: 1rem
     border-right: .1rem solid black
@@ -67,7 +67,7 @@ $colorInputMessage: #BFB
     display: grid
     grid-template-rows: 5rem 25rem 4rem
     // position: fixed
-    height: 100vh
+    height: 70%
     // left: 31rem
     grid-gap: 2rem
     padding: 0 1.5rem 1.5rem 1.5rem
@@ -94,7 +94,7 @@ $colorInputMessage: #BFB
         font-size: 1.6rem
     &__cont
         // grid-rows: 2 / 3
-        height: 72vh//75vh
+        height: 85%//75vh
         position: sticky
         left: 31rem
         overflow: hidden
@@ -104,7 +104,7 @@ $colorInputMessage: #BFB
         //     overflow: hidden // Скрывает полосу прокрутки
 
 .input-block
-    grid-rows: 2 / 3
+    // grid-rows: 2 / 3
     display: flex
     position: fixed
     justify-content: space-between
@@ -112,12 +112,11 @@ $colorInputMessage: #BFB
     //min-width: 60%
     // max-width: 120rem
     //width: 20rem
-    bottom: 3rem
+    bottom: 5vh//3rem
     border: 1px solid $colorInputMessage//green
     border-radius: 1rem
     background-color: $colorInputMessage
-    
-    &__input
+    &__input 
         margin-right: .5rem
         padding: .7rem .4rem
         border: .2rem solid  $colorInputMessage//gray
@@ -127,8 +126,8 @@ $colorInputMessage: #BFB
         outline: .2rem solid  $colorInputMessage
         font-size: 1.8rem
         overflow: hidden
-        // & :focus
-        //     border: .2rem solid  #$colorInputMessage
+        // @include respond(messanger)
+        //     max-height: 20rem
     &__button-img
         width: 4rem
         height: 4rem

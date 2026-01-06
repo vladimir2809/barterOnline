@@ -1,5 +1,5 @@
-var widthScreenValue=550//430;
-var widthOnlyCantacts=550;
+var widthScreenValue=925//430;
+var widthOnlyCantacts=925;
 var widthButtonSend=40;
 var flagNoContactView=false;
 var widthScreen=window.innerWidth;
@@ -65,7 +65,7 @@ setInterval(function(){
     {
         //if(flagNoContactView==false)// Когда видны контакты и сообшения
         {   
-            let widthInput=widthScreen-(widthScreenValue*0.738/*-widthButtonSend*3.35/*1.75/*0.875*/)
+            let widthInput=widthScreen-(widthScreenValue*0.455/*-widthButtonSend*3.35/*1.75/*0.875*/) / scale;
             //console.log("flagNoContactView==false")
             sendInput.style.width=`${widthInput}px`;
         }
@@ -74,7 +74,7 @@ setInterval(function(){
     {
         //if(flagNoContactView==true)
         {   
-            let widthInput=widthScreen-widthButtonSend*2.38 //*1.8//2.2;
+            let widthInput=(widthScreen-widthButtonSend*2.38 ) / scale//*1.8//2.2;
             sendInput.style.width=`${widthInput}px`;
         }
     }
