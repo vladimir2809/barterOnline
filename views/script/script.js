@@ -28,7 +28,7 @@ let cityArrDefault=["Москва", "Санкт-Петербург", "Новос
 function resizeText() {
   viewportWidth = window.innerWidth;
   document.body.style.transformOrigin = '0 0'; // Масштабировать от верхнего левого угла
-  //scale=1;
+  scale=1;
   if (viewportWidth != viewportWidthOld)
   {
 
