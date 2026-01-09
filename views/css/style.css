@@ -558,10 +558,8 @@ html {
 .input-block__input {
   margin-right: 0.5rem;
   padding: 0.7rem 0.4rem;
-  border: 0.2rem solid #CCC;
   border-radius: 1rem;
   background-color: #CCC;
-  outline: 0.2rem solid #CCC;
   font-size: 1.8rem;
   overflow: hidden;
 }

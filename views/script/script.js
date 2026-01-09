@@ -10,7 +10,7 @@ let countValidForm=0;
 const developer = false;
 var viewportWidth=window.innerWidth;
 var viewportWidthOld=window.innerWidth;
-let scale=10.9;
+let scale=1;
 // var hiddenFlagImgCategoryGive=null;
 // var hiddenFlagImgCategoryGet=null;
 
@@ -28,7 +28,7 @@ let cityArrDefault=["Москва", "Санкт-Петербург", "Новос
 function resizeText() {
   viewportWidth = window.innerWidth;
   document.body.style.transformOrigin = '0 0'; // Масштабировать от верхнего левого угла
-  //scale=1;
+  scale=1;
   if (viewportWidth != viewportWidthOld)
   {
 
@@ -36,8 +36,8 @@ function resizeText() {
 
       if (viewportWidth <= 430)
       {
-        let add=Math.abs(viewportWidth - viewportWidthOld)*0.6
-        if (Math.abs(viewportWidth - viewportWidthOld)<=5)
+        let add=Math.abs(viewportWidth - viewportWidthOld)*0.5
+        if (Math.abs(viewportWidth - viewportWidthOld)<=7)
         {
           add=1;
         }
@@ -64,7 +64,12 @@ function resizeText() {
         // document.body.style.transform = 'scale(1.0)';
       }
       viewportWidthOld=viewportWidth;
+
+      // let html=document.querySelector('html');
+      // html.style.transform= `scale(${scale})`;
+
       document.body.style.transform = `scale(${scale})`;
+      viewportWidth = window.innerWidth;
   }
   // document.body.style.transform = `scale(${scale})`;
 

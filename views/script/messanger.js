@@ -1,5 +1,7 @@
 var widthScreenValue=925//430;
-var widthOnlyCantacts=925;
+var widthOnlyContacts=925;
+var widthContacts=310;
+var widthMaxContainer=1360;
 var widthButtonSend=40;
 var flagNoContactView=false;
 var widthScreen=window.innerWidth;
@@ -28,7 +30,7 @@ setInterval(function(){
     widthScreen=window.innerWidth;
     let heightScreen=window.innerHeight;
     // console.log(widthScreen);
-    if (widthScreen <= widthOnlyCantacts)
+    if (widthScreen <= widthOnlyContacts)
     {
         arrowBack.style.display='block';
         if (flagNoContactView==false)
@@ -38,7 +40,7 @@ setInterval(function(){
             textBlock.style.gridColumn="1 / 3";
         }
     }
-    if (flagNoContactView==true && widthScreen <= widthOnlyCantacts)
+    if (flagNoContactView==true && widthScreen <= widthOnlyContacts)
     {
         goPressContactsOnly()
         // flagNoContactView=true;
@@ -47,7 +49,7 @@ setInterval(function(){
         // textBlock.style.display="block";
         // textBlock.style.gridColumn="1 / 3";
     }
-    if (widthScreen > widthOnlyCantacts) 
+    if (widthScreen > widthOnlyContacts) 
     {
         arrowBack.style.display='none';
         // goPressButtonBack()
@@ -60,32 +62,40 @@ setInterval(function(){
             textBlock.style.gridColumn="2 / 3";
         }
     }
-   
-    if (widthScreen > widthScreenValue)
-    {
-        //if(flagNoContactView==false)// Когда видны контакты и сообшения
-        {   
-            let widthInput=widthScreen-(widthScreenValue*0.455/*-widthButtonSend*3.35/*1.75/*0.875*/) / scale;
-            //console.log("flagNoContactView==false")
-            sendInput.style.width=`${widthInput}px`;
-        }
-    }
-    else// ATENTION !!!
-    {
-        //if(flagNoContactView==true)
-        {   
-            let widthInput=(widthScreen-widthButtonSend*2.38 ) / scale//*1.8//2.2;
-            sendInput.style.width=`${widthInput}px`;
-        }
-    }
+    // расчет ширины поля ввода сообщения
+    let minus =  15; 
+    if (widthScreen < 430/*widthScreenValue*/)
+    {   let scale2 =  widthScreen / (430);
+        let widthInput=340
+        widthInput /= 10;
+        sendInput.style.width=`${widthInput}rem`;
 
+    }
+    if (widthScreen > 430 && widthScreen < widthOnlyContacts)
+    {
+        let widthInput=widthScreen - widthButtonSend*2 - minus ;
+        widthInput /= 10;
+        sendInput.style.width=`${widthInput}rem`;
+    }
+    if (widthScreen >= widthOnlyContacts)
+    {
+        let widthInput=widthScreen - widthContacts - widthButtonSend*2 - minus ;
+        widthInput /= 10;
+        sendInput.style.width=`${widthInput}rem`;
+    }
+    if (widthScreen >= widthMaxContainer)
+    {
+        let widthInput=widthMaxContainer - widthContacts - widthButtonSend*2 - minus ;
+        widthInput /= 10;
+        sendInput.style.width=`${widthInput}rem`;
+    }
 },16)
 
 for (let i=0; i < contacts.length;i++)
 {
     
     contacts[i].addEventListener("click", function(event){
-        if (widthScreen <= widthOnlyCantacts)
+        if (widthScreen <= widthOnlyContacts)
         {
 
             flagNoContactView=true;
@@ -100,7 +110,7 @@ for (let i=0; i < contacts.length;i++)
     
 }
 arrowBack.addEventListener('click', function(event){
-    //if (widthScreen < widthOnlyCantacts)
+    //if (widthScreen < widthOnlyContacts)
     {
         goPressButtonBack()
 
