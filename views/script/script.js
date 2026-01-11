@@ -10,6 +10,7 @@ let countValidForm=0;
 const developer = false;
 var viewportWidth=window.innerWidth;
 var viewportWidthOld=window.innerWidth;
+var viewportHeight=window.innerHeight;
 let scale=1;
 // var hiddenFlagImgCategoryGive=null;
 // var hiddenFlagImgCategoryGet=null;
@@ -25,63 +26,11 @@ var city={
 }
 let cityArrDefault=["Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", 
                                 "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону"];
-function resizeText() {
-  viewportWidth = window.innerWidth;
-  document.body.style.transformOrigin = '0 0'; // Масштабировать от верхнего левого угла
-  scale=1;
-  if (viewportWidth != viewportWidthOld)
-  {
-
-      
-
-      if (viewportWidth <= 430)
-      {
-        let add=Math.abs(viewportWidth - viewportWidthOld)*0.5
-        if (Math.abs(viewportWidth - viewportWidthOld)<=7)
-        {
-          add=1;
-        }
-        scale =  viewportWidth / (430+add);
-        console.log('scale=',scale);
-        // document.body.style.transform = `scale(${scale})`;
-        // alert('scale')
-      
-      
-      }
-      else if (viewportWidth < 768) 
-      {
-        scale = 1;
-        // document.body.style.transform = 'scale(1.0)';
-      } 
-      else if (viewportWidth < 1200) 
-      {
-        scale = 1;
-        // document.body.style.transform = 'scale(1.0)';
-      } 
-      else
-      {
-        scale = 1;
-        // document.body.style.transform = 'scale(1.0)';
-      }
-      viewportWidthOld=viewportWidth;
-
-      // let html=document.querySelector('html');
-      // html.style.transform= `scale(${scale})`;
-
-      document.body.style.transform = `scale(${scale})`;
-      viewportWidth = window.innerWidth;
-  }
-  // document.body.style.transform = `scale(${scale})`;
-
-  console.log('scale=',scale);
-}
-setInterval(function(){
-  // for (let i=0; i<100 ; i++)
-    resizeText();
-
+setInterval(function(){ 
     if (developer==true)
     {
       document.getElementsByClassName('developer__WScreen')[0].innerText=viewportWidth;
+      document.getElementsByClassName('developer__HScreen')[0].innerText=viewportHeight;
       document.getElementsByClassName('developer__scale')[0].innerText=scale;
     }
     else
@@ -91,13 +40,9 @@ setInterval(function(){
       // document.getElementsByClassName('developer__scale')[0].innerText=scale;;
     }
 },16);
-window.addEventListener('resize', resizeText); // Вызываем при изменении размера
-window.addEventListener('pageshow', resizeText); // Вызываем при загрузка при переходе мобайл
-// window.addEventListener('load', resizeText);   // Вызываем при загрузке
-
 window.addEventListener('load',()=>{
     //alert('load end');
-    resizeText();
+    // resizeText();
     console.log (generateRandomName(10));
     // resultNode=document.getElementsByClassName('result')[0];
     // resultItemNode=document.getElementsByClassName('result-item')[0];

@@ -2,8 +2,15 @@
     grid-column: content-start / content-end
     // padding: 2rem
     display: grid
-    grid-template-columns: 1fr minmax(36rem, 80rem) 1fr
+    grid-template-columns: 1fr minmax(28rem, 80rem) 1fr
+    // justify-items: center
     padding: 3rem
+    @include respond(phone)
+        padding: 2rem
+    @include respond(phone-long)
+        padding: 2rem
+    @include respond(phone-middle)
+        padding: 2rem
     &__title
         grid-column: 2 / 3
         font-size: 3.6rem
@@ -18,17 +25,18 @@
         display: flex
     &__city
         font-size: 1.8rem//1.8
-        margin-left: 1rem
+        margin: 0 .5rem
+        // margin-left: 1rem
         @include respond(phone)
             font-size: 1.4rem
         // text-align: center
     &__change-city
         display: flex
-        align-items: center
+        align-items: start
         font-size: 1.6rem 
         color: #F0A
         cursor: pointer
-        margin-left: 1.5rem
+        margin-left: .5rem
         border: 1px solid gray
 .newBarter-give
     margin-bottom: 2rem
@@ -53,12 +61,11 @@
         margin-bottom: .5rem
     &__name
         width: 100%
-        
     &__label-name
         font-size: 1.6rem
     &__load-img
     &__img-preload
-        max-width: 30rem//100%
+        max-width: 100%//30rem
         height: auto
         // max-width: 100%
         // height: 100vh

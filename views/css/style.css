@@ -12,7 +12,7 @@ html {
 .container {
   display: grid;
   width: 100%;
-  grid-template-columns: [full-start] 1fr [content-start] minmax(43rem, 136rem) [content-end] 1fr [full-end];
+  grid-template-columns: [full-start] 1fr [content-start] minmax(32.5rem, 136rem) [content-end] 1fr [full-end];
   grid-template-rows: max-content max-content;
 }
 
@@ -78,6 +78,21 @@ html {
   cursor: pointer;
   margin-bottom: 0.5rem;
   border-bottom: 1px solid blue;
+}
+@media only screen and (max-width: 430px) {
+  .logo {
+    font-size: 1.8rem;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .logo {
+    font-size: 1.6rem;
+  }
+}
+@media only screen and (max-width: 375px) {
+  .logo {
+    font-size: 1.4rem;
+  }
 }
 .logo__title {
   color: red;
@@ -304,6 +319,10 @@ html {
   font-size: 1.6rem;
   padding: 0.3rem;
 }
+.link-newBarter {
+  text-align: center;
+}
+
 .title-label {
   grid-column: content-start/content-end;
   grid-row: 4/5;
@@ -441,8 +460,8 @@ html {
   grid-rows: 2/3;
   display: grid;
   grid-template-columns: 31rem 1fr;
-  margin-top: 1rem;
-  padding: 0 1rem 1rem 1rem;
+  height: calc(100% - 4rem);
+  padding: 0 0rem 1rem 0rem;
   border-top: 0.1rem solid black;
 }
 @media only screen and (max-width: 925px) {
@@ -502,55 +521,15 @@ html {
   height: 1.2rem;
 }
 
-.text-block {
-  display: grid;
-  grid-template-rows: 5rem 25rem 4rem;
-  height: 70%;
-  grid-gap: 2rem;
-  padding: 0 1.5rem 1.5rem 1.5rem;
-}
-@media only screen and (min-width: 431px) {
-  .text-block {
-    grid-column: 2/3;
-    width: 100%;
-  }
-}
-@media only screen and (max-width: 925px) {
-  .text-block {
-    display: none;
-    width: 0%;
-  }
-}
-.text-block__info {
-  display: flex;
-  align-items: center;
-  padding: 0.3rem;
-  height: 3.5rem;
-  margin: 0.75rem 0 0.75rem 0;
-}
-.text-block__info-back {
-  width: 3rem;
-  height: 3rem;
-  margin-right: 5rem;
-}
-.text-block__info-name {
-  font-size: 1.6rem;
-}
-.text-block__cont {
-  height: 85%;
-  position: sticky;
-  left: 31rem;
-  overflow: hidden;
-  overflow-y: scroll;
-  scrollbar-width: none;
-}
-
 .input-block {
   display: flex;
   position: fixed;
   justify-content: space-between;
   align-items: flex-end;
-  bottom: 5vh;
+  height: 4rem;
+  left: 1rem;
+  top: 1rem;
+  bottom: 1rem;
   border: 1px solid #CCC;
   border-radius: 1rem;
   background-color: #CCC;
@@ -602,11 +581,11 @@ html {
   justify-content: space-between;
 }
 .views-barter__button-change {
-  width: 10rem;
+  width: 8rem;
   margin-bottom: 1rem;
 }
 .views-barter__button-delete {
-  width: 10rem;
+  width: 8rem;
   margin-bottom: 1rem;
 }
 
@@ -630,6 +609,11 @@ html {
   width: 41rem;
   font-size: 1.4rem;
 }
+@media only screen and (max-width: 400px) {
+  .stuff-views > p {
+    width: 30rem;
+  }
+}
 .stuff-views__action {
   text-align: center;
 }
@@ -648,8 +632,23 @@ html {
 .newBarter {
   grid-column: content-start/content-end;
   display: grid;
-  grid-template-columns: 1fr minmax(36rem, 80rem) 1fr;
+  grid-template-columns: 1fr minmax(28rem, 80rem) 1fr;
   padding: 3rem;
+}
+@media only screen and (max-width: 430px) {
+  .newBarter {
+    padding: 2rem;
+  }
+}
+@media only screen and (max-width: 400px) {
+  .newBarter {
+    padding: 2rem;
+  }
+}
+@media only screen and (max-width: 375px) {
+  .newBarter {
+    padding: 2rem;
+  }
 }
 .newBarter__title {
   grid-column: 2/3;
@@ -669,7 +668,7 @@ html {
 }
 .newBarter__city {
   font-size: 1.8rem;
-  margin-left: 1rem;
+  margin: 0 0.5rem;
 }
 @media only screen and (max-width: 430px) {
   .newBarter__city {
@@ -678,11 +677,11 @@ html {
 }
 .newBarter__change-city {
   display: flex;
-  align-items: center;
+  align-items: start;
   font-size: 1.6rem;
   color: #F0A;
   cursor: pointer;
-  margin-left: 1.5rem;
+  margin-left: 0.5rem;
   border: 1px solid gray;
 }
 
@@ -722,7 +721,7 @@ html {
   font-size: 1.6rem;
 }
 .new-stuff__img-preload {
-  max-width: 30rem;
+  max-width: 100%;
   height: auto;
 }
 .new-stuff__div-description {
@@ -755,6 +754,11 @@ html {
   border-radius: 1rem;
   padding: 1rem;
   padding-top: 1.5rem;
+}
+@media only screen and (max-width: 375px) {
+  .signIn__form {
+    width: 26rem;
+  }
 }
 .signIn p {
   position: relative;
@@ -830,6 +834,11 @@ html {
   padding: 2rem;
   border: 1px solid gray;
   border-radius: 1rem;
+}
+@media only screen and (max-width: 375px) {
+  .registration__form {
+    width: 26rem;
+  }
 }
 .registration label {
   font-size: 1.6rem;

@@ -13,6 +13,8 @@ var textBlockCont = document.getElementsByClassName('text-block__cont')[0];
 var arrowBack=document.getElementsByClassName('text-block__info-back')[0];
 
 // alert('AIM MESSANGER JS');
+let inputBlock = document.getElementsByClassName('input-block')[0];
+inputBlock.style.display="none";
 var sendInput=document.getElementById('send-input');
 for (let i=0; i < contacts.length;i++)
 {
@@ -38,6 +40,7 @@ setInterval(function(){
             contactSelect.style.display='block';
             textBlock.style.display="none";
             textBlock.style.gridColumn="1 / 3";
+            inputBlock.style.display="none";
         }
     }
     if (flagNoContactView==true && widthScreen <= widthOnlyContacts)
@@ -60,12 +63,14 @@ setInterval(function(){
             contactSelect.style.display='block';
             textBlock.style.display="block";
             textBlock.style.gridColumn="2 / 3";
+            inputBlock.style.display="flex";
         }
     }
     // расчет ширины поля ввода сообщения
-    let minus =  15; 
-    if (widthScreen < 430/*widthScreenValue*/)
-    {   let scale2 =  widthScreen / (430);
+    let minus =  5; 
+    if (widthScreen <= 430/*widthScreenValue*/)
+    {   
+        let scale2 =  widthScreen / (430);
         let widthInput=340
         widthInput /= 10;
         sendInput.style.width=`${widthInput}rem`;
@@ -76,19 +81,30 @@ setInterval(function(){
         let widthInput=widthScreen - widthButtonSend*2 - minus ;
         widthInput /= 10;
         sendInput.style.width=`${widthInput}rem`;
+         let left = 15;
+        inputBlock.style.left= `${left}px`
     }
     if (widthScreen >= widthOnlyContacts)
     {
         let widthInput=widthScreen - widthContacts - widthButtonSend*2 - minus ;
         widthInput /= 10;
         sendInput.style.width=`${widthInput}rem`;
+        let left = widthContacts + 15;
+        inputBlock.style.left= `${left}px`
+        // inputBlock.style.left= `${left}px`
     }
     if (widthScreen >= widthMaxContainer)
     {
         let widthInput=widthMaxContainer - widthContacts - widthButtonSend*2 - minus ;
         widthInput /= 10;
         sendInput.style.width=`${widthInput}rem`;
+        let left = (widthScreen-widthMaxContainer) / 2 + widthContacts + 15;
+        inputBlock.style.left= `${left}px`
     }
+    // document.getElementsByClassName('input-block')[0].style.position = 'fixed'
+    let top = viewportHeight-40 //(viewportHeight / scale)+100;
+    inputBlock.style.top=`${top}px`;
+    // inputBlock.style.bottom= "1rem"//`${top}px`
 },16)
 
 for (let i=0; i < contacts.length;i++)
@@ -155,6 +171,7 @@ function goPressButtonBack()// когда нажимаю на стрелочку
     contactSelect.style.display='block';
     textBlock.style.display="none";
     textBlock.style.gridColumn="2 / 3";
+    inputBlock.style.display="none";
 }
 function goPressContactsOnly() // когда кликаю на контакт в малом разрешении
 {
@@ -163,6 +180,7 @@ function goPressContactsOnly() // когда кликаю на контакт в
     textBlock.style.display="block";
     textBlock.style.gridColumn="1 / 3";
     textBlock.style.width='100%';
+    inputBlock.style.display="flex";
 }
 function getRandomColor() {
   // Генерация случайного числа и преобразование в HEX-строку

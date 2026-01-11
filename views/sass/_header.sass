@@ -59,11 +59,15 @@
     font-size: 2rem
     cursor: pointer
     margin-bottom: .5rem
-    border-bottom: 1px solid blue
-    
+    border-bottom: 1px solid blue 
+    @include respond(phone)
+        font-size: 1.8rem
+    @include respond(phone-long)
+        font-size: 1.6rem
+    @include respond(phone-middle)
+        font-size: 1.4rem
     &__title
-        color: red
-        
+        color: red  
     &__title-span
         color: blue
 .main-menu
