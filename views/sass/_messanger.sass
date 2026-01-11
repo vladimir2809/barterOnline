@@ -3,7 +3,7 @@ $colorInputMessage: #CCC
     grid-column: content-start / content-end
     grid-rows: 2 / 3
     display: grid
-    grid-template-columns: 31rem 1fr //max-content 1fr
+    grid-template-columns: 32rem 1fr //max-content 1fr
     height: calc(100% - 4rem)//75vh
     // margin-top: 1rem
     padding: 0 0rem 1rem 0rem
@@ -12,17 +12,20 @@ $colorInputMessage: #CCC
         grid-template-columns: 1fr 
 
 .contact-select
-    //grid-column: 1 / 2
+    grid-column: 1 / 2
+    display: grid
     position: sticky
+    justify-items: center
     overflow: hidden
     overflow-y: scroll
     scrollbar-width: none
     // top: 8rem
-    width: 31rem
+    //width: 32rem
     height: 88vh
-    padding-right: 1rem
+    // padding-right: 1rem
     padding-top: 1rem
     border-right: .1rem solid black
+
     @include respond (messanger)
         width: 100%
         padding-right: 0 
@@ -35,6 +38,9 @@ $colorInputMessage: #CCC
     border: 1px solid black
     border-radius: .7rem
     margin-bottom: 1rem
+    min-width: 28.5rem
+    width: 90%
+    height: 5rem
     // overflow: hidden
    
     &__cont
@@ -157,4 +163,8 @@ $colorInputMessage: #CCC
 .aim-send
     float: right
     background-color: #AAF
+.new-message
+    font-size: 1.3rem
+    height: 1.4rem
+    font-weight: 900 
         

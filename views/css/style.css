@@ -459,7 +459,7 @@ html {
   grid-column: content-start/content-end;
   grid-rows: 2/3;
   display: grid;
-  grid-template-columns: 31rem 1fr;
+  grid-template-columns: 32rem 1fr;
   height: calc(100% - 4rem);
   padding: 0 0rem 1rem 0rem;
   border-top: 0.1rem solid black;
@@ -471,13 +471,14 @@ html {
 }
 
 .contact-select {
+  grid-column: 1/2;
+  display: grid;
   position: sticky;
+  justify-items: center;
   overflow: hidden;
   overflow-y: scroll;
   scrollbar-width: none;
-  width: 31rem;
   height: 88vh;
-  padding-right: 1rem;
   padding-top: 1rem;
   border-right: 0.1rem solid black;
 }
@@ -495,6 +496,9 @@ html {
   border: 1px solid black;
   border-radius: 0.7rem;
   margin-bottom: 1rem;
+  min-width: 28.5rem;
+  width: 90%;
+  height: 5rem;
 }
 .contact__literal {
   width: 3.5rem;
@@ -568,6 +572,12 @@ html {
 .aim-send {
   float: right;
   background-color: #AAF;
+}
+
+.new-message {
+  font-size: 1.3rem;
+  height: 1.4rem;
+  font-weight: 900;
 }
 
 .views-barter {
