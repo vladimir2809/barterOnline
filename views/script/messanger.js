@@ -16,6 +16,10 @@ var arrowBack=document.getElementsByClassName('text-block__info-back')[0];
 let inputBlock = document.getElementsByClassName('input-block')[0];
 inputBlock.style.display="none";
 var sendInput=document.getElementById('send-input');
+
+const textBlockContTop = textBlockCont.getBoundingClientRect().top;
+let topContOld=0;
+// let textBlockContTop=textBlockCont.top;
 for (let i=0; i < contacts.length;i++)
 {
     avatar=contacts[i].getElementsByClassName('contact__literal')[0];
@@ -67,23 +71,23 @@ setInterval(function(){
         }
     }
     // расчет ширины поля ввода сообщения
-    let minus =  5; 
-    if (widthScreen <= 430/*widthScreenValue*/)
-    {   
-        let scale2 =  widthScreen / (430);
-        let widthInput=340
-        widthInput /= 10;
-        sendInput.style.width=`${widthInput}rem`;
+    let minus =  0; 
+    // if (widthScreen <= 430/*widthScreenValue*/)
+    // {   
+    //     let scale2 =  widthScreen / (430);
+    //     let widthInput=340
+    //     widthInput /= 10;
+    //     sendInput.style.width=`${widthInput}rem`;
 
-    }
-    if (widthScreen > 430 && widthScreen < widthOnlyContacts)
-    {
-        let widthInput=widthScreen - widthButtonSend*2 - minus ;
-        widthInput /= 10;
-        sendInput.style.width=`${widthInput}rem`;
-         let left = 15;
-        inputBlock.style.left= `${left}px`
-    }
+    // }
+    // if (widthScreen > 430 && widthScreen < widthOnlyContacts)
+    // {
+    //     let widthInput=widthScreen - widthButtonSend*2 - minus ;
+    //     widthInput /= 10;
+    //     sendInput.style.width=`${widthInput}rem`;
+    //      let left = 15;
+    //     inputBlock.style.left= `${left}px`
+    // }
     if (widthScreen >= widthOnlyContacts)
     {
         let widthInput=widthScreen - widthContacts - widthButtonSend*2 - minus ;
@@ -92,6 +96,14 @@ setInterval(function(){
         let left = widthContacts + 15;
         inputBlock.style.left= `${left}px`
         // inputBlock.style.left= `${left}px`
+    }
+    else 
+    {
+        let widthInput=widthScreen - widthButtonSend*2 - minus ;
+        widthInput /= 10;
+        sendInput.style.width=`${widthInput}rem`;
+         let left = 15;
+        inputBlock.style.left= `${left}px`
     }
     if (widthScreen >= widthMaxContainer)
     {
@@ -102,9 +114,30 @@ setInterval(function(){
         inputBlock.style.left= `${left}px`
     }
     // document.getElementsByClassName('input-block')[0].style.position = 'fixed'
-    let top = viewportHeight-40 //(viewportHeight / scale)+100;
-    inputBlock.style.top=`${top}px`;
+    // let top = viewportHeight-40 //(viewportHeight / scale)+100;
+
+    // inputBlock.style.top=`${top}px`;
+
     // inputBlock.style.bottom= "1rem"//`${top}px`
+    let textBlockContFlex=document.getElementsByClassName('text-block__flex-cont')[0];
+    let textBlockContTwo=document.getElementsByClassName('text-block__cont2')[0];
+    let heightElem = sendInput.getBoundingClientRect().height;
+    let top = /*textBlockContTop +*/ - heightElem + 40;
+    textBlockContFlex.style.top = `${top}px`;
+    console.log("top: "+top)
+    if (top != topContOld)
+    {
+        let heightFlex = sendInput.getBoundingClientRect().height;
+        let top2 =heightFlex - top 
+        textBlockCont.style.height = `${top2}px`
+        topContOld = top;
+        console.log("top2: "+top2)
+    }
+
+
+    // console.log(textBlockContTop)
+    // console.log(heightElem)
+    // console.log("top: "+top)
 },16)
 
 for (let i=0; i < contacts.length;i++)

@@ -525,6 +525,35 @@ html {
   height: 1.2rem;
 }
 
+.text-block {
+  padding: 1rem;
+}
+.text-block__info {
+  display: flex;
+}
+.text-block__cont-hidden {
+  height: calc(78vh - 4.5rem);
+  background-color: white;
+  overflow: hidden;
+}
+.text-block__flex-cont {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  position: relative;
+  height: 100%;
+}
+.text-block__cont {
+  background-color: #FFF;
+  height: 24rem;
+  width: 100%;
+}
+.text-block__cont2 {
+  position: relative;
+  height: 100%;
+  overflow-y: scroll;
+}
+
 .input-block {
   display: flex;
   position: fixed;
@@ -532,7 +561,7 @@ html {
   align-items: flex-end;
   height: 4rem;
   left: 1rem;
-  top: 1rem;
+  bottom: 4rem;
   bottom: 1rem;
   border: 1px solid #CCC;
   border-radius: 1rem;
