@@ -19,6 +19,9 @@ var sendInput=document.getElementById('send-input');
 
 const textBlockContTop = textBlockCont.getBoundingClientRect().top;
 let topContOld=0;
+let heightElemOld=0;
+let addHeight = 0;
+let flagHeightElem=false;
 // let textBlockContTop=textBlockCont.top;
 for (let i=0; i < contacts.length;i++)
 {
@@ -113,31 +116,27 @@ setInterval(function(){
         let left = (widthScreen-widthMaxContainer) / 2 + widthContacts + 15;
         inputBlock.style.left= `${left}px`
     }
-    // document.getElementsByClassName('input-block')[0].style.position = 'fixed'
-    // let top = viewportHeight-40 //(viewportHeight / scale)+100;
 
-    // inputBlock.style.top=`${top}px`;
-
-    // inputBlock.style.bottom= "1rem"//`${top}px`
-    let textBlockContFlex=document.getElementsByClassName('text-block__flex-cont')[0];
+    let textBlockContHidden=document.getElementsByClassName('text-block__cont-hidden')[0];
     let textBlockContTwo=document.getElementsByClassName('text-block__cont2')[0];
-    let heightElem = sendInput.getBoundingClientRect().height;
-    let top = /*textBlockContTop +*/ - heightElem + 40;
-    textBlockContFlex.style.top = `${top}px`;
-    console.log("top: "+top)
-    if (top != topContOld)
+    let heightInput = sendInput.getBoundingClientRect().height;
+
+    textBlockContTwo.style.height = `${heightInput + 10}px`;
+
+    if (flagHeightElem==false)
     {
-        let heightFlex = sendInput.getBoundingClientRect().height;
-        let top2 =heightFlex - top 
-        textBlockCont.style.height = `${top2}px`
-        topContOld = top;
-        console.log("top2: "+top2)
+        heightElemOld = heightInput;
+        flagHeightElem = true;
     }
 
+    if (heightInput != heightElemOld)
+    {
+        addHeight = heightInput - heightElemOld;
+        heightElemOld = heightInput;
+        textBlockContHidden.scrollTop += addHeight;
+        // console.log (addHeight)
 
-    // console.log(textBlockContTop)
-    // console.log(heightElem)
-    // console.log("top: "+top)
+    }
 },16)
 
 for (let i=0; i < contacts.length;i++)
@@ -170,6 +169,9 @@ arrowBack.addEventListener('click', function(event){
         // textBlock.style.width='100%';
     }
 })
+// sendInput.addEventListener("focus", function(event){
+//     document.getElementsByClassName("text-block__cont2")[0].scrollTop = 1e9;
+// });
 sendInput.addEventListener("focus", noScroll);
 sendInput.addEventListener("focusout", function(){
     yesScroll();

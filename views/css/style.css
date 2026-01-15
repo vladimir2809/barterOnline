@@ -526,32 +526,32 @@ html {
 }
 
 .text-block {
-  padding: 1rem;
+  padding: 1rem 1rem 0 1rem;
 }
 .text-block__info {
   display: flex;
 }
 .text-block__cont-hidden {
-  height: calc(78vh - 4.5rem);
+  height: calc(89vh - 4rem);
   background-color: white;
   overflow: hidden;
+  overflow-y: scroll;
+  padding: 1.5rem 1.5rem 0 1.5rem;
 }
 .text-block__flex-cont {
   display: flex;
   flex-direction: column;
-  justify-content: end;
-  position: relative;
-  height: 100%;
-}
-.text-block__cont {
-  background-color: #FFF;
-  height: 24rem;
-  width: 100%;
+  justify-content: flex-end;
+  height: -moz-max-content;
+  height: max-content;
 }
 .text-block__cont2 {
-  position: relative;
-  height: 100%;
-  overflow-y: scroll;
+  background-color: #fFF;
+  height: 1rem;
+  width: 100%;
+}
+.text-block__cont {
+  padding-bottom: 1.5rem;
 }
 
 .input-block {
