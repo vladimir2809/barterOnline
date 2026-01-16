@@ -562,7 +562,7 @@ html {
   height: 4rem;
 }
 .text-block__cont-hidden {
-  height: calc(89vh - 4rem);
+  height: calc(95vh - 7.3rem - 1rem - 4rem);
   background-color: white;
   overflow: hidden;
   overflow-y: scroll;
@@ -593,17 +593,22 @@ html {
   left: 1rem;
   bottom: 4rem;
   bottom: 1rem;
-  border: 1px solid #CCC;
-  border-radius: 1rem;
-  background-color: #CCC;
+  border-top-left-radius: 50rem;
+  border-bottom-left-radius: 50rem;
+  border-top-right-radius: 50rem;
+  border-bottom-right-radius: 50rem;
+  background-color: rgba(255, 255, 255, 0);
 }
 .input-block__input {
   margin-right: 0.5rem;
-  padding: 0.7rem 0.4rem;
-  border-radius: 1rem;
+  padding: 1.1rem 0.6rem;
+  border-radius: 1.5rem;
   background-color: #CCC;
   font-size: 1.8rem;
   overflow: hidden;
+}
+.input-block__input:focus {
+  outline: 0.1rem solid black;
 }
 .input-block__button-img {
   width: 4rem;

@@ -5,7 +5,6 @@ $colorInputMessage: #CCC
     display: grid
     grid-template-columns: 32rem 1fr //max-content 1fr
     height: calc(100% - 4rem)//75vh
-    // margin-top: 1rem
     padding: 0 0rem 1rem 0rem
     border-top: .1rem solid black
     @include respond(messanger)
@@ -19,10 +18,7 @@ $colorInputMessage: #CCC
     overflow: hidden
     overflow-y: scroll
     scrollbar-width: none
-    // top: 8rem
-    //width: 32rem
     height: 88vh
-    // padding-right: 1rem
     padding-top: 1rem
     border-right: .1rem solid black
 
@@ -68,47 +64,6 @@ $colorInputMessage: #CCC
         text-overflow: ellipsis
         width: 23.5rem
         height: 1.2rem
-// .text-block
-//     display: grid
-//     grid-template-rows: 5rem 25rem 4rem
-//     // position: fixed
-//     height: calc(82vh - 5rem)//calc(100% - 4rem - 1rem)
-//     // left: 31rem
-//     grid-gap: 2rem
-//     padding: 0 1.5rem 1.5rem 1.5rem
-//     overflow: hidden
-//     // overflow-y: scroll
-//     @include respond(nophone)
-//         grid-column: 2 / 3
-//         width: 100%
-//         //padding: 0 1.5rem 1.5rem 1.5rem
-//     @include respond(messanger)
-//         display: none
-//         width: 0%
-//     &__info
-//         display: flex
-//         align-items: center  
-//         padding: .3rem  
-//         height: 3.5rem
-//         margin: .75rem 0 .75rem 0
-//     &__info-back
-//         width: 3rem
-//         height: 3rem
-//         margin-right: 5rem
-//     &__info-name
-//         font-size: 1.6rem
-//     &__cont
-//         // grid-rows: 2 / 3
-//         height: 85%//75vh
-//         position: sticky
-//         left: 31rem
-//         padding: 0 .5rem 0 1rem
-//         overflow: hidden
-//         overflow-y: scroll
-//         scrollbar-width: none
-//         z-index: 0
-//         // &.no-scroll 
-//         //     overflow: hidden // Скрывает полосу прокрутки
 .text-block
     padding: 1.0rem 1.0rem 0 1.0rem
     &__info
@@ -117,7 +72,6 @@ $colorInputMessage: #CCC
         justify-content: space-between
         height: 4rem
         background-color: #EEE
-        // border-radius: 1.5rem 
         @include respond(messanger-min)
               justify-content: center
     &__info-back
@@ -135,10 +89,8 @@ $colorInputMessage: #CCC
         display: block
         width: 4rem
         height: 4rem
-        // @include respond(messanger-min)
-        //     display: none
     &__cont-hidden
-        height: calc(89.0vh - 4.0rem)
+        height: calc(95vh - 7.3rem - 1rem - 4.0rem)
         background-color: white
         overflow: hidden
         overflow-y: scroll
@@ -147,18 +99,14 @@ $colorInputMessage: #CCC
         display: flex
         flex-direction: column
         justify-content: flex-end
-        height: max-content//calc(110%)
+        height: max-content
     &__cont2
-        background-color:#fFF// #AFF 
+        background-color:#fFF 
         height: 1rem
-        width: 100%//10rem
-        // z-index: 10
+        width: 100%
     &__cont
         padding-bottom: 1.5rem
- 
-
 .input-block
-    // grid-rows: 2 / 3
     display: flex
     position: fixed
     justify-content: space-between
@@ -166,42 +114,35 @@ $colorInputMessage: #CCC
     height: 4rem
     left: 1rem
     bottom: 4rem
-    // top: 1rem
-    //min-width: 60%
-    // max-width: 120rem
-    //width: 20rem
     bottom: 1rem//5vh//3rem
-    border: 1px solid $colorInputMessage//green
-    border-radius: 1rem
-    background-color: $colorInputMessage
+    border-top-left-radius: 50rem
+    border-bottom-left-radius: 50rem
+    border-top-right-radius: 50rem
+    border-bottom-right-radius: 50rem
+
+    background-color: #FFFFFF00 //$colorInputMessage
     &__input 
         margin-right: .5rem
-        padding: .7rem .4rem
-        // border: .2rem solid  $colorInputMessage//gray
-        border-radius: 1rem
-        // width: calc(100% - 4rem - .5rem)
+        padding: 1.1rem .6rem
+        border-radius: 1.5rem
         background-color: $colorInputMessage
-        // outline: .1rem solid  $colorInputMessage
+
         font-size: 1.8rem
         overflow: hidden
-        // @include respond(messanger)
-        //     max-height: 20rem
+        &:focus
+            outline: .1rem solid  black
     &__button-img
         width: 4rem
         height: 4rem
         border: 2px solid blue
         border-radius: 2rem
-
+       
 .text-item
     width: 70%
     padding: 1.2rem
-    // margin-top: 1rem
     border-radius: 1rem
     margin-bottom: .5rem
-    // &:last-child
-    //     margin-bottom: 4.5rem
     &__message
-        // word-break: break-all
         overflow-wrap: break-word
         font-size: 1.8rem
 
