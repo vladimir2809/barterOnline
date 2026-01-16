@@ -20,6 +20,9 @@
     @if $breakpoint == messanger
         @media only screen and (max-width: 925px) //758
             @content
+    @if $breakpoint == messanger-min
+        @media only screen and (min-width: 924px) //758
+            @content
     @if $breakpoint == tab-port
         @media only screen and (max-width: 1024px)// 834
             @content

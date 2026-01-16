@@ -530,6 +530,36 @@ html {
 }
 .text-block__info {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+  background-color: #EEE;
+}
+@media only screen and (min-width: 924px) {
+  .text-block__info {
+    justify-content: center;
+  }
+}
+.text-block__info-back {
+  width: 4rem;
+  height: 4rem;
+}
+.text-block__info-name {
+  position: relative;
+  top: -0.3rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+@media only screen and (max-width: 375px) {
+  .text-block__info-name {
+    font-size: 1.4rem;
+    top: -0.2rem;
+  }
+}
+.text-block__info-menu {
+  display: block;
+  width: 4rem;
+  height: 4rem;
 }
 .text-block__cont-hidden {
   height: calc(89vh - 4rem);

@@ -113,8 +113,30 @@ $colorInputMessage: #CCC
     padding: 1.0rem 1.0rem 0 1.0rem
     &__info
         display: flex
+        align-items: center
+        justify-content: space-between
+        height: 4rem
+        background-color: #EEE
+        // border-radius: 1.5rem 
+        @include respond(messanger-min)
+              justify-content: center
     &__info-back
+        width: 4rem
+        height: 4rem
     &__info-name
+        position: relative
+        top: -.3rem
+        font-size: 1.8rem
+        text-align: center
+        @include respond(phone-middle)
+            font-size: 1.4rem
+            top: -.2rem
+    &__info-menu
+        display: block
+        width: 4rem
+        height: 4rem
+        // @include respond(messanger-min)
+        //     display: none
     &__cont-hidden
         height: calc(89.0vh - 4.0rem)
         background-color: white

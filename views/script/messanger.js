@@ -11,6 +11,7 @@ var contactSelect = document.getElementsByClassName('contact-select')[0];
 var textBlock = document.getElementsByClassName('text-block')[0];
 var textBlockCont = document.getElementsByClassName('text-block__cont')[0];
 var arrowBack=document.getElementsByClassName('text-block__info-back')[0];
+var menuElem=document.getElementsByClassName('text-block__info-menu')[0];
 
 // alert('AIM MESSANGER JS');
 let inputBlock = document.getElementsByClassName('input-block')[0];
@@ -42,6 +43,7 @@ setInterval(function(){
     if (widthScreen <= widthOnlyContacts)
     {
         arrowBack.style.display='block';
+        menuElem.style.display='block';
         if (flagNoContactView==false)
         {
             contactSelect.style.display='block';
@@ -62,7 +64,8 @@ setInterval(function(){
     if (widthScreen > widthOnlyContacts) 
     {
         arrowBack.style.display='none';
-        // goPressButtonBack()
+        menuElem.style.display='none';
+            // goPressButtonBack()
         // flagNoContactView=true;
         // if (flagNoContactView==false)
         {
@@ -96,7 +99,7 @@ setInterval(function(){
         let widthInput=widthScreen - widthContacts - widthButtonSend*2 - minus ;
         widthInput /= 10;
         sendInput.style.width=`${widthInput}rem`;
-        let left = widthContacts + 15;
+        let left = widthContacts + 20;
         inputBlock.style.left= `${left}px`
         // inputBlock.style.left= `${left}px`
     }
@@ -105,7 +108,7 @@ setInterval(function(){
         let widthInput=widthScreen - widthButtonSend*2 - minus ;
         widthInput /= 10;
         sendInput.style.width=`${widthInput}rem`;
-         let left = 15;
+        let left = 15;
         inputBlock.style.left= `${left}px`
     }
     if (widthScreen >= widthMaxContainer)
