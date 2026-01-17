@@ -95,6 +95,21 @@ $colorInputMessage: #CCC
         overflow: hidden
         overflow-y: scroll
         padding: 1.5rem 1.5rem 0 1.5rem
+        
+        -ms-overflow-style: none  // IE и Edge 
+        scrollbar-width: none  // Firefox
+
+        &::-webkit-scrollbar 
+            display: none
+        // /* фф (свойство больше не работает, других способов тоже нет)*/
+        // overflow: -moz-scrollbars-none
+        // -webkit-scrollbar 
+        // /* хром, сафари */
+        //      width: 0
+
+        // /* ie 10+ */
+        // -ms-overflow-style: none
+
     &__flex-cont
         display: flex
         flex-direction: column
@@ -139,12 +154,24 @@ $colorInputMessage: #CCC
        
 .text-item
     width: 70%
-    padding: 1.2rem
+    padding: 1.2rem 1.2rem .5rem 1.2rem
     border-radius: 1rem
     margin-bottom: .5rem
     &__message
         overflow-wrap: break-word
         font-size: 1.8rem
+    &__data
+        display: flex
+        justify-content: space-between
+        align-items: center
+        margin-top: .5rem
+        height: 2rem
+    &__data-time
+        font-size: 1.2rem
+        color: #222
+        font-weight: 700
+    &__data-status
+        height: 2rem
 
 .noaim-send
     float: left
