@@ -25,10 +25,10 @@ const { JSDOM } = jsdom;
 //   console.log(__dirname+"/city_list.html");
 //   console.log(dom.window.document);
 
-//   console.log(dom.nodeLocation(bodyEl));   // null; it's not in the source
-//   console.log(dom.nodeLocation(pEl));      // { startOffset: 0, endOffset: 39, startTag: ..., endTag: ... }
-//   console.log(dom.nodeLocation(textNode)); // { startOffset: 3, endOffset: 13 }
-//   console.log(dom.nodeLocation(imgEl));    // { startOffset: 13, endOffset: 32 }
+  // console.log(dom.nodeLocation(bodyEl));   // null; it's not in the source
+  // console.log(dom.nodeLocation(pEl));      // { startOffset: 0, endOffset: 39, startTag: ..., endTag: ... }
+  // console.log(dom.nodeLocation(textNode)); // { startOffset: 3, endOffset: 13 }
+  // console.log(dom.nodeLocation(imgEl));    // { startOffset: 13, endOffset: 32 }
 
 
 
