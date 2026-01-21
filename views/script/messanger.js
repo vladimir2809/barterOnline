@@ -12,11 +12,12 @@ var textBlock = document.getElementsByClassName('text-block')[0];
 var textBlockCont = document.getElementsByClassName('text-block__cont')[0];
 var arrowBack=document.getElementsByClassName('text-block__info-back')[0];
 var menuElem=document.getElementsByClassName('text-block__info-menu')[0];
-
 // alert('AIM MESSANGER JS');
 let inputBlock = document.getElementsByClassName('input-block')[0];
 inputBlock.style.display="none";
+
 var sendInput=document.getElementById('send-input');
+var buttonSendMessage = document.getElementById('buttonSendMessage');
 
 const textBlockContTop = textBlockCont.getBoundingClientRect().top;
 let topContOld=0;
@@ -179,7 +180,65 @@ sendInput.addEventListener("focus", noScroll);
 sendInput.addEventListener("focusout", function(){
     yesScroll();
 });
- 
+buttonSendMessage.addEventListener('click', function(){
+    insertMessage('AIM NO AIM SEND', 'noaim', false);
+    insertMessage(sendInput.innerText, 'aim');
+    sendInput.innerText='';
+    // let textBlockContHidden=document.getElementsByClassName('text-block__cont-hidden')[0];
+    // let textItemOrigin = document.getElementsByClassName('text-item')[0];
+    // let textItem=textItemOrigin.cloneNode(true)
+    // let textBlockContTwo=document.getElementsByClassName('text-block__cont2')[0];
+    // textItem.getElementsByClassName('text-item__message')[0].innerHTML=sendInput.innerText;
+    // textBlockContTwo.before(textItem);
+    // textBlockContHidden.scrollTop=1000000;
+    // sendInput.innerText='';
+    // alert(sendInput.innerText);
+});
+function insertMessage(message, sideSend/*, clearSendInput=true*/)
+{
+    let textBlockContHidden=document.getElementsByClassName('text-block__cont-hidden')[0];
+    let textItemOrigin = document.getElementsByClassName('text-item')[0];
+    let textItem=textItemOrigin.cloneNode(true)
+    // let textBlockContTwo=document.getElementsByClassName('text-block__cont2')[0];
+    let timeStart = new Date();
+    let time= new Date(timeStart/*- 10*60*60*1000 - 10*60*1000*/);
+    let hours=time.getHours() <= 9 ? '0'+time.getHours() : time.getHours();
+    let minutes=time.getMinutes() <= 9 ? '0'+time.getMinutes() : time.getMinutes();
+    let timeStr=hours+':'+minutes;
+    message=message.trim();
+    if (message=='')
+    {
+        console.log('сообщение пустое');
+        return false;
+    }
+    textItem.classList.remove('aim-send');
+    textItem.classList.remove('noaim-send');
+    if (sideSend=='aim')
+    {
+        textItem.classList.add('aim-send');
+        textItem.style.float='right';
+    }
+    else if (sideSend=='noaim')
+    {
+        textItem.classList.add('noaim-send');
+        textItem.style.float='left';
+    }
+    else
+    {
+        console.log('У сообшения нет класса стороны')
+    }
+    
+    textItem.getElementsByClassName('text-item__message')[0].innerHTML=message;
+    textItem.getElementsByClassName('text-item__data-time')[0].innerHTML=timeStr;
+    // textBlockContTwo.before(textItem);
+    textBlockCont.append(textItem);
+    textBlockContHidden.scrollTop=1000000;
+    // if (clearSendInput==true) sendInput.innerText='';
+}
+function insertDate(date)
+{
+    
+}
 function noScroll()
 {   
     // Предотвратить прокрутку колесиком мыши
