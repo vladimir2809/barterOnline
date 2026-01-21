@@ -1,0 +1,56 @@
+<div class="views-barter">
+    {{#if defectNoQuery}}
+        <div class="views-barter__cont-button">
+            <button class="views-barter__button-change">Изменить</button>
+            <button class="views-barter__button-delete">Удалить</button>
+        </div>
+    {{/if}}
+    <div class="barter">
+        <h1 class="barter__header">Просмотр бартера</h1>
+        <h2 class="barter__author">Автор бартера:
+            <a title='Написать' href="" class="barter__author-link">
+                {{nameUser}}
+            </a>
+
+        </h2>
+        <h2 class="barter__city">Город: {{city}} </h2>
+        
+        <div class="stuff-views">
+            <h2 class="stuff-views__action">Отдаю</h2>
+            <h3 class="stuff-views__name-title">название</h3>
+            <p class="stuff-views__name">{{barterData.give.name}}</p>
+            <h3 class="stuff-views__category"> Категория:
+                <span class="stuff-views__category-text">{{barterData.give.category}}</span>
+            </h3>
+            <img src="{{barterData.give.imagePath}}" alt="barter-img" class="stuff-views__image">
+            <h3 class="stuff-views__descrioption-title">Описание</h3>
+            <div class="stuff-views__description">
+                {{barterData.give.description}}
+            </div>
+        </div>
+        <div class="stuff-views">
+            {{#if barterData.get.free}}
+                <img src="{{barterData.get.imagePath}}" alt="barter-img" class="stuff-views__image">
+            {{else}}
+                <h2 class="stuff-views__action">Хочу получить</h2>
+                <h3 class="stuff-views__name-title">название</h3>
+                <p class="stuff-views__name">{{barterData.get.name}}</p>
+                <h3 class="stuff-views__category">Категория: 
+                    <span class="stuff-views__category-text">{{barterData.get.category}}</span>
+                </h3>
+                <img src="{{barterData.get.imagePath}}" alt="barter-img" class="stuff-views__image">
+                <h3 class="stuff-views__descrioption-title">Описание</h3>
+                <div class="stuff-views__description">
+                    {{barterData.get.description}}
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelector('.views-barter__button-change').addEventListener('click', function(){
+        const params = new URLSearchParams(window.location.search);
+        //alert(params.get('barter_id'));
+        window.location.href='/changebarter?barter_id='+params.get('barter_id');
+    });
+</script>

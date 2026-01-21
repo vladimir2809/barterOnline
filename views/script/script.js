@@ -3,10 +3,15 @@ var resultItemNode=null;
 var newStuffArr=null;
 var newBarterForm=null;
 var mainMenu=null;
+var citySelected=null;
 var flagsChangeStuffImg=[false, false];
 var clickCloseMainMenu=false;
 let countValidForm=0;
-
+const developer = false;
+var viewportWidth=window.innerWidth;
+var viewportWidthOld=window.innerWidth;
+var viewportHeight=window.innerHeight;
+let scale=1;
 // var hiddenFlagImgCategoryGive=null;
 // var hiddenFlagImgCategoryGet=null;
 
@@ -21,8 +26,23 @@ var city={
 }
 let cityArrDefault=["Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань", 
                                 "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону"];
+setInterval(function(){ 
+    if (developer==true)
+    {
+      document.getElementsByClassName('developer__WScreen')[0].innerText=viewportWidth;
+      document.getElementsByClassName('developer__HScreen')[0].innerText=viewportHeight;
+      document.getElementsByClassName('developer__scale')[0].innerText=scale;
+    }
+    else
+    {
+      document.querySelector(".developer__WScreen").innerText='5000';
+      document.querySelector(".developer__WScreen").style.opacity='0';
+      // document.getElementsByClassName('developer__scale')[0].innerText=scale;;
+    }
+},16);
 window.addEventListener('load',()=>{
     //alert('load end');
+    // resizeText();
     console.log (generateRandomName(10));
     // resultNode=document.getElementsByClassName('result')[0];
     // resultItemNode=document.getElementsByClassName('result-item')[0];
@@ -49,7 +69,7 @@ window.addEventListener('load',()=>{
     // hiddenFlagImgCategoryGive=document.getElementById("flag-img-category-give");
     // hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
     
-    var citySelected=document.getElementById("city-selected");
+    citySelected=document.getElementById("city-selected");
     cityListHTML=document.getElementById('city-block-list');
     cityBlock=document.getElementById('city-block');
     cityBarterHTML=document.getElementById('newBarter-city');
@@ -77,18 +97,20 @@ window.addEventListener('load',()=>{
       }
     });
 
-
-    SendRequest('POST','/getCity/',"",function(request){
-      cityCurrent=request.response;
-      document.getElementById('city-selected').innerText=cityCurrent;
-      
-      // let cityBarterHTML=document.getElementById('newBarter-city');
-      if (cityBarterHTML!=undefined)
-      {
-        cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent+"?";
-
-      }
-    });
+    if (citySelected!=null)
+    {
+      SendRequest('POST','/getCity/',"",function(request){
+        cityCurrent=request.response;
+        citySelected.innerText=cityCurrent;
+        
+        // let cityBarterHTML=document.getElementById('newBarter-city');
+        if (cityBarterHTML!=undefined)
+        {
+          cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent+"?";
+          
+        }
+      });
+    }
 
 
 
@@ -176,11 +198,20 @@ window.addEventListener('load',()=>{
 
 
 
+// messager_mainMenu
+    document.getElementById("messager_mainMenu").addEventListener('click', ()=>{
+      // location.href='/getBarterArr/';
+      location.href='/messanger';
 
-    document.getElementById("myBarter_mainMenu").addEventListener('click', ()=>{
-      location.href='/getBarterArr/';
     })
+    document.getElementById("myBarter_mainMenu").addEventListener('click', ()=>{
+      // location.href='/getBarterArr/';
+      location.href='/myBarter';
 
+    })
+    document.getElementById("newBarter_mainMenu").addEventListener('click', ()=>{
+      location.href='/newBarter/';
+    })
 
 
     
@@ -332,12 +363,14 @@ window.addEventListener('load',()=>{
           });
     } 
     
-    
-    citySelected.addEventListener('click',function(event){
-      // cityBlock=document.getElementById('city-block');
-      cityBlock.style.display='flex';
-      //alert('city');
-    })
+    if (citySelected!=undefined)
+    {
+      citySelected.addEventListener('click',function(event){
+        // cityBlock=document.getElementById('city-block');
+        cityBlock.style.display='flex';
+        //alert('city');
+      })
+    }
     document.getElementById('city_block_close').addEventListener("click",(event)=>{
       cityBlock.style.display='none';
       resetCityBlock()
@@ -385,6 +418,13 @@ window.addEventListener('load',()=>{
     //   cityBlock.style.display="flex";
     // });
 });
+// setInterval(function(){
+//   if (developer==true)
+//   {
+//     document.getElementsByClassName('developer__widthScreen')[0].innerText=viewportWidth;;
+//     document.getElementsByClassName('developer__scale')[0].innerText=scale;;
+//   }
+// },16)
 function resetCityBlock()
 {
   cityText.value='';
@@ -399,7 +439,7 @@ function createEventCityList()
     element.addEventListener('click',function(){
      // alert('city');
       let city=element.innerText;
-      document.getElementById('city-selected').innerText=city;
+      citySelected.innerText=city;
       cityCurrent=city;
       if (cityBarterHTML!=undefined)
       {
@@ -409,7 +449,8 @@ function createEventCityList()
       resetCityBlock()
       cityBlock.style.display='none';
       SendRequest('POST','/changeCity/',"city=" + city,function(request){
-
+        // alert(window.location.pathname);
+        if (window.location.pathname=='/')  location.reload(); 
       });
     }); 
   });
@@ -425,77 +466,6 @@ function createHTMLListLiCity(arr)
         return result;
     }
 
-// // событие загрузки изображения в форму а также показ превью
-// function createEventLoadImage()
-// {
-//   for (let i=0;i<newStuffArr.length;i++)
-//   {
-//     let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
-//     let filesImages = newStuffArr[i].querySelector('input[type=file]');
-//     filesImages.addEventListener('change', function() {
-//         //console.log(1123);
-//         if (filesImages.files[0].size <= 1024 * 1024)
-//         {
-//           //filesImages.value='';
-//           previewFile(previewImages, filesImages.files[0]);
-//           if (i==0)
-//           {
-//             hiddenFlagImgCategoryGive.value = 0;
-
-//           }
-//           if (i==1)
-//           {
-//             hiddenFlagImgCategoryGet.value = 0;
-
-//           }
-//           console.log("give="+hiddenFlagImgCategoryGive.value)
-//           console.log("get="+hiddenFlagImgCategoryGet.value)
-//         }
-//         else
-//         {
-//           alert('Картинка должна весить меньше 1МБ.');
-//           filesImages.value='';
-//           previewImages.src='img/default.jpg';
-//           //previewFile(previewImages, filesImages.files[0]);
-//         }
-      
-//     });
-//   }
-// }
-// function previewFile(preview, file) {
-//     var reader  = new FileReader();
-  
-//     reader.onloadend = function () {
-//       preview.src = reader.result;
-//       console.log(formatByteSize(file.size))
-//       console.log('path', file.name);
-//     }
-    
-//     if (file) {
-//       reader.readAsDataURL(file);
-//     } else {
-//       preview.src = "";
-//     }
-//   }
-  // создание данных категорий для формы новый бартер
-  function insertCategoryInSelect(selectDOM,list)
-  {
-    for (i=0; i<list.length;i++)
-    {
-      let elem=document.createElement('option')
-      elem.innerText=list[i];
-      elem.setAttribute('value',i+1);
-      elem.classList.add('search-block__option')
-      selectDOM.appendChild(elem);
-    }
-  }
-  function formatByteSize(bytes) // перевод значения памяти в человека понятный вид
-  {
-      if(bytes < 1024) return bytes + " bytes";
-      else if(bytes < 1048576) return(bytes / 1024).toFixed(3) + " KiB";
-      else if(bytes < 1073741824) return(bytes / 1048576).toFixed(3) + " MiB";
-      else return(bytes / 1073741824).toFixed(3) + " GiB";
-  };
   /*
     25.07.2025 остановился на том что убирал текст у описания бартера в странице "Создание нового бартера" 
 

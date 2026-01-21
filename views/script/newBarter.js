@@ -10,11 +10,73 @@ var getDescription=document.getElementById("newBarter-get-description");
 var hiddenDescriptionGet=document.getElementById("newBarter-get-description-hidden");
 var hiddenFlagImgCategoryGive=document.getElementById("flag-img-category-give");
 var hiddenFlagImgCategoryGet=document.getElementById("flag-img-category-get");
+
+var hiddenFlagChangeImgGive=document.getElementById("flag-change-img-give");
+var hiddenFlagChangeImgGet=document.getElementById("flag-change-img-get");
+
+let checkboxFree=document.getElementById("new-stuff__get-checkbox");
+
+
+let memoryInputValue=[];
+let flagDisabledInputNameGet=false;
+let flagDisabledInputdescriptionGet=false;
 createEventLoadImage();
+function  updateElemsCheckboxFree(checked)
+{
+        let inputText=document.getElementById("newStuff__getName");
+        let inputCategory=document.getElementById("category-load-get");
+        let inputFile=document.getElementById("get_loadImg");
+        let inputDescription=document.getElementById("newBarter-get-description");
+        if (checked==true)
+        {
+          document.getElementById("img-get-preload").src='img/getfree.png';
+          inputText.disabled=true;
+          inputCategory.disabled=true;
+          inputFile.disabled=true;
+          inputDescription.contentEditable=false;
+
+          flagDisabledInputNameGet=true;
+          flagDisabledInputdescriptionGet=true;
+
+   
+          inputText.style.outlineColor='gray';
+          inputText.style.borderColor='gray';
+          memoryInputValue[0]= inputText.value;
+          inputText.value='';
+
+       
+          inputDescription.style.outlineColor='gray'
+          inputDescription.style.borderColor='gray'
+          memoryInputValue[1]=getDescription.innerText;
+          getDescription.innerText='';
+        }
+        else
+        {
+          document.getElementById('get_loadImg').value='';
+          document.getElementById("img-get-preload").src='img/default.jpg';
+          inputText.disabled=false;
+          inputCategory.disabled=false;
+          inputFile.disabled=false;
+          inputDescription.contentEditable=true;
+
+          flagDisabledInputNameGet=false;
+          flagDisabledInputdescriptionGet=false;
+
+        
+          inputText.value=memoryInputValue[0];
+
+          
+          getDescription.innerText=memoryInputValue[1]
+        }
+  }
 if (newBarterForm!=undefined)
     {
       // let cityBarterHTML=document.getElementById('newBarter-city');
       // cityBarterHTML.innerText="Вы хотите бартер в городе: "+cityCurrent;
+      checkboxFree.addEventListener('change', function(event){
+        updateElemsCheckboxFree(checkboxFree.checked)
+        hiddenFlagChangeImgGet.value='true';
+      })
       newBarterForm.addEventListener('submit',(event)=>{
         event.preventDefault();
         //sendData();
@@ -22,24 +84,51 @@ if (newBarterForm!=undefined)
         hiddenDescriptionGive.value=giveDescription.innerText;
         hiddenDescriptionGet.value=getDescription.innerText;
 
-        if (countValidForm==4)
+        if (countValidForm==4 || (checkboxFree.checked==true && countValidForm==2))
         {
             newBarterForm.submit();  
         }
         else
         {
             alert("Введете данные");
-            // alert(hiddenFlagImgCategoryGive)
-            // alert(hiddenFlagImgCategoryGet)
         }
       });
+      let changeBarterButton=document.getElementById('changeBarterButton');
+      if (changeBarterButton!=undefined)
+      {
+
+        changeBarterButton.addEventListener('click',()=>{
+          //event.preventDefault();
+          //sendData();
+          
+          hiddenDescriptionGive.value=giveDescription.innerText;
+          hiddenDescriptionGet.value=getDescription.innerText;
+          
+          if (countValidForm==4 || (checkboxFree.checked==true && countValidForm==2))
+          {
+            newBarterForm.action='/savechangebarter/';
+            newBarterForm.submit();  
+          }
+          else
+          {
+            alert("Введете данные");
+          }
+        });
+      }
+      // changeBarterButton
+
       // валидация формы новый бартер, что были введениы значения
       setInterval(function(){     
       
           countValidForm=0;
           
           countValidForm+=validInput(nameGive,"stringSmall");
-          countValidForm+=validInput(nameGet,"stringSmall");
+
+
+          if (flagDisabledInputNameGet==false)
+          {
+            countValidForm+=validInput(nameGet,"stringSmall");
+          } 
           
           hiddenDescriptionGive.value=giveDescription.innerText;
           hiddenDescriptionGet.value=getDescription.innerText;
@@ -62,22 +151,27 @@ if (newBarterForm!=undefined)
           }
           else
           {
+            
             giveDescription.style.border='1px solid red';
             giveDescription.style.outline='1px solid red';
           }
           
-          if (validInput(hiddenDescriptionGet,"stringLong")==1)
+          if (flagDisabledInputdescriptionGet==false)
           {
-            
-            countValidForm+=1
-            selectColor(getDescription, false);
+
+            if (validInput(hiddenDescriptionGet,"stringLong")==1)
+            {
+              
+              countValidForm+=1
+              selectColor(getDescription, false);
+            }
+            else
+            {
+              getDescription.style.border='1px solid red';
+              getDescription.style.outline='1px solid red';
+            }
           }
-          else
-          {
-            getDescription.style.border='1px solid red';
-            getDescription.style.outline='1px solid red';
-          }
-      },300);
+        },300);
       // показание картинки по умолчанию при выборе категории
       for (let i=0;i<newStuffArr.length;i++)
       {
@@ -88,11 +182,15 @@ if (newBarterForm!=undefined)
           if (i==0)
           {
             hiddenFlagImgCategoryGive.value = 1;
+            hiddenFlagChangeImgGive.value='true';
+            document.getElementById('give_loadImg').value='';
 
           }
           if (i==1)
           {
             hiddenFlagImgCategoryGet.value = 1;
+            hiddenFlagChangeImgGet.value='true';
+            document.getElementById('get_loadImg').value='';
 
           }
           imgPreloadStuff.src="img/category"+categoryStuff.value+".png";
@@ -117,20 +215,21 @@ function createEventLoadImage()
     let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
     let filesImages = newStuffArr[i].querySelector('input[type=file]');
     filesImages.addEventListener('change', function() {
-        //console.log(1123);
+       
         if (filesImages.files[0].size <= 1024 * 1024)
         {
-          //filesImages.value='';
+       
           previewFile(previewImages, filesImages.files[0]);
           if (i==0)
           {
             hiddenFlagImgCategoryGive.value = 0;
+            hiddenFlagChangeImgGive.value='true';
 
           }
           if (i==1)
           {
             hiddenFlagImgCategoryGet.value = 0;
-
+            hiddenFlagChangeImgGet.value='true';
           }
           console.log("give="+hiddenFlagImgCategoryGive.value)
           console.log("get="+hiddenFlagImgCategoryGet.value)

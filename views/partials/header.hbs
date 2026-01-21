@@ -33,9 +33,12 @@
             }
         </style>
     {{/if}} 
+
+    
     <div class="city-block" id="city-block">
+      
         <div class="city-block__close" id="city_block_close">
-            <img src="img/close_icon.png" alt="" class="city-block__img-close">
+            <img src="/img/close_icon.png" alt="" class="city-block__img-close">
         </div>
         <div class="city-block__cont-text">
             <label for="city-text">Введете ваш город</label>
@@ -46,13 +49,10 @@
             </h2>
             <ul class="city-block__list" id="city-block-list">
                 <li class="city-block__item"></li>
-                {{!-- <li class="city-block__item"><a href="" class="city-block__link">Санкт-Петербург</a></li>
-                <li class="city-block__item"><a href="" class="city-block__link">Екатеринбург</a></li> --}}
-                {{!-- <li class="city-block__item">Санкт-Петербург</li>
-                <li class="city-block__item">Екатеринбург</li> --}}
             </ul>
         </div>
     </div>   
+    
     <div class="header">
         <div class="header__logoAndCity" >
             <div class="logo" id="logo">
@@ -60,8 +60,10 @@
                 <span class="logo__title-span">ONLINE</span>
                 </h1>
             </div>
-            <h4 class="header__city" id="city-selected">&nbsp;</h4>
-            
+            {{#if noViewsCity}}
+            {{else}}
+                <h4 class="header__city" id="city-selected">&nbsp;</h4>
+             {{/if}}
         </div>
         {{!-- <h4 class="header__city" id="city-selected">Москва</h4> --}}
         <div class="avatar" id="avatar">
@@ -73,18 +75,6 @@
             {{else}}
                 <img src="/img/avatar.png" alt="" class="avatar__image">
             {{/if}}
-            {{!-- <div class="main-menu" id="main-menu">
-                <div class="main-menu__container-close">
-                    <div class="main-menu__close" id="close-main-menu">
-                        <img src="/img/close_icon.png" alt="close main menu" class="main-menu__close-img">
-                    </div>  
-                </div>
-                <ul class="main-menu__list">
-                    <li class="main-menu__item" id="signIn_mainMenu">Вход</li>
-                    <li class="main-menu__item" id="registration_mainMenu">Регистрация</li>
-                </ul>
-            </div> --}}
-
         </div>
         <div class="main-menu" id="main-menu">
             <div class="main-menu__container-close">
@@ -93,16 +83,21 @@
                 </div>  
             </div>
             <ul class="main-menu__list">
-                {{!-- {{#if dataUser}} --}}
-                    <li class="main-menu__item userIn" id="message_mainMenu">Сообщения</li>
+
+                    <li class="main-menu__item userIn" id="messager_mainMenu">Сообщения</li>
                     <li class="main-menu__item userIn" id="newBarter_mainMenu">Новый бартер</li>
                     <li class="main-menu__item userIn" id="myBarter_mainMenu">Мои бартеры</li>
                     <li class="main-menu__item userIn" id="exit_mainMenu">Выход</li>
-                {{!-- {{else}} --}}
+
                     <li class="main-menu__item userNoIn" id="signIn_mainMenu">Вход</li>
                     <li class="main-menu__item userNoIn" id="registration_mainMenu">Регистрация</li>
-                {{!-- {{/if}} --}}
+
             </ul>
         </div>
+    </div>
+    <div class="developer">
+        <p class="developer__WScreen"></p>
+        <p class="developer__HScreen"></p>
+        <p class="developer__scale"></p>
     </div>
 {{!-- </div> --}}

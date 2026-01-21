@@ -24,6 +24,7 @@
                 <label for="new-stuff__give-loadImg">Загрузите изображение</label>
                 <br>
                 <input type="hidden" name="flag_img_category_give" id="flag-img-category-give" value="null">
+                <input type="hidden" name="flag_change_img_give" id="flag-change-img-give" value="false">
                 <input type="file" id="give_loadImg" 
                     class="new-stuff__load-img"
                     name="give_loadImg"
@@ -50,7 +51,8 @@
                 <h3 class="new-stuff__title">Хочу получить</h3>
                
 
-                <input type="checkbox" id="new-stuff__get-checkbox" class="new-stuff__checkbox-free">
+                <input type="checkbox" name="get_checkbox" id="new-stuff__get-checkbox" 
+                `                   class="new-stuff__checkbox-free" value="get_free">
                 <label for="new-stuff__get-checkbox" class="new-stuff__label-checkbox">Отдаю даром, ни чего не хочу получить</label>
                 <br>
                 <label for="newStuff__getName" class="new-stuff__label-name">Название</label>
@@ -66,12 +68,13 @@
                 <label for="new-stuff__get-loadImg">Загрузите изображение</label>
                 <br>
                 <input type="hidden" name="flag_img_category_get" id="flag-img-category-get" value="null">
+                <input type="hidden" name="flag_change_img_get" id="flag-change-img-get" value="false">
                 <input type="file" id="get_loadImg" 
                     class="new-stuff__load-img"
                     name="get_loadImg"
                     accept="image/png, image/jpeg" />
                 <br>
-                <img src="img/default.jpg" alt="" class="new-stuff__img-preload">
+                <img src="img/default.jpg" id="img-get-preload" alt="" class="new-stuff__img-preload">
                 <br>
                 <label for="enter-get-description" class="new-stuff__label-descriptin">Введите описание</label>
                 <br>
@@ -86,8 +89,98 @@
             </div>
         
         </div>
-        <input type="submit" class="newBarter__submit">
+        {{#if changeBarter}}
+            <button class="changeBarter__button" id="changeBarterButton">Измениить бартер</button>
+        {{else}}
+            <input type="submit" class="newBarter__submit">
+        {{/if}}
     </form>
     {{{result}}}
 </div>
 <script src="/script/newBarter.js" type="text/javascript"></script>
+{{#if changeBarter}}
+    <script>
+        var listCategoryId=[];
+        getCatagoryListIdFromServer().then(function(res){
+            listCategoryId=JSON.parse(res);
+        })
+        const params = new URLSearchParams(window.location.search);
+        const barter_value_id = params.get('barter_id'); 
+
+        // 2. Создаем новый скрытый элемент
+        const hiddenInputBarterId = document.createElement('input');
+
+        // 3. Устанавливаем тип hidden
+        hiddenInputBarterId.type = 'hidden';
+
+        // 4. Задаем имя и значение (например, для ID товара)
+        hiddenInputBarterId.name = 'barter_id';
+        hiddenInputBarterId.value = barter_value_id;
+
+        // 5. Добавляем элемент к форме
+        newBarterForm.appendChild(hiddenInputBarterId);
+
+
+        let dataSearch=JSON.stringify({barter_id: barter_value_id })
+
+        SendRequest('post',"/querySearch/",`data=${dataSearch}`,function(request){
+            let response=JSON.parse(request.response);
+            console.log(response)
+            document.getElementById('newStuff__giveName').value=response[0].give.name;
+            //console.log(listCategoryId, typeof(listCategoryId))
+
+            let categoryGiveSelect=document.getElementById('category-load-give');
+            setupOptionSelected(categoryGiveSelect, listCategoryId, response[0].give.category_id)
+            //console.log(categoryGiveSelect);
+            document.getElementById('img-give-preload').src=response[0].give.imagePath;
+            document.getElementById('newBarter-give-description').innerHTML=response[0].give.description;
+
+
+                                   //new-stuff__get-checkbox
+            if (response[0].free==true)
+            {
+                document.getElementById("new-stuff__get-checkbox").checked=true;
+                updateElemsCheckboxFree(true);
+
+            }
+            document.getElementById('newStuff__getName').value=response[0].get.name;
+
+            let categoryGetSelect=document.getElementById('category-load-get');
+            setupOptionSelected(categoryGetSelect, listCategoryId, response[0].get.category_id)
+
+            //document.getElementById('category-load-get');
+            document.getElementById('img-get-preload').src=response[0].get.imagePath;
+            document.getElementById('newBarter-get-description').innerHTML=response[0].get.description;;
+        });
+        function getCatagoryListIdFromServer() {
+            return new Promise(function(resolve) {
+                SendRequest('post', '/getListCategoryId',data='',function(request){
+                    if(request.response!=undefined)
+                    {
+                        resolve(request.response);
+                    }
+                    else
+                    {
+                        reject(null);
+                    }
+
+                })
+
+            });
+        }
+        function setupOptionSelected(select, listId, category_id)
+        {
+            for (let i=0; i<select.options.length; i++)
+            {
+                select.options[i].selected=false;
+            }
+            for (let i=0; i<select.options.length; i++)
+            {
+                if (Number(listId[i])==category_id)
+                {
+                    select.options[i].selected=true;
+                }
+            }
+        }
+    </script>
+{{/if}}

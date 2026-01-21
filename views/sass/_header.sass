@@ -2,6 +2,20 @@
 //     display: grid
 //     grid-template-columns: [full-start] 1fr  [content-start] minmax(43rem, 136rem) [content-end] 1fr [full-end]
 //     grid-template-rows:  8rem
+.developer
+    position: absolute
+    top: 12rem
+    left: 2rem
+    font-size: 1.6rem
+    font-weight: 900
+    z-index: 100
+    // opacity: 0
+    &__WScreen
+        color: red
+        width: 15rem
+    &__scale
+        color: green
+        width: 15rem
 .header
     grid-column: content-start / content-end
     grid-row: 1 / 2
@@ -45,11 +59,15 @@
     font-size: 2rem
     cursor: pointer
     margin-bottom: .5rem
-    border-bottom: 1px solid blue
-    
+    border-bottom: 1px solid blue 
+    @include respond(phone)
+        font-size: 1.8rem
+    @include respond(phone-long)
+        font-size: 1.6rem
+    @include respond(phone-middle)
+        font-size: 1.4rem
     &__title
-        color: red
-        
+        color: red  
     &__title-span
         color: blue
 .main-menu

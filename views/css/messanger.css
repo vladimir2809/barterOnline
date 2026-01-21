@@ -1,0 +1,4 @@
+.messanger {
+  grid-column: content-start/content-end;
+  grid-rows: 2/3;
+}
