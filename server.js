@@ -153,15 +153,18 @@ app.get("/",function(req,res){
 })
 app.get("/newBarter/",function(req,res){
   let data=null///*req.cookies[0]*/dataUser[0][0];
-  if (req.cookies.userID==undefined)
-  {
-    res.render('signIn');
-  }
   if (dataUser[0]!=undefined)
   {
     data=dataUser[0][0];
   }
-  res.render('newBarter',{categoryList: categoryListStr, dataUser: data});
+  if (req.cookies.userID==undefined)
+  {
+    res.render('signIn');
+  }
+  else
+  {
+    res.render('newBarter',{categoryList: categoryListStr, dataUser: data});
+  }
 })
 app.get("/signIn/",function(req,res){
 
