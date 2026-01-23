@@ -8,8 +8,11 @@
     // @if $breakpoint == nophone
     //     @media only screen and (min-width: 431px) //758
     //         @content
+    @if $breakpoint == phone-small
+        @media only screen and (max-width: 375px)//375px //430 //758
+            @content
     @if $breakpoint == phone-middle
-        @media only screen and (max-width: 375px) //430 //758
+        @media only screen and (max-width: 375px)//375px //430 //758
             @content
     @if $breakpoint == phone-long
         @media only screen and (max-width: 400px) //430 //758
@@ -35,6 +38,6 @@ html
 .container
     display: grid
     width: 100%
-    grid-template-columns: [full-start] 1fr  [content-start] minmax(32.5rem, 136rem) [content-end] 1fr [full-end]
+    grid-template-columns: [full-start] 1fr  [content-start] minmax(32.5rem, 134rem) [content-end] 1fr [full-end]
     grid-template-rows:  max-content max-content //7rem 100rem
     

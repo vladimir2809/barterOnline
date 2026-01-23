@@ -1037,3 +1037,6 @@ function generateRandomName(length)
 
 29.10.2025 остановился на том что делал изменение бартера update for DB
 */
+// pg_dump -U myuser -d barter_online full_DB_barter-online.sql
+// pg_dump -U myuser -d barter_online -f C:\Users\koste\Desktop\barterOnline\full.sql
+// pg_dump -U myuser -d barter_online -s > C:\Users\koste\Desktop\barterOnline\tables.sql

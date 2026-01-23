@@ -63,6 +63,7 @@ const { JSDOM } = jsdom;
 */
 // let query=`
 //     INSERT INTO category(name) VALUES
+//     ('Все категории'),
 //     ('Транспорт'),
 //     ('Недвижимость'),
 //     ('Личные вещи'),
