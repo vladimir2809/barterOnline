@@ -206,6 +206,7 @@ function insertMessage(message, sideSend/*, clearSendInput=true*/)
     let minutes=time.getMinutes() <= 9 ? '0'+time.getMinutes() : time.getMinutes();
     let timeStr=hours+':'+minutes;
     message=message.trim();
+    insertDay(new Date())
     if (message=='')
     {
         console.log('сообщение пустое');
@@ -235,9 +236,30 @@ function insertMessage(message, sideSend/*, clearSendInput=true*/)
     textBlockContHidden.scrollTop=1000000;
     // if (clearSendInput==true) sendInput.innerText='';
 }
-function insertDate(date)
+function insertDay(date)
 {
-    
+    let dayElem = document.getElementsByClassName('day-item')[0].cloneNode(true);
+    let monthNum=date.getMonth();
+    let month = 'undefined'
+    switch (monthNum)
+    {
+        case 0: month = 'января'; break;
+        case 1: month = 'февраля'; break;
+        case 2: month = 'марта'; break;
+        case 3: month = 'апреля'; break;
+        case 4: month = 'мая'; break;
+        case 5: month = 'июня'; break;
+        case 6: month = 'июля'; break;
+        case 7: month = 'августа'; break;
+        case 8: month = 'сентября'; break;
+        case 9: month = 'октября'; break;
+        case 10: month = 'ноября'; break;
+        case 11: month = 'декабря'; break;
+    }
+    let dayStr=date.getDate() + ' ' + month + ' '+date.getFullYear();
+    // console.log (dayStr);
+    dayElem.getElementsByClassName('day-item__value')[0].innerText=dayStr;
+    textBlockCont.append(dayElem);
 }
 function noScroll()
 {   
@@ -284,3 +306,8 @@ function getRandomColor() {
   const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padEnd(6, '0');
   return randomColor;
 }
+/*
+
+21.01.2026 Остановился на том что делал функцию отрисовки дня
+
+*/
