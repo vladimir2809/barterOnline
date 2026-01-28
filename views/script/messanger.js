@@ -24,6 +24,8 @@ let topContOld=0;
 let heightElemOld=0;
 let addHeight = 0;
 let flagHeightElem=false;
+
+let flagStart=false;
 // let textBlockContTop=textBlockCont.top;
 for (let i=0; i < contacts.length;i++)
 {
@@ -41,6 +43,26 @@ setInterval(function(){
     widthScreen=window.innerWidth;
     let heightScreen=window.innerHeight;
     // console.log(widthScreen);
+    if (flagStart==false)
+    {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('messageNow')==="true")
+        {
+            // let data={
+            //     'sender': params.get('sender'),
+            //     'recipient': params.get('recipient'),
+            // }
+            // data=JSON.stringify(data);
+            // SendRequest('POST', '/newRecipient/', `data=${data}`,function(request){
+            //     console.log(request)
+            //     document.getElementsByClassName('text-block__info-name')[0].innerText=request.response;
+                
+            // });
+            flagNoContactView=true;
+            goPressContactsOnly()
+        }
+        flagStart=true;
+    }
     if (widthScreen <= widthOnlyContacts)
     {
         arrowBack.style.display='block';
@@ -183,6 +205,21 @@ sendInput.addEventListener("focusout", function(){
 buttonSendMessage.addEventListener('click', function(){
     insertMessage('AIM NO AIM SEND', 'noaim', false);
     insertMessage(sendInput.innerText, 'aim');
+    time=new Date();
+    
+    const params = new URLSearchParams(window.location.search);
+
+    let dataMessage=JSON.stringify({
+        'time': time,
+        'message' : sendInput.innerText,
+        'sender' : params.get('sender'),
+        'barter_id' : params.get('barter_id'),
+    });
+
+    SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
+        console.log('сообшение отправленно')
+
+    })
     sendInput.innerText='';
     // let textBlockContHidden=document.getElementsByClassName('text-block__cont-hidden')[0];
     // let textItemOrigin = document.getElementsByClassName('text-item')[0];

@@ -11,7 +11,9 @@
             <a title='Написать' href="" class="barter__author-link">
                 {{nameUser}}
             </a>
-
+            <input type="hidden" class="barter__user-id" id="barterUserId"
+                        name="barterUserId" value="{{user_id}}">
+            <button class="barter__button-author">Написать</button>
         </h2>
         <h2 class="barter__city">Город: {{city}} </h2>
         
@@ -47,10 +49,4 @@
         </div>
     </div>
 </div>
-<script>
-    document.querySelector('.views-barter__button-change').addEventListener('click', function(){
-        const params = new URLSearchParams(window.location.search);
-        //alert(params.get('barter_id'));
-        window.location.href='/changebarter?barter_id='+params.get('barter_id');
-    });
-</script>
+<script src="script/viewsBarter.js"></script>

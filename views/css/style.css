@@ -556,6 +556,9 @@ html {
     top: -0.2rem;
   }
 }
+.text-block__info-give {
+  text-align: center;
+}
 .text-block__info-menu {
   display: block;
   width: 4rem;
@@ -711,6 +714,9 @@ html {
 }
 .barter__header {
   text-align: center;
+}
+.barter__button-author {
+  margin-left: 2rem;
 }
 
 .stuff-views * {
