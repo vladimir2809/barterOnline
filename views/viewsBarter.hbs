@@ -13,7 +13,10 @@
             </a>
             <input type="hidden" class="barter__user-id" id="barterUserId"
                         name="barterUserId" value="{{user_id}}">
-            <button class="barter__button-author">Написать</button>
+            {{#if defectNoQuery}}
+            {{else}}
+                <button class="barter__button-author">Написать</button>
+            {{/if}}
         </h2>
         <h2 class="barter__city">Город: {{city}} </h2>
         

@@ -439,27 +439,10 @@ function getDataForRecordDb(req/*, files*/)
 }
 // КОД ОТВЕЧАЮШИЙ ЗА СТРАНИЦУ МЕССАНДЖЕР
 
-
-app.get('/messanger/', function(req, res){
-  // res.send('messanger PAGE')
-  let data=null///*req.cookies[0]*/dataUser[0][0];
-  if (dataUser[0]!=undefined)
-  {
-    data=dataUser[0][0];
-  }
-  let messageNow=req.query.messageNow;
-  console.log("messageNow="+req.query.messageNow)
-  if (messageNow==false)
-  {
-    res.render('messanger',{'dataUser': data, 'noViewsCity': true })
-
-  }
-  else
-  {
-    console.log(req.query)
-    let barter_id=req.query.barter_id;
-    // let query=`SELECT name, surname FROM tableuser WHERE id=${recipient}`;
-
+function getNameSurnameGiveName(barter_id)
+{
+  return new Promise(function(resolve, reject){
+    
     let query=`SELECT name, surname, (SELECT give_name FROM barter WHERE id=${barter_id}) AS "give_name"
         FROM tableuser
         WHERE  id = (SELECT user_id FROM barter WHERE id=${barter_id});`
@@ -472,66 +455,51 @@ app.get('/messanger/', function(req, res){
         console.log (resDB.rows[0])
         let nameSurname=resDB.rows[0].name +' '+resDB.rows[0].surname;
         let giveName=resDB.rows[0].give_name;
-        res.render('messanger',{'dataUser': data, 'noViewsCity': true,
-                  'nameSurname': nameSurname, 'give_name' : giveName})
+        resolve({'nameSurname': nameSurname, 'giveName': giveName})
+        // res.render('messanger',{'dataUser': data, 'noViewsCity': true,
+        //           'nameSurname': nameSurname, 'give_name' : giveName})
         //res.send(result);
       }
       else
       {
-        console.log(err);
-        res.send('error');
+        // console.log(err);
+        reject(err);
+        // res.send('error');
       }
     });
+  })
+}
+app.get('/messanger/', function(req, res){
+  // res.send('messanger PAGE')
+  let data=null///*req.cookies[0]*/dataUser[0][0];
+  if (dataUser[0]!=undefined)
+  {
+    data=dataUser[0][0];
+  }
+  let messageNow=req.query.messageNow;
+  console.log("messageNow="+req.query.messageNow)
+  if (messageNow==undefined || messageNow==false)
+  {
+    res.render('messanger',{'dataUser': data, 'noViewsCity': true })
+
+  }
+  else
+  {
+    console.log(req.query)
+    let barter_id=req.query.barter_id;
+    // let query=`SELECT name, surname FROM tableuser WHERE id=${recipient}`;
+    getNameSurnameGiveName(barter_id)
+    .then(function(result){
+       res.render('messanger',{'dataUser': data, 'noViewsCity': true,
+                  'nameSurname': result.nameSurname, 'give_name' : result.giveName})
+    })
   }
   // render.page
 })
-// app.post('/newRecipient/', function(req, res){
-//   console.log(JSON.parse(req.body.data))
-//   let recipient=JSON.parse(req.body.data).recipient;
-//   let query=`SELECT name, surname FROM tableuser WHERE id=${recipient}`;
-//   console.log(query);
-
-//   pool.query(query, (err, resDB) =>{
-//     if (!err)
-//     {
-//       console.log ("new recipient")
-//       console.log (resDB.rows[0])
-//       let result=resDB.rows[0].name +' '+resDB.rows[0].surname;
-//       res.render('messanger',{'dataUser': data, 'noViewsCity': true,
-//                  'nameSurname': result })
-//       //res.send(result);
-//     }
-//     else
-//     {
-//       console.log(err);
-//       res.send('error');
-//     }
-//   });
-  
-
-// })
 app.post('/newMessage/', function (req, res){
   let data=JSON.parse(req.body.data);
   // console.log("newMessage: ",data.message);
   console.log("newMessage: ",data);
-  // function getRecipientForMessageDB(barter_id)
-  // {
-  //   return new Promise( function(resolve, reject) {
-  //      let query=`SELECT user_id FROM barter WHERE id=${barter_id}`
-  //      pool.query(query, function (err, resDB){
-  //         if (!err)
-  //         {
-  //           let result= resDB.rows[0].user_id;
-  //           resolve(result);
-  //         }
-  //         else
-  //         {
-  //           reject(err);
-  //         }
-  //      }) 
-  //   });
-  //   //return result;
-  // }
   let recipient=null;
   function getRecipientForMessageDB(barter_id)
   {
@@ -561,13 +529,13 @@ function getSenderRecipientDB(sender, recipient, barter_id)
       }
       let query = `SELECT * FROM message 
       WHERE 
-      (user_sender_id=${sender} AND  
-      user_recipient_id=${recipient} AND 
-      barter_id=${barter_id})
+        (user_sender_id=${sender} AND  
+        user_recipient_id=${recipient} AND 
+        barter_id=${barter_id})
       OR
-      (user_sender_id=${recipient} AND  
-      user_recipient_id=${sender} AND 
-      barter_id=${barter_id})`;
+        (user_sender_id=${recipient} AND  
+        user_recipient_id=${sender} AND 
+        barter_id=${barter_id})`;
       console.log("newMessage query: ",query);
       pool.query(query, function(err, resDB){
       if (!err)
@@ -593,7 +561,9 @@ function getSenderRecipientDB(sender, recipient, barter_id)
     })
   })
 }
+function insertMessageInDB(sender, recipient, message, time, give_name, barter_id){
 
+}
 
   getRecipientForMessageDB(data.barter_id)
   .then(function(result){
@@ -1100,7 +1070,7 @@ function calcBarterArr(rowsDB)
             barterData.get.free=resDB.rows[0].free;
 
             nameSurname=resDB.rows[0].name_user+" "+resDB.rows[0].surname_user;
-            let user_id=resDB.rows[0].user_id;
+            let user_id=req.cookies.userID///resDB.rows[0].user_id;
             let city_name=resDB.rows[0].city_name;
             res.render('viewsBarter',{categoryList: categoryListStr,  
                                       dataUser: data, 
