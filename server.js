@@ -519,29 +519,29 @@ app.post('/newMessage/', function (req, res){
     });
   }
    
-function getSenderRecipientDB(sender, recipient, barter_id)
-{
+  function getSenderRecipientDB(sender, recipient, barter_id)
+  {
 
-    return new Promise(function(resolve, reject){
-      if (sender==recipient)
-      {
-        resolve(false);
-      }
-      let query = `SELECT * FROM message 
-      WHERE 
-        (user_sender_id=${sender} AND  
-        user_recipient_id=${recipient} AND 
-        barter_id=${barter_id})
-      OR
-        (user_sender_id=${recipient} AND  
-        user_recipient_id=${sender} AND 
-        barter_id=${barter_id})`;
-      console.log("newMessage query: ",query);
-      pool.query(query, function(err, resDB){
-      if (!err)
-      {
-        // console.log (resDB)
-        if (resDB.rows.length==0)
+      return new Promise(function(resolve, reject){
+        if (sender==recipient)
+        {
+          resolve(false);
+        }
+        let query = `SELECT * FROM message 
+        WHERE 
+          (user_sender_id=${sender} AND  
+          user_recipient_id=${recipient} AND 
+          barter_id=${barter_id})
+        OR
+          (user_sender_id=${recipient} AND  
+          user_recipient_id=${sender} AND 
+          barter_id=${barter_id})`;
+        console.log("newMessage query: ",query);
+        pool.query(query, function(err, resDB){
+        if (!err)
+        {
+          // console.log (resDB)
+          if (resDB.rows.length==0)
           {
             console.log ("NO links sender recipient")
             resolve(false)  
@@ -550,29 +550,62 @@ function getSenderRecipientDB(sender, recipient, barter_id)
           {
             resolve(true)
           }
-          
-          //res.send('OK');
-      }  
+            
+            //res.send('OK');
+        }  
+        else
+        {
+          console.log (err)
+          reject(err);
+        }
+      })
+    })
+  }
+  function insertMessageInDB(sender, recipient, message, time, give_name, barter_id)
+  {
+    let dataMessage=[
+      {
+        'time': time,
+        'message': message,
+      },
+    ];
+    dataMessage=JSON.stringify(dataMessage);
+    let query = `INSERT INTO message(user_sender_id, user_recipient_id, 
+                                      messages_json, give_name, barter_id )
+                  VALUES (${sender}, ${recipient}, '${dataMessage}',
+                          (SELECT give_name FROM barter WHERE id=${barter_id}),
+                          ${barter_id})`;
+    console.log(query);
+    pool.query(query, function(err, resDB){
+      if (!err)
+      {
+        console.log('newMessage',dataMessage);
+      }
       else
       {
-        console.log (err)
-        reject(err);
+        console.log(err);
       }
     })
-  })
-}
-function insertMessageInDB(sender, recipient, message, time, give_name, barter_id){
-
-}
-
-  getRecipientForMessageDB(data.barter_id)
-  .then(function(result){
-      console.log(result);
-      getSenderRecipientDB(data.sender, result, data.barter_id)
-      .then(function(res2){
-        console.log('sender recipient in DB: '+res2);
-        res.send('sender recipient in DB: '+res2)
-      });
+  }
+  checkBarterIdAndUserId(data.barter_id, data.sender)
+  .then(function (check){
+    if (check==false)
+    {    
+      getRecipientForMessageDB(data.barter_id)
+      .then(function(result){
+        console.log(result);
+        getSenderRecipientDB(data.sender, result, data.barter_id)
+        .then(function(res2){
+          console.log('sender recipient in DB: '+res2);
+          if (res2==false)
+          {
+            insertMessageInDB(data.sender, result, data.message, 
+                data.time, 'undef', data.barter_id)
+          }
+          res.send('sender recipient in DB: '+res2)
+        });
+      })
+    }
   })
   // getRecipientForMessageDB(data.barter_id).then(
   //   function(response){
@@ -788,7 +821,7 @@ app.get('/getMyBarterArr/', function(req, res){
     }
   });
 });
-function checkDefectQuery(barter_id, userID)
+function checkBarterIdAndUserId(barter_id, userID)
 {
   return new Promise(function (resolve){
     let query=`
@@ -830,7 +863,7 @@ app.get('/changebarter',function(req, res){
     data=dataUser[0][0];
   }
 
-  checkDefectQuery(barter_id, req.cookies.userID).then(function(result){
+  checkBarterIdAndUserId(barter_id, req.cookies.userID).then(function(result){
     if (result==true)
     {
       res.render('newBarter', {categoryList: categoryListStr, dataUser: data, changeBarter: true});
@@ -1011,7 +1044,7 @@ function calcBarterArr(rowsDB)
     let barter_id=req.query.barter_id
     let flagNoDefectQuery=false;
     console.log ("views Barter One: "+barter_id)
-    checkDefectQuery(barter_id, req.cookies.userID).then(function(result){
+    checkBarterIdAndUserId(barter_id, req.cookies.userID).then(function(result){
       if (result==true)
       {
         flagNoDefectQuery=true;

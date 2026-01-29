@@ -209,17 +209,22 @@ buttonSendMessage.addEventListener('click', function(){
     
     const params = new URLSearchParams(window.location.search);
 
-    let dataMessage=JSON.stringify({
-        'time': time,
-        'message' : sendInput.innerText,
-        'sender' : params.get('sender'),
-        'barter_id' : params.get('barter_id'),
-    });
-
-    SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
-        console.log('сообшение отправленно')
-
-    })
+    if ((params.get('sender')!=null && params.get('sender')!=undefined) &&
+        (params.get('barter_id')!=null && params.get('barter_id')!=undefined))
+    {
+        
+        let dataMessage=JSON.stringify({
+            'time': time,
+            'message' : sendInput.innerText,
+            'sender' : params.get('sender'),
+            'barter_id' : params.get('barter_id'),
+        });
+        console.log(dataMessage);
+        SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
+            console.log('сообшение отправленно')
+            
+        })
+    }
     sendInput.innerText='';
     // let textBlockContHidden=document.getElementsByClassName('text-block__cont-hidden')[0];
     // let textItemOrigin = document.getElementsByClassName('text-item')[0];
