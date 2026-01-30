@@ -1,3 +1,5 @@
+// const { response } = require("express");
+
 var widthScreenValue=925//430;
 var widthOnlyContacts=925;
 var widthContacts=310;
@@ -27,18 +29,48 @@ let flagHeightElem=false;
 
 let flagStart=false;
 // let textBlockContTop=textBlockCont.top;
-for (let i=0; i < contacts.length;i++)
+function addEventSelectContact()
 {
-    avatar=contacts[i].getElementsByClassName('contact__literal')[0];
-    // avatar.style.backgroundColor=getRandomColor();
-    contacts[i].addEventListener('click', function(event){
-        for (let j=0; j < contacts.length;j++)
-        {
-            contacts[j].style.backgroundColor='#FFF';
-        }
-        this.style.backgroundColor='#AFA';
-    })
+    for (let i=0; i < contacts.length;i++)
+    {
+        avatar=contacts[i].getElementsByClassName('contact__literal')[0];
+        // avatar.style.backgroundColor=getRandomColor();
+        contacts[i].addEventListener('click', function(event){
+            for (let j=0; j < contacts.length;j++)
+            {
+                contacts[j].style.backgroundColor='#FFF';
+            }
+            this.style.backgroundColor='#AFA';
+        })
+    }
 }
+function clearSelectContacts()
+{
+    for (let j=0; j < contacts.length;j++)
+    {
+        contacts[j].style.backgroundColor='#FFF';
+    }
+}
+SendRequest('POST', '/getContactListMessanger/','',function(request){
+    response=JSON.parse(request.response);
+    console.log(response);
+    let contact=document.getElementsByClassName('contact')[0];
+    contact.style.display='none';
+    for (let i=0;i<response.length;i++)
+    {
+        let contactItem=contact.cloneNode(true);
+        contactItem.style.display='flex';
+        contactItem.querySelector('.contact__literal span').innerText=response[i].literal;
+        contactItem.querySelector('.contact__literal span').style.backgroundColor=response[i].color;
+
+        contactItem.querySelector('.contact__name').innerText=response[i].nameSurname;
+        contactItem.querySelector('.contact__preview-text').innerText=response[i].giveName;
+        contactSelect.append(contactItem);
+        
+    }
+    addEventSelectContact();
+    addEventClickContact();
+});
 setInterval(function(){
     widthScreen=window.innerWidth;
     let heightScreen=window.innerHeight;
@@ -164,24 +196,25 @@ setInterval(function(){
 
     }
 },16)
-
-for (let i=0; i < contacts.length;i++)
+function addEventClickContact()
 {
-    
-    contacts[i].addEventListener("click", function(event){
-        if (widthScreen <= widthOnlyContacts)
-        {
-
-            flagNoContactView=true;
-            goPressContactsOnly()
-            // flagNoContactView=true;
-            // contactSelect.style.display='none';
-            // textBlock.style.display="block";
-            // textBlock.style.gridColumn="1 / 3";
-            // textBlock.style.width='100%';
-        }
-    })
-    
+    for (let i=0; i < contacts.length;i++)
+    {
+            
+        contacts[i].addEventListener("click", function(event)       {
+            if (widthScreen <= widthOnlyContacts)
+            {
+                
+                flagNoContactView=true;
+                goPressContactsOnly()
+                // flagNoContactView=true;
+                // contactSelect.style.display='none';
+                // textBlock.style.display="block";
+                // textBlock.style.gridColumn="1 / 3";
+                // textBlock.style.width='100%';
+            }
+        });
+    } 
 }
 arrowBack.addEventListener('click', function(event){
     //if (widthScreen < widthOnlyContacts)
@@ -333,6 +366,7 @@ function goPressButtonBack()// когда нажимаю на стрелочку
     textBlock.style.display="none";
     textBlock.style.gridColumn="2 / 3";
     inputBlock.style.display="none";
+    clearSelectContacts();
 }
 function goPressContactsOnly() // когда кликаю на контакт в малом разрешении
 {

@@ -474,7 +474,7 @@ function getNameSurnameGiveName(barter_id)
 {
   return new Promise(function(resolve, reject){
     
-    let query=`SELECT name, surname, color (SELECT give_name FROM barter WHERE id=${barter_id}) AS "give_name"
+    let query=`SELECT name, surname, (SELECT give_name FROM barter WHERE id=${barter_id}) AS "give_name"
         FROM tableuser
         WHERE  id = (SELECT user_id FROM barter WHERE id=${barter_id});`
     console.log(query);
@@ -501,12 +501,13 @@ function getNameSurnameGiveName(barter_id)
     });
   })
 }
-function getListContactsForMessanger()
+function getListContactsForMessanger(user_id)
 {
     return new Promise(function(resolve, reject){
       let query=`SELECT * 
                  FROM message
-                 JOIN tableuser ON message.user_recipient_id = tableuser.id;`
+                 JOIN tableuser ON message.user_recipient_id = tableuser.id
+                 WHERE user_sender_id = ${user_id} OR user_recipient_id = ${user_id};`
       result=[];
       pool.query(query, function(err, resDB) {
         if (!err)
@@ -535,6 +536,9 @@ function getListContactsForMessanger()
     });
 }
 app.get('/messanger/', function(req, res){
+  initDataUser(req.cookies)
+  console.log(req.cookies)
+  console.log(dataUser[0])
   // res.send('messanger PAGE')
   let data=null///*req.cookies[0]*/dataUser[0][0];
   if (dataUser[0]!=undefined)
@@ -545,14 +549,13 @@ app.get('/messanger/', function(req, res){
   console.log("messageNow="+req.query.messageNow)
   if (messageNow==undefined || messageNow==false)
   {
-    getListContactsForMessanger()
-    .then(function(result){
-      res.render('messanger',{'dataUser': data, 'noViewsCity': true, 
-                  'contactList': result
-                 //   contactList: ['VK', 'CK'],
-                  }
-                )
-    })
+    res.render('messanger',{'dataUser': data, 'noViewsCity': true } )
+    // getListContactsForMessanger(req.cookies.userID)
+    // .then(function(result){
+    //   res.render('messanger',{'dataUser': data, 'noViewsCity': true, 
+    //               'contactList': result    }
+    //             )
+    // })
 
   }
   else
@@ -567,6 +570,12 @@ app.get('/messanger/', function(req, res){
     })
   }
   // render.page
+})
+app.post('/getContactListMessanger/', function(req, res){
+   getListContactsForMessanger(req.cookies.userID)
+    .then(function(result){
+      res.send(result)
+    })
 })
 app.post('/newMessage/', function (req, res){
   let data=JSON.parse(req.body.data);
@@ -633,12 +642,13 @@ app.post('/newMessage/', function (req, res){
       })
     })
   }
-  function insertMessageInDB(sender, recipient, message, time, give_name, barter_id)
+  function insertMessageInDB(sender, recipient, message, time, barter_id)
   {
     let dataMessage=[
       {
         'time': time,
         'message': message,
+        'senderUserID': sender
       },
     ];
     dataMessage=JSON.stringify(dataMessage);
@@ -667,14 +677,14 @@ app.post('/newMessage/', function (req, res){
       .then(function(result){
         console.log(result);
         getSenderRecipientDB(data.sender, result, data.barter_id)
-        .then(function(res2){
-          console.log('sender recipient in DB: '+res2);
-          if (res2==false)
+        .then(function(result2){
+          console.log('sender recipient in DB: '+result2);
+          if (result2==false)
           {
             insertMessageInDB(data.sender, result, data.message, 
-                data.time, 'undef', data.barter_id)
+                data.time, data.barter_id)
           }
-          res.send('sender recipient in DB: '+res2)
+          res.send('sender recipient in DB: '+result2)
         });
       })
     }
@@ -1104,6 +1114,9 @@ function calcBarterArr(rowsDB)
 }
   app.get('/viewsBarter', function(req, res){
     initDataUser(req.cookies)
+  //    initDataUser(req.cookies)
+  // console.log(req.cookies)
+  // console.log(dataUser[0])
     let data=null;
     let nameSurname=null;
     // let user_id=null;
@@ -1114,29 +1127,26 @@ function calcBarterArr(rowsDB)
     }
     console.log (data)
     let barter_id=req.query.barter_id
-    let flagNoDefectQuery=false;
+    let flagBarterIdAndUserId=false;
     console.log ("views Barter One: "+barter_id)
     checkBarterIdAndUserId(barter_id, req.cookies.userID).then(function(result){
       if (result==true)
       {
-        flagNoDefectQuery=true;
+        flagBarterIdAndUserId=true;
       }
       else
       {
-        flagNoDefectQuery=false;
+        flagBarterIdAndUserId=false;
         //res.send('defect query')
       }
-    })
-    // console.log (req)
-    let query=`
-
-      SELECT barter.*, city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
-      FROM barter 
-      JOIN city  ON barter.city_id = city.id 
-      JOIN tableuser ON barter.user_id = tableuser.id
-      WHERE barter.id=${barter_id}; `
+      let query=` SELECT barter.*, city.name AS city_name,
+                    tableuser.name AS name_user, tableuser.surname AS surname_user
+                  FROM barter 
+                    JOIN city  ON barter.city_id = city.id 
+                    JOIN tableuser ON barter.user_id = tableuser.id
+                  WHERE barter.id=${barter_id}; `
       // , city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
-    pool.query(query, function(err, resDB){
+      pool.query(query, function(err, resDB){
 
         if (!err)
         {
@@ -1184,7 +1194,7 @@ function calcBarterArr(rowsDB)
                                       city: city_name,
                                       noViewsCity: true,
                                       barterData: barterData,
-                                      defectNoQuery: flagNoDefectQuery});
+                                      defectNoQuery: flagBarterIdAndUserId});
           }
           else
           {
@@ -1197,6 +1207,77 @@ function calcBarterArr(rowsDB)
           res.send('Страница не найдена.')
         }
       });
+    })
+    // console.log (req)
+    // let query=`
+
+    //   SELECT barter.*, city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
+    //   FROM barter 
+    //   JOIN city  ON barter.city_id = city.id 
+    //   JOIN tableuser ON barter.user_id = tableuser.id
+    //   WHERE barter.id=${barter_id}; `
+    //   // , city.name AS city_name, tableuser.name AS name_user, tableuser.surname AS surname_user
+    // pool.query(query, function(err, resDB){
+
+    //     if (!err)
+    //     {
+
+    //       if (resDB.rows.length>0)
+    //       {
+          
+    //         let barterData={
+    //           give:{
+    //             name: null,
+    //             category: null,
+    //             imagePath: null,
+    //             description: null,
+
+    //           },
+    //           get:{
+    //             name: null,
+    //             category: null,
+    //             imagePath: null,
+    //             description: null,
+    //             free: false,
+
+    //           }
+    //         };
+    //         console.log(resDB.rows[0]);
+    //         barterData.give.name=resDB.rows[0].give_name;
+    //         barterData.give.category=getNameCategoryToId(resDB.rows[0].give_category_id);
+    //         barterData.give.imagePath=resDB.rows[0].give_link_image;
+    //         barterData.give.description=resDB.rows[0].give_description;
+
+    //         barterData.get.name=resDB.rows[0].get_name;
+    //         barterData.get.category=getNameCategoryToId(resDB.rows[0].get_category_id);
+    //         barterData.get.imagePath=resDB.rows[0].get_link_image;
+    //         barterData.get.description=resDB.rows[0].get_description;
+
+    //         barterData.get.free=resDB.rows[0].free;
+
+    //         nameSurname=resDB.rows[0].name_user+" "+resDB.rows[0].surname_user;
+    //         let user_id=req.cookies.userID///resDB.rows[0].user_id;
+    //         let city_name=resDB.rows[0].city_name;
+    //         res.render('viewsBarter',{categoryList: categoryListStr,  
+    //                                   dataUser: data, 
+    //                                   user_id: user_id,
+    //                                   nameUser: nameSurname,
+    //                                   city: city_name,
+    //                                   noViewsCity: true,
+    //                                   barterData: barterData,
+    //                                   defectNoQuery: flagBarterIdAndUserId});
+    //       }
+    //       else
+    //       {
+    //         res.send('Бартер не найден.')
+    //       }  
+        
+    //     }
+    //     else
+    //     {
+    //       res.send('Страница не найдена.')
+    //     }
+    //   });
     })
 
   app.post('/listForCity/', function(req,res){
