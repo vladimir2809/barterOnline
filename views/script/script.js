@@ -1,3 +1,5 @@
+// const { response } = require("express");
+
 var resultNode=null;
 var resultItemNode=null;
 var newStuffArr=null;
@@ -414,6 +416,12 @@ window.addEventListener('load',()=>{
         createEventCityList();
       }
     })
+    SendRequest('POST', '/getColorAndDataUser/', '', function(request){
+      let response=JSON.parse(request.response)
+      console.log(response);
+      document.querySelector('.avatar__circleBorder span').innerHTML=response.dataUser;
+      document.querySelector('.avatar__circleBorder').style.backgroundColor=response.color;
+    });
     // document.getElementById('newBarter-changeCity').addEventListener('click',(event)=>{
     //   cityBlock.style.display="flex";
     // });

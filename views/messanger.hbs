@@ -1,7 +1,25 @@
 <div class="messanger">
     {{!-- блок контактов --}}
     <div class="contact-select">
-        <div class="contact">
+        {{#each contactList}}
+            {{#with .}}
+            <div class="contact">
+                <div class="contact__avatar" >
+                    <div class="contact__literal" style="background-color: {{{color}}}" >
+                        <span>{{literal}}</span>
+                    </div>
+                </div>
+                <div class="contact__cont">
+
+                    <h2 class="contact__name">
+                        {{nameSurname}}
+                    </h2>
+                    <p class="contact__preview-text new-message">{{giveName}}</p>
+                </div>
+            </div>
+            {{/with}}
+        {{/each}}
+        {{!-- <div class="contact">
             <div class="contact__avatar">
                 <div class="contact__literal">
                     <span>K</span>
@@ -119,7 +137,7 @@
                 </h2>
                 <p class="contact__preview-text">У тебя крутая видеокарта, я хочу ее обменять на ПК</p>
             </div>
-        </div>
+        </div> --}}
         
     </div>
     {{!-- блок сообшения --}}

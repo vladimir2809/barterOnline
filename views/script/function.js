@@ -201,3 +201,21 @@ function formatByteSize(bytes) // перевод значения памяти �
     else if(bytes < 1073741824) return(bytes / 1048576).toFixed(3) + " MiB";
     else return(bytes / 1073741824).toFixed(3) + " GiB";
 };
+function getRandomColor() {
+  // Генерация случайного числа и преобразование в HEX-строку
+    let value=Math.floor(Math.random()*768);
+    let rand=Math.floor(Math.random()*3);
+    function func()
+    {
+        let value = 48 + Math.floor(Math.random()*20)*8;
+        value=value.toString(16).toUpperCase();
+        return value;
+
+    }
+    let R=rand == 0 ? '00' : func();
+    let G=rand == 1 ? '00' : func();
+    let B=rand == 2 ? '00' : func();
+    const randomColor=`#${R}${G}${B}`
+    console.log(randomColor);
+    return randomColor;
+}

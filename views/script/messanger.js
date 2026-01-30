@@ -30,7 +30,7 @@ let flagStart=false;
 for (let i=0; i < contacts.length;i++)
 {
     avatar=contacts[i].getElementsByClassName('contact__literal')[0];
-    avatar.style.backgroundColor=getRandomColor();
+    // avatar.style.backgroundColor=getRandomColor();
     contacts[i].addEventListener('click', function(event){
         for (let j=0; j < contacts.length;j++)
         {
@@ -343,22 +343,24 @@ function goPressContactsOnly() // когда кликаю на контакт в
     textBlock.style.width='100%';
     inputBlock.style.display="flex";
 }
-function getRandomColor() {
-  // Генерация случайного числа и преобразование в HEX-строку
-//   const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padEnd(6, '0');
-    let value=Math.floor(Math.random()*768);
-    let rand=Math.floor(Math.random()*3);
-    function func()
-    {
-        return 50 + Math.floor(Math.random()*20)*10;
-    }
-    let R=rand == 0 ? 0 : func();
-    let G=rand == 1 ? 0 : func();
-    let B=rand == 2 ? 0 : func();
-    const randomColor=`rgb(${R}, ${G}, ${B})`
-    console.log(randomColor);
-    return randomColor;
-}
+// function getRandomColor() {
+//   // Генерация случайного числа и преобразование в HEX-строку
+//     let value=Math.floor(Math.random()*768);
+//     let rand=Math.floor(Math.random()*3);
+//     function func()
+//     {
+//         let value = 48 + Math.floor(Math.random()*20)*8;
+//         value=value.toString(16).toUpperCase();
+//         return value;
+
+//     }
+//     let R=rand == 0 ? '00' : func();
+//     let G=rand == 1 ? '00' : func();
+//     let B=rand == 2 ? '00' : func();
+//     const randomColor=`#${R}${G}${B}`
+//     console.log(randomColor);
+//     return randomColor;
+// }
 /*
 
 21.01.2026 Остановился на том что делал функцию отрисовки дня

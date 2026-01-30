@@ -127,6 +127,35 @@ app.post('/clearCookie/', function(req,res){
   res.clearCookie('city');
   res.send('cookie Clear')
 })
+app.post('/getColorAndDataUser/', function(req, res){
+  initDataUser(req.cookies)
+  if (dataUser[0]!=undefined)
+  {
+    data=dataUser[0][0];
+    user_id=req.cookies.userID;
+    let query=`SELECT color FROM tableuser WHERE id=${user_id}`
+    pool.query(query, function(err, resDB){
+      if (!err)
+      {
+        if (resDB.rows.length==1)
+        {
+          res.send({dataUser: data, color: resDB.rows[0].color})
+
+        }
+        else
+        {
+          res.send({dataUser: data, color: 'red'})
+        }
+      }
+      else
+      {
+        console.log(err);
+        res.send('error');
+      }
+
+    })
+  }
+});
 app.get("/",function(req,res){
 
   
@@ -241,21 +270,23 @@ app.post("/newUser/",(req, res)=>{
 
         let password=(SHA256(req.body.registrationPassword).words.join(','))
         console.log(password)
+        let color=getRandomColor();
         let query=`
-            INSERT INTO tableuser(name, surname, email, password, role)
+            INSERT INTO tableuser(name, surname, email, password, role, color)
             VALUES ('${req.body.registrationName+''}',
                     '${req.body.registrationSurname+''}',
                     '${req.body.registrationEmail+''}',
                     '${password}',
-                    'user');
+                    'user',
+                    '${color}');
         `;
         pool.query(query, (err, resDB) =>{
-              if (err==undefined)
-              {
-                  console.log("newUser "+req.body.registrationName)
-          }
-          else
-          {
+            if (err==undefined)
+            {
+              console.log("newUser "+req.body.registrationName)
+            }
+            else
+            {
               console.log("Error newUser",err);
             }
         });
@@ -443,7 +474,7 @@ function getNameSurnameGiveName(barter_id)
 {
   return new Promise(function(resolve, reject){
     
-    let query=`SELECT name, surname, (SELECT give_name FROM barter WHERE id=${barter_id}) AS "give_name"
+    let query=`SELECT name, surname, color (SELECT give_name FROM barter WHERE id=${barter_id}) AS "give_name"
         FROM tableuser
         WHERE  id = (SELECT user_id FROM barter WHERE id=${barter_id});`
     console.log(query);
@@ -455,7 +486,8 @@ function getNameSurnameGiveName(barter_id)
         console.log (resDB.rows[0])
         let nameSurname=resDB.rows[0].name +' '+resDB.rows[0].surname;
         let giveName=resDB.rows[0].give_name;
-        resolve({'nameSurname': nameSurname, 'giveName': giveName})
+        // let color=resDB.rows[0].color;
+        resolve({'nameSurname': nameSurname, 'giveName': giveName /*, 'color': color*/ })
         // res.render('messanger',{'dataUser': data, 'noViewsCity': true,
         //           'nameSurname': nameSurname, 'give_name' : giveName})
         //res.send(result);
@@ -469,6 +501,39 @@ function getNameSurnameGiveName(barter_id)
     });
   })
 }
+function getListContactsForMessanger()
+{
+    return new Promise(function(resolve, reject){
+      let query=`SELECT * 
+                 FROM message
+                 JOIN tableuser ON message.user_recipient_id = tableuser.id;`
+      result=[];
+      pool.query(query, function(err, resDB) {
+        if (!err)
+        {
+          for (let i=0;i<resDB.rows.length;i++)
+          {
+            let nameSurname=resDB.rows[i].name + " " + resDB.rows[i].surname;
+            let literal=nameSurname.toUpperCase()[0];
+            let color=resDB.rows[i].color;
+            let item={nameSurname: nameSurname,
+                      barter_id: resDB.rows[i].barter_id,
+                      giveName: resDB.rows[i].give_name,
+                      literal: literal, color: color
+                      
+            }
+            // let item=resDB.rows[i].give_name;
+            result.push(item);
+          }
+          resolve(result)
+        }
+        else
+        {
+          console.log(err);
+        }
+      });
+    });
+}
 app.get('/messanger/', function(req, res){
   // res.send('messanger PAGE')
   let data=null///*req.cookies[0]*/dataUser[0][0];
@@ -480,7 +545,14 @@ app.get('/messanger/', function(req, res){
   console.log("messageNow="+req.query.messageNow)
   if (messageNow==undefined || messageNow==false)
   {
-    res.render('messanger',{'dataUser': data, 'noViewsCity': true })
+    getListContactsForMessanger()
+    .then(function(result){
+      res.render('messanger',{'dataUser': data, 'noViewsCity': true, 
+                  'contactList': result
+                 //   contactList: ['VK', 'CK'],
+                  }
+                )
+    })
 
   }
   else
@@ -1226,12 +1298,32 @@ function generateRandomName(length)
   }
   return result;
 }
+function getRandomColor() {
+  // Генерация случайного числа и преобразование в HEX-строку
+    let value=Math.floor(Math.random()*768);
+    let rand=Math.floor(Math.random()*3);
+    function func()
+    {
+        let value = 48 + Math.floor(Math.random()*20)*8;
+        value=value.toString(16).toUpperCase();
+        return value;
+
+    }
+    let R=rand == 0 ? '00' : func();
+    let G=rand == 1 ? '00' : func();
+    let B=rand == 2 ? '00' : func();
+    const randomColor=`#${R}${G}${B}`
+    console.log(randomColor);
+    return randomColor;
+}
 /*
 08.08.2025 останивился на том что подготавливал данные бартера для записи в БД
 
 12.09.2025 остановился на побдоре условий для поискка по категориям
 
 29.10.2025 остановился на том что делал изменение бартера update for DB
+
+29.01.2026 остановился на том что делал цвета пользователей
 */
 // pg_dump -U myuser -d barter_online full_DB_barter-online.sql
 // pg_dump -U myuser -d barter_online -f C:\Users\koste\Desktop\barterOnline\full.sql
