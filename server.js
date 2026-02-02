@@ -583,7 +583,7 @@ app.post('/newMessage/', function (req, res){
   // console.log("newMessage: ",data.message);
   console.log("newMessage: ",data);
   let recipient=null;
-  function getRecipientForMessageDB(barter_id)
+  function getRecipientForMessageDB(barter_id) // Получить получятеля сообшения по бартер ид
   {
      return new Promise(function(resolve, reject) {
        let query=`SELECT user_id FROM barter WHERE id=${barter_id}`
@@ -601,7 +601,7 @@ app.post('/newMessage/', function (req, res){
     });
   }
    
-  function getSenderRecipientDB(sender, recipient, barter_id)
+  function getSenderRecipientDB(sender, recipient, barter_id) // есть ли отправитель и получатель в БД
   {
 
       return new Promise(function(resolve, reject){
@@ -643,7 +643,44 @@ app.post('/newMessage/', function (req, res){
       })
     })
   }
-  function insertMessageInDB(sender, recipient, message, time, barter_id)
+  function getDataMessageDB(sender, recipient, barter_id) // Получить данные из ДБ по клячам
+  {
+    return new Promise(function(resolve, reject){
+      let query = `SELECT * FROM message 
+          WHERE 
+            (user_sender_id=${sender} AND  
+            user_recipient_id=${recipient} AND 
+            barter_id=${barter_id})
+          OR
+            (user_sender_id=${recipient} AND  
+            user_recipient_id=${sender} AND 
+            barter_id=${barter_id})`;
+      console.log("newMessage query: ",query);
+      pool.query(query, function(err, resDB){
+        if (!err)
+        {
+          // console.log (resDB)
+          if (resDB.rows.length==1)
+          {
+            let data=resDB.rows[0].messages_json;
+            resolve(data)  
+          }
+          else
+          {
+            reject(null)
+          }
+            
+            //res.send('OK');
+        }  
+        else
+        {
+          console.log (err)
+          reject(err);
+        }
+      })
+    });
+  }
+  function insertFirstMessageInDB(sender, recipient, message, time, barter_id) // создать новый чат в БД
   {
     let dataMessage=[
       {
@@ -670,22 +707,67 @@ app.post('/newMessage/', function (req, res){
       }
     })
   }
-  checkBarterIdAndUserId(data.barter_id, data.sender)
+  function insertSubsequentMessageOnDB(sender, recipient, message, time, barter_id, oldData) // вставить сообшение в сушествуюший чат
+  {
+    // oldData=JSON.parse(oldData);
+    console.log('old DATA ', oldData);
+    oldData.push({
+        'time': time,
+        'message': message,
+        'senderUserID': sender,
+    })
+    let newData=oldData;
+    console.log('NEW DATA ', newData);
+    newData=JSON.stringify(newData);
+    let query = `UPDATE message 
+          SET messages_json='${newData}' 
+          WHERE 
+            (user_sender_id=${sender} AND  
+            user_recipient_id=${recipient} AND 
+            barter_id=${barter_id})
+          OR
+            (user_sender_id=${recipient} AND  
+            user_recipient_id=${sender} AND 
+            barter_id=${barter_id})
+            `
+    console.log(query);
+    pool.query(query, function(err, resDB){
+      if (!err)
+      {
+        console.log('new subsequent message', message);
+      }
+      else
+      {
+        console.log(!err)
+      }
+    })
+          
+  }
+  checkBarterIdAndUserId(data.barter_id, data.sender)// проверяем бартер и юзер ИД
   .then(function (check){
     if (check==false)
     {    
-      getRecipientForMessageDB(data.barter_id)
+      getRecipientForMessageDB(data.barter_id) // находим получатя сообшения
       .then(function(result){
         console.log(result);
-        getSenderRecipientDB(data.sender, result, data.barter_id)
+        getSenderRecipientDB(data.sender, result, data.barter_id) // проверяем на повтор в БД, что это переписка есть
         .then(function(result2){
           console.log('sender recipient in DB: '+result2);
-          if (result2==false)
+          if (result2==false)// если нет переписки
           {
-            insertMessageInDB(data.sender, result, data.message, 
+            insertFirstMessageInDB(data.sender, result, data.message, 
                 data.time, data.barter_id)
           }
-          res.send('sender recipient in DB: '+result2)
+          else // если переписка есть
+          {
+            getDataMessageDB(data.sender, result, data.barter_id) // получаем старые данные
+            .then(function(resultData){
+                console.log(resultData);
+                // вставляем данные
+                insertSubsequentMessageOnDB(data.sender, result, 
+                                      data.message, data.time, data.barter_id, resultData)
+            });
+          }
         });
       })
     }
