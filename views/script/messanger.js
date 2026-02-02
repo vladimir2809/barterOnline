@@ -27,6 +27,8 @@ let heightElemOld=0;
 let addHeight = 0;
 let flagHeightElem=false;
 
+let contactsData=[];
+
 let flagStart=false;
 // let textBlockContTop=textBlockCont.top;
 function addEventSelectContact()
@@ -41,7 +43,9 @@ function addEventSelectContact()
                 contacts[j].style.backgroundColor='#FFF';
             }
             this.style.backgroundColor='#AFA';
+            moveToCorrespondence(i);
         })
+        
     }
 }
 function clearSelectContacts()
@@ -51,12 +55,18 @@ function clearSelectContacts()
         contacts[j].style.backgroundColor='#FFF';
     }
 }
+function moveToCorrespondence(index)
+{       
+    console.log(index)
+    document.getElementsByClassName("text-block__info-name")[0].innerText = contactsData[index].nameSurname;
+    document.getElementsByClassName("text-block__info-give")[0].innerText = contactsData[index].giveName;
+}
 SendRequest('POST', '/getContactListMessanger/','',function(request){
     response=JSON.parse(request.response);
     console.log(response);
     let contact=document.getElementsByClassName('contact')[0];
     contact.style.display='none';
-    for (let i=0;i<response.length;i++)
+    for (let i=0;i < response.length;i++)
     {
         let contactItem=contact.cloneNode(true);
         contactItem.style.display='flex';
@@ -66,10 +76,12 @@ SendRequest('POST', '/getContactListMessanger/','',function(request){
         contactItem.querySelector('.contact__name').innerText=response[i].nameSurname;
         contactItem.querySelector('.contact__preview-text').innerText=response[i].giveName;
         contactSelect.append(contactItem);
-        
+        contactsData.push(response[i]);
     }
     addEventSelectContact();
     addEventClickContact();
+    document.getElementById('buttonSendMessage').style.display='block';
+    console.log(contactsData);
 });
 setInterval(function(){
     widthScreen=window.innerWidth;

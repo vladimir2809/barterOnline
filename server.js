@@ -517,13 +517,14 @@ function getListContactsForMessanger(user_id)
             let nameSurname=resDB.rows[i].name + " " + resDB.rows[i].surname;
             let literal=nameSurname.toUpperCase()[0];
             let color=resDB.rows[i].color;
-            let item={nameSurname: nameSurname,
-                      barter_id: resDB.rows[i].barter_id,
-                      giveName: resDB.rows[i].give_name,
-                      literal: literal, color: color
-                      
-            }
-            // let item=resDB.rows[i].give_name;
+            let item={  nameSurname: nameSurname,
+                        barter_id: resDB.rows[i].barter_id,
+                        recipient_id: resDB.rows[i].user_recipient_id,
+                        giveName: resDB.rows[i].give_name,
+                        literal: literal,
+                        color: color
+                      }
+                        // let item=resDB.rows[i].give_name;
             result.push(item);
           }
           resolve(result)
