@@ -28,6 +28,7 @@ let addHeight = 0;
 let flagHeightElem=false;
 
 let contactsData=[];
+let selectContactData={};
 
 let flagStart=false;
 // let textBlockContTop=textBlockCont.top;
@@ -60,6 +61,10 @@ function moveToCorrespondence(index)
     console.log(index)
     document.getElementsByClassName("text-block__info-name")[0].innerText = contactsData[index].nameSurname;
     document.getElementsByClassName("text-block__info-give")[0].innerText = contactsData[index].giveName;
+    selectContactData={
+        barter_id: contactsData[index].barter_id,
+        sender_id: contactsData[index].sender_id,
+    }
 }
 SendRequest('POST', '/getContactListMessanger/','',function(request){
     response=JSON.parse(request.response);
@@ -231,7 +236,15 @@ function addEventClickContact()
 arrowBack.addEventListener('click', function(event){
     //if (widthScreen < widthOnlyContacts)
     {
-        goPressButtonBack()
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('messageNow')!=undefined)
+        {
+            window.location.href='/messanger';
+        }
+        else
+        {
+            goPressButtonBack()
+        }
 
         // flagNoContactView=false;
         // contactSelect.style.display='block';
@@ -263,6 +276,21 @@ buttonSendMessage.addEventListener('click', function(){
             'message' : sendInput.innerText,
             'sender' : params.get('sender'),
             'barter_id' : params.get('barter_id'),
+        }); 
+        console.log(dataMessage);
+        SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
+            console.log('сообшение отправленно')
+            
+        })
+    }
+    else if (selectContactData.sender_id!=undefined &&
+             selectContactData.barter_id!=undefined )
+    {
+        let dataMessage=JSON.stringify({
+            'time': time,
+            'message' : sendInput.innerText,
+            'sender' : selectContactData.sender_id,
+            'barter_id' : selectContactData.barter_id,
         });
         console.log(dataMessage);
         SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
@@ -270,6 +298,8 @@ buttonSendMessage.addEventListener('click', function(){
             
         })
     }
+     
+    
     sendInput.innerText='';
     // let textBlockContHidden=document.getElementsByClassName('text-block__cont-hidden')[0];
     // let textItemOrigin = document.getElementsByClassName('text-item')[0];

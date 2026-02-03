@@ -519,6 +519,7 @@ function getListContactsForMessanger(user_id)
             let color=resDB.rows[i].color;
             let item={  nameSurname: nameSurname,
                         barter_id: resDB.rows[i].barter_id,
+                        sender_id: resDB.rows[i].user_sender_id,
                         recipient_id: resDB.rows[i].user_recipient_id,
                         giveName: resDB.rows[i].give_name,
                         literal: literal,
