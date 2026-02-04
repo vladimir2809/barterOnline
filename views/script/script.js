@@ -17,6 +17,8 @@ let scale=1;
 // var hiddenFlagImgCategoryGive=null;
 // var hiddenFlagImgCategoryGet=null;
 
+var cookieUserId=null;
+
 var cityBlock=null;
 var cityText='';
 var cityBarterHTML=null;
@@ -42,9 +44,20 @@ setInterval(function(){
       // document.getElementsByClassName('developer__scale')[0].innerText=scale;;
     }
 },16);
+function getCookieUserId()
+{
+  return new Promise(function (resolve, reject){
+    SendRequest('POST','/getCookieUserId/', '', function(request){
+      resolve(request.response);
+    })
+  })
+}
 window.addEventListener('load',()=>{
     //alert('load end');
     // resizeText();
+    getCookieUserId().then(function(result){
+         cookieUserId=result;
+        })
     console.log (generateRandomName(10));
     // resultNode=document.getElementsByClassName('result')[0];
     // resultItemNode=document.getElementsByClassName('result-item')[0];
@@ -89,13 +102,19 @@ window.addEventListener('load',()=>{
 
     //cityBlock.style.display='none';
     document.addEventListener('keydown', function(event) {
-      if (event.code == 'F9' )
+      // if (event.code == 'F9' )
+      // {
+      //   SendRequest('post','/clearCookie/',"",function(request){
+      //       console.log('clear Cookie');
+      //       console.log (document.cookie);
+      //   })
+      //  // alert('Cookie Reset')
+      // }
+      if (event.code == 'F8')
       {
-        SendRequest('post','/clearCookie/',"",function(request){
-            console.log('clear Cookie');
-            console.log (document.cookie);
+        getCookieUserId().then(function(result){
+          alert(result);
         })
-       // alert('Cookie Reset')
       }
     });
 

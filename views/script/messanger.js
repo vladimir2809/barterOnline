@@ -30,6 +30,8 @@ let flagHeightElem=false;
 let contactsData=[];
 let selectContactData={};
 
+let listMessage=[];
+
 let flagStart=false;
 // let textBlockContTop=textBlockCont.top;
 function addEventSelectContact()
@@ -63,30 +65,83 @@ function moveToCorrespondence(index)
     document.getElementsByClassName("text-block__info-give")[0].innerText = contactsData[index].giveName;
     selectContactData={
         barter_id: contactsData[index].barter_id,
+        recipient_id: contactsData[index].recipient_id,
         sender_id: contactsData[index].sender_id,
     }
+    getMessageList(selectContactData.sender_id,
+                        selectContactData.recipient_id,
+                        selectContactData.barter_id)
 }
-SendRequest('POST', '/getContactListMessanger/','',function(request){
-    response=JSON.parse(request.response);
-    console.log(response);
-    let contact=document.getElementsByClassName('contact')[0];
-    contact.style.display='none';
-    for (let i=0;i < response.length;i++)
-    {
-        let contactItem=contact.cloneNode(true);
-        contactItem.style.display='flex';
-        contactItem.querySelector('.contact__literal span').innerText=response[i].literal;
-        contactItem.querySelector('.contact__literal span').style.backgroundColor=response[i].color;
-
-        contactItem.querySelector('.contact__name').innerText=response[i].nameSurname;
-        contactItem.querySelector('.contact__preview-text').innerText=response[i].giveName;
-        contactSelect.append(contactItem);
-        contactsData.push(response[i]);
+function getMessageList(sender_id,recipient_id, barter_id)
+{
+    let data={
+        recipient_id: recipient_id,
+        sender_id: sender_id,
+        barter_id: barter_id,
     }
-    addEventSelectContact();
-    addEventClickContact();
-    document.getElementById('buttonSendMessage').style.display='block';
-    console.log(contactsData);
+    data=JSON.stringify(data);
+    SendRequest('POST', '/getMessage/',`data=${data}`,function(request){   
+        response=JSON.parse(request.response);
+        console.log(response);
+        // alert(cookieUserId);
+        clearMessageDraw();
+        for (let i=0;i < response.length; i++)
+        {
+            let time=new Date(response[i].time)
+            console.log(response[i].senderUserId)
+            let side = (cookieUserId == Number(response[i].senderUserId)) ? 'aim' : 'noaim';
+            insertMessage(response[i].message, side, time)
+        }
+    });
+}
+getCookieUserId().then(function(result){
+    cookieUserId=result;
+       
+    SendRequest('POST', '/getContactListMessanger/','',function(request){
+        response=JSON.parse(request.response);
+        console.log(response);
+        let contact=document.getElementsByClassName('contact')[0];
+        contact.style.display='none';
+        for (let i=0;i < response.length;i++)
+        {
+            console.log(cookieUserId)
+            if (Number(response[i].recipient_id) != cookieUserId)
+            {
+
+                let contactItem=contact.cloneNode(true);
+                contactItem.style.display='flex';
+                contactItem.querySelector('.contact__literal span').innerText=response[i].literal;
+                contactItem.querySelector('.contact__literal span').style.backgroundColor=response[i].color;
+                
+                contactItem.querySelector('.contact__name').innerText=response[i].nameSurname;
+                contactItem.querySelector('.contact__preview-text').innerText=response[i].giveName;
+                contactSelect.append(contactItem);
+                contactsData.push(response[i]);
+            }
+            else
+            {
+                let contactItem=contact.cloneNode(true);
+                contactItem.style.display='flex';
+                contactItem.querySelector('.contact__literal span').innerText=''//response[i].nameSurname2[0];
+                contactItem.querySelector('.contact__literal span').style.backgroundColor=response[i].color;
+                
+                contactItem.querySelector('.contact__name').innerText=response[i].nameSurname2;
+                contactItem.querySelector('.contact__preview-text').innerText=response[i].giveName;
+
+                contactSelect.append(contactItem);
+
+                // let buffer=response[i].sender_id;
+                // response[i].sender_id = response[i].recipient_id;
+                // response[i].recipient_id = buffer;
+
+                contactsData.push(response[i]);
+            }
+        }
+        addEventSelectContact();
+        addEventClickContact();
+        document.getElementById('buttonSendMessage').style.display='block';
+        console.log(contactsData);
+    });
 });
 setInterval(function(){
     widthScreen=window.innerWidth;
@@ -261,42 +316,48 @@ sendInput.addEventListener("focusout", function(){
     yesScroll();
 });
 buttonSendMessage.addEventListener('click', function(){
-    insertMessage('AIM NO AIM SEND', 'noaim', false);
-    insertMessage(sendInput.innerText, 'aim');
+    //insertMessage('AIM NO AIM SEND', 'noaim', false);
+    // insertMessage(sendInput.innerText, 'aim');
     time=new Date();
     
     const params = new URLSearchParams(window.location.search);
-
-    if ((params.get('sender')!=null && params.get('sender')!=undefined) &&
-        (params.get('barter_id')!=null && params.get('barter_id')!=undefined))
+    let message=sendInput.innerText.trim();
+    if (message!='')
     {
-        
-        let dataMessage=JSON.stringify({
-            'time': time,
-            'message' : sendInput.innerText,
-            'sender' : params.get('sender'),
-            'barter_id' : params.get('barter_id'),
-        }); 
-        console.log(dataMessage);
-        SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
-            console.log('сообшение отправленно')
+        insertMessage(sendInput.innerText, 'aim');
+        if ((params.get('recipient_id')!=null && params.get('recipient_id')!=undefined) &&
+            (params.get('barter_id')!=null && params.get('barter_id')!=undefined))
+        {
             
-        })
-    }
-    else if (selectContactData.sender_id!=undefined &&
-             selectContactData.barter_id!=undefined )
-    {
-        let dataMessage=JSON.stringify({
-            'time': time,
-            'message' : sendInput.innerText,
-            'sender' : selectContactData.sender_id,
-            'barter_id' : selectContactData.barter_id,
-        });
-        console.log(dataMessage);
-        SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
-            console.log('сообшение отправленно')
-            
-        })
+            let dataMessage=JSON.stringify({
+                'time': time,
+                'message' : sendInput.innerText,
+                'sender' : cookieUserId,
+                'recipient' : params.get('recipient_id'),
+                'barter_id' : params.get('barter_id'),
+            }); 
+            console.log(dataMessage);
+            SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
+                console.log('сообшение отправленно')
+                
+            })
+        }
+        else if (selectContactData.recipient_id!=undefined &&
+                selectContactData.barter_id!=undefined )
+        {
+            let dataMessage=JSON.stringify({
+                'time': time,
+                'message' : sendInput.innerText,
+                'sender' :   selectContactData.sender_id,// cookieUserId
+                'recipient' : selectContactData.recipient_id,
+                'barter_id' : selectContactData.barter_id,
+            });
+            console.log(dataMessage);
+            SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
+                console.log('сообшение отправленно')
+                
+            })
+        }
     }
      
     
@@ -311,19 +372,20 @@ buttonSendMessage.addEventListener('click', function(){
     // sendInput.innerText='';
     // alert(sendInput.innerText);
 });
-function insertMessage(message, sideSend/*, clearSendInput=true*/)
+function insertMessage(message, sideSend, timeParam=null,)
 {
     let textBlockContHidden=document.getElementsByClassName('text-block__cont-hidden')[0];
     let textItemOrigin = document.getElementsByClassName('text-item')[0];
     let textItem=textItemOrigin.cloneNode(true)
+    textItem.style.display='block';
     // let textBlockContTwo=document.getElementsByClassName('text-block__cont2')[0];
     let timeStart = new Date();
-    let time= new Date(timeStart/*- 10*60*60*1000 - 10*60*1000*/);
+    let time= timeParam==null ? new Date(timeStart) : new Date();
     let hours=time.getHours() <= 9 ? '0'+time.getHours() : time.getHours();
     let minutes=time.getMinutes() <= 9 ? '0'+time.getMinutes() : time.getMinutes();
     let timeStr=hours+':'+minutes;
     message=message.trim();
-    insertDay(new Date())
+    //insertDay(new Date())
     if (message=='')
     {
         console.log('сообщение пустое');
@@ -353,6 +415,10 @@ function insertMessage(message, sideSend/*, clearSendInput=true*/)
     textBlockContHidden.scrollTop=1000000;
     // if (clearSendInput==true) sendInput.innerText='';
 }
+function clearMessageDraw()
+{
+    textBlockCont.innerHTML='';
+} 
 function insertDay(date)
 {
     let dayElem = document.getElementsByClassName('day-item')[0].cloneNode(true);

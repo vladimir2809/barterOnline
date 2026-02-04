@@ -127,6 +127,10 @@ app.post('/clearCookie/', function(req,res){
   res.clearCookie('city');
   res.send('cookie Clear')
 })
+app.post('/getCookieUserId/', function(req,res){
+  console.log('query cookie userID')
+  res.send(req.cookies.userID);
+} )
 app.post('/getColorAndDataUser/', function(req, res){
   initDataUser(req.cookies)
   if (dataUser[0]!=undefined)
@@ -504,9 +508,13 @@ function getNameSurnameGiveName(barter_id)
 function getListContactsForMessanger(user_id)
 {
     return new Promise(function(resolve, reject){
-      let query=`SELECT * 
+      let query=`SELECT *, (SELECT
+                            CONCAT(name, ' ', surname)
+                            FROM tableuser WHERE message.user_sender_id = tableuser.id )
+                            AS namesurname2
                  FROM message
-                 JOIN tableuser ON message.user_recipient_id = tableuser.id
+                 JOIN tableuser ON message.user_recipient_id = tableuser.id 
+				                                    
                  WHERE user_sender_id = ${user_id} OR user_recipient_id = ${user_id};`
       result=[];
       pool.query(query, function(err, resDB) {
@@ -518,6 +526,7 @@ function getListContactsForMessanger(user_id)
             let literal=nameSurname.toUpperCase()[0];
             let color=resDB.rows[i].color;
             let item={  nameSurname: nameSurname,
+                        nameSurname2: resDB.rows[i].namesurname2,
                         barter_id: resDB.rows[i].barter_id,
                         sender_id: resDB.rows[i].user_sender_id,
                         recipient_id: resDB.rows[i].user_recipient_id,
@@ -536,6 +545,23 @@ function getListContactsForMessanger(user_id)
         }
       });
     });
+}
+function getRecipientForMessageDB(barter_id) // Получить получятеля сообшения по бартер ид
+{
+    return new Promise(function(resolve, reject) {
+      let query=`SELECT user_id FROM barter WHERE id=${barter_id}`
+      pool.query(query, function (err, resDB){
+        if (!err)
+        {
+          let result = resDB.rows[0].user_id;
+          resolve(result);
+        }
+        else
+        {
+          reject(err);
+        }
+      }) 
+  });
 }
 app.get('/messanger/', function(req, res){
   initDataUser(req.cookies)
@@ -584,23 +610,23 @@ app.post('/newMessage/', function (req, res){
   // console.log("newMessage: ",data.message);
   console.log("newMessage: ",data);
   let recipient=null;
-  function getRecipientForMessageDB(barter_id) // Получить получятеля сообшения по бартер ид
-  {
-     return new Promise(function(resolve, reject) {
-       let query=`SELECT user_id FROM barter WHERE id=${barter_id}`
-       pool.query(query, function (err, resDB){
-          if (!err)
-          {
-            let result = resDB.rows[0].user_id;
-            resolve(result);
-          }
-          else
-          {
-            reject(err);
-          }
-       }) 
-    });
-  }
+  // function getRecipientForMessageDB(barter_id) // Получить получятеля сообшения по бартер ид
+  // {
+  //    return new Promise(function(resolve, reject) {
+  //      let query=`SELECT user_id FROM barter WHERE id=${barter_id}`
+  //      pool.query(query, function (err, resDB){
+  //         if (!err)
+  //         {
+  //           let result = resDB.rows[0].user_id;
+  //           resolve(result);
+  //         }
+  //         else
+  //         {
+  //           reject(err);
+  //         }
+  //      }) 
+  //   });
+  // }
    
   function getSenderRecipientDB(sender, recipient, barter_id) // есть ли отправитель и получатель в БД
   {
@@ -644,7 +670,7 @@ app.post('/newMessage/', function (req, res){
       })
     })
   }
-  function getDataMessageDB(sender, recipient, barter_id) // Получить данные из ДБ по клячам
+  function getDataMessageDB(sender, recipient, barter_id) // Получить данные из ДБ по ключам
   {
     return new Promise(function(resolve, reject){
       let query = `SELECT * FROM message 
@@ -687,7 +713,7 @@ app.post('/newMessage/', function (req, res){
       {
         'time': time,
         'message': message,
-        'senderUserID': sender
+        'senderUserId': sender
       },
     ];
     dataMessage=JSON.stringify(dataMessage);
@@ -711,26 +737,25 @@ app.post('/newMessage/', function (req, res){
   function insertSubsequentMessageOnDB(sender, recipient, message, time, barter_id, oldData) // вставить сообшение в сушествуюший чат
   {
     // oldData=JSON.parse(oldData);
-    console.log('old DATA ', oldData);
+    // console.log('old DATA ', oldData);
     oldData.push({
         'time': time,
         'message': message,
-        'senderUserID': sender,
+        'senderUserId': req.cookies.userID,
     })
-    let newData=oldData;
-    console.log('NEW DATA ', newData);
+    let newData=JSON.parse(JSON.stringify(oldData));
+    // console.log('NEW DATA ', newData);
     newData=JSON.stringify(newData);
     let query = `UPDATE message 
           SET messages_json='${newData}' 
           WHERE 
             (user_sender_id=${sender} AND  
             user_recipient_id=${recipient} AND 
-            barter_id=${barter_id})
-          OR
-            (user_sender_id=${recipient} AND  
-            user_recipient_id=${sender} AND 
-            barter_id=${barter_id})
-            `
+            barter_id=${barter_id})`      
+          // OR
+          //   (user_sender_id=${recipient} AND  
+          //   user_recipient_id=${sender} AND 
+          //   barter_id=${barter_id};`;
     console.log(query);
     pool.query(query, function(err, resDB){
       if (!err)
@@ -748,29 +773,36 @@ app.post('/newMessage/', function (req, res){
   .then(function (check){
     if (check==false)
     {    
-      getRecipientForMessageDB(data.barter_id) // находим получатя сообшения
-      .then(function(result){
-        console.log(result);
-        getSenderRecipientDB(data.sender, result, data.barter_id) // проверяем на повтор в БД, что это переписка есть
+      // getRecipientForMessageDB(data.barter_id) // находим получатя сообшения
+      // .then(function(result){
+      //   console.log(result);
+        getSenderRecipientDB(data.sender, data.recipient, data.barter_id) // проверяем на повтор в БД, что это переписка есть
         .then(function(result2){
           console.log('sender recipient in DB: '+result2);
-          if (result2==false)// если нет переписки
-          {
-            insertFirstMessageInDB(data.sender, result, data.message, 
-                data.time, data.barter_id)
-          }
-          else // если переписка есть
-          {
-            getDataMessageDB(data.sender, result, data.barter_id) // получаем старые данные
-            .then(function(resultData){
-                console.log(resultData);
-                // вставляем данные
-                insertSubsequentMessageOnDB(data.sender, result, 
-                                      data.message, data.time, data.barter_id, resultData)
-            });
-          }
+          if (data.sender != data.recipient)
+          {  
+            if (result2==false)// если нет переписки
+            {                      //req.cookies.userID
+              insertFirstMessageInDB(req.cookies.userID, data.recipient, data.message, 
+                  data.time, data.barter_id)
+                 // res.send(null);
+            }
+            else // если переписка есть
+            {
+              getDataMessageDB(data.sender, data.recipient, data.barter_id) // получаем старые данные
+              .then(function(resultData){
+                  console.log(resultData);
+                  // вставляем данные
+                  console.log ('COOKIE USER ID: '+ req.cookies.userID)
+                  insertSubsequentMessageOnDB(data.sender, data.recipient, 
+                                        data.message, data.time, data.barter_id, resultData)
+                 /// res.send(null);
+              });
+            }
+          } 
+          //res.send(null);
         });
-      })
+      //})
     }
   })
   // getRecipientForMessageDB(data.barter_id).then(
@@ -805,7 +837,49 @@ app.post('/newMessage/', function (req, res){
   // res.send('OK');
 });
 
+app.post('/getMessage/', function(req, res){
+    let data=JSON.parse(req.body.data);
+    console.log(data)
+    // getRecipientForMessageDB(data.barter_id) // находим получатя сообшения
+    //   .then(function(recipient)
+      //{
+        
+        let query = `SELECT messages_json 
+            FROM message
+            WHERE 
+              (user_sender_id=${data.sender_id} AND  
+              user_recipient_id=${data.recipient_id} AND 
+              barter_id=${data.barter_id})
+             OR
+               (user_sender_id=${data.recipient_id} AND  
+               user_recipient_id=${data.sender_id} AND 
+               barter_id=${data.barter_id})`
+        console.log(query)
+        pool.query(query, function(err, resDB){
+          if (!err)
+          {
+            console.log(resDB)
+            if (resDB.rows.length != 0)
+            {
 
+              let result = resDB.rows[0].messages_json;
+              result=JSON.stringify(result);
+              res.send(result);
+            }
+            else
+            {
+              console.log('NOT MESSAGES');
+              res.send(null);
+            }
+              
+          }
+          else
+          {
+            console.log(err)
+          }
+        }) 
+      //});
+})
 app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
  
 
@@ -1269,11 +1343,11 @@ function calcBarterArr(rowsDB)
             barterData.get.free=resDB.rows[0].free;
 
             nameSurname=resDB.rows[0].name_user+" "+resDB.rows[0].surname_user;
-            let user_id=req.cookies.userID///resDB.rows[0].user_id;
+            let user_id=resDB.rows[0].user_id;
             let city_name=resDB.rows[0].city_name;
             res.render('viewsBarter',{categoryList: categoryListStr,  
                                       dataUser: data, 
-                                      user_id: user_id,
+                                      recipient_id: user_id,
                                       nameUser: nameSurname,
                                       city: city_name,
                                       noViewsCity: true,

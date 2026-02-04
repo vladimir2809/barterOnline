@@ -13,15 +13,15 @@ if (buttonAuthor!=undefined)
 {
     buttonAuthor.addEventListener('click', function(){
         const params = new URLSearchParams(window.location.search);
-        let barterUserId=document.getElementById('barterUserId').value;
+        let barterRecipientId=document.getElementById('barterRecipientId').value;
         let data={
-            'sender': barterUserId,
+            'recipient_id': barterRecipientId,
             'barter_id': params.get('barter_id')
         }
     // SendRequest('POST', '/newRecipient/', `data=${data}`,function(request){
 
         // console.log('сообшение отправленно ' + request.response)
-        window.location.href=`/messanger?messageNow=true&sender=${data.sender}&barter_id=${data.barter_id}`;
+        window.location.href=`/messanger?messageNow=true&recipient_id=${data.recipient_id}&barter_id=${data.barter_id}`;
         //});
         // alert (barterUserId)
         //alert(params.get('barter_id'));
