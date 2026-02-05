@@ -1,5 +1,7 @@
 // const { response } = require("express");
 
+// const { response } = require("express");
+
 var widthScreenValue=925//430;
 var widthOnlyContacts=925;
 var widthContacts=310;
@@ -20,6 +22,8 @@ inputBlock.style.display="none";
 
 var sendInput=document.getElementById('send-input');
 var buttonSendMessage = document.getElementById('buttonSendMessage');
+
+let contact=document.getElementsByClassName('contact')[0];
 
 const textBlockContTop = textBlockCont.getBoundingClientRect().top;
 let topContOld=0;
@@ -85,6 +89,7 @@ function getMessageList(sender_id,recipient_id, barter_id)
         recipient_id: recipient_id,
         sender_id: sender_id,
         barter_id: barter_id,
+        notResetCountUnread: false,
     }
     data=JSON.stringify(data);
     SendRequest('POST', '/getMessage/',`data=${data}`,function(request){   
@@ -107,48 +112,88 @@ getCookieUserId().then(function(result){
     SendRequest('POST', '/getContactListMessanger/','',function(request){
         response=JSON.parse(request.response);
         console.log(response);
-        let contact=document.getElementsByClassName('contact')[0];
+        // let contact=document.getElementsByClassName('contact')[0];
         contact.style.display='none';
         for (let i=0;i < response.length;i++)
         {
             console.log(cookieUserId)
-            if (Number(response[i].recipient_id) != cookieUserId)
+            if (Number(response[i].countUnread)!=0)
             {
-
-                let contactItem=contact.cloneNode(true);
-                contactItem.style.display='flex';
-                contactItem.querySelector('.contact__literal span').innerText=response[i].literal;
-                contactItem.querySelector('.contact__literal').style.backgroundColor=response[i].color;
-                
-                contactItem.querySelector('.contact__name').innerText=response[i].nameSurname;
-                contactItem.querySelector('.contact__preview-text').innerText=response[i].giveName;
-                contactSelect.append(contactItem);
-                contactsData.push(response[i]);
+                let data={
+                        recipient_id: response[i].recipient_id,
+                        sender_id: response[i].sender_id,
+                        barter_id: response[i].barter_id,
+                        notResetCountUnread: true,
+                    }
+                data=JSON.stringify(data);
+                SendRequest('POST', '/getMessage/',`data=${data}`,function(requestTwo){
+                    let responseTwo=JSON.parse(requestTwo.response);
+                    if (cookieUserId == responseTwo[responseTwo.length-1].senderUserId)
+                    {
+                        servisItemContact(response[i]);
+                    }
+                    else
+                    {
+                        servisItemContact(response[i], response[i].countUnread);
+                    }
+                })
             }
             else
             {
-                let contactItem=contact.cloneNode(true);
-                contactItem.style.display='flex';
-                contactItem.querySelector('.contact__literal span').innerText=response[i].literal2;
-                contactItem.querySelector('.contact__literal').style.backgroundColor=response[i].color2;
-                
-                contactItem.querySelector('.contact__name').innerText=response[i].nameSurname2;
-                contactItem.querySelector('.contact__preview-text').innerText=response[i].giveName;
-
-                contactSelect.append(contactItem);
-
-                // let buffer=response[i].sender_id;
-                // response[i].sender_id = response[i].recipient_id;
-                // response[i].recipient_id = buffer;
-
-                contactsData.push(response[i]);
+                servisItemContact(response[i], 0);
             }
+            contactsData.push(response[i]);
+           
+        }
+        // addEventSelectContact();
+        // addEventClickContact();
+        // document.getElementById('buttonSendMessage').style.display='block';
+        // console.log(contactsData);
+    });
+    function servisItemContact(data, countMessage=0)
+    {    
+        let contactItem=contact.cloneNode(true);
+        contactItem.style.display='flex';
+        contactItem.querySelector('.contact__preview-text').innerText=data.giveName;
+        if (Number(data.recipient_id) != cookieUserId)
+        {
+
+            contactItem.querySelector('.contact__literal span').innerText=data.literal;
+            contactItem.querySelector('.contact__literal').style.backgroundColor=data.color;
+            
+            contactItem.querySelector('.contact__name').innerText=data.nameSurname;
+            contactSelect.append(contactItem);
+          //  contactsData.push(data);
+        }
+        else
+        {
+            // let contactItem=contact.cloneNode(true);
+            // contactItem.style.display='flex';
+            contactItem.querySelector('.contact__literal span').innerText=data.literal2;
+            contactItem.querySelector('.contact__literal').style.backgroundColor=data.color2;
+            
+            contactItem.querySelector('.contact__name').innerText=data.nameSurname2;
+            // contactItem.querySelector('.contact__preview-text').innerText=data.giveName;
+
+            contactSelect.append(contactItem);
+
+            // let buffer=data.sender_id;
+            // data.sender_id = data.recipient_id;
+            // data.recipient_id = buffer;
+
+            //contactsData.push(data);
+        }
+        if (countMessage!=0)
+        {
+            let countMessageELem=document.getElementsByClassName('contact__count-messages')[0];
+            countMessageELem.style.display='block';
+            countMessageELem.innerHTML='+'+countMessage;
         }
         addEventSelectContact();
         addEventClickContact();
         document.getElementById('buttonSendMessage').style.display='block';
         console.log(contactsData);
-    });
+    }
 });
 setInterval(function(){
     widthScreen=window.innerWidth;

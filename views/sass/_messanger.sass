@@ -55,6 +55,9 @@ $colorInputMessage: #CCC
         &>span
             font-size: 2rem
             color: white
+    &__cont
+        // flex-shrink: 3
+        flex-grow: 2
     &__name
         margin-bottom: .7rem
     &__preview-text
@@ -62,8 +65,19 @@ $colorInputMessage: #CCC
         overflow: hidden
         white-space: no-wrap
         text-overflow: ellipsis
-        width: 23.5rem
+        width: 17.5rem
         height: 1.2rem
+    &__count-messages
+        display: none
+        width: 4.0rem
+        height: 2.5rem
+        padding: .2rem
+        border-radius: 1rem
+        // background-color: #44FF44
+        align-self: center
+        font-size: 1.8rem
+        font-weight: 700
+        color: green
 .text-block
     padding: 1.0rem 1.0rem 0 1.0rem
     &__info

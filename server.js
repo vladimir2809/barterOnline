@@ -541,6 +541,7 @@ function getListContactsForMessanger(user_id)
                         literal2: literal2,
                         color: color,
                         color2: color2,
+                        countUnread: resDB.rows[i].count_unread,
                       }
                         // let item=resDB.rows[i].give_name;
             result.push(item);
@@ -698,7 +699,8 @@ app.post('/newMessage/', function (req, res){
           if (resDB.rows.length==1)
           {
             let data=resDB.rows[0].messages_json;
-            resolve(data)  
+            let countUnread=resDB.rows[0].count_unread;
+            resolve({dataMessage: data, countUnread: countUnread})  
           }
           else
           {
@@ -726,10 +728,10 @@ app.post('/newMessage/', function (req, res){
     ];
     dataMessage=JSON.stringify(dataMessage);
     let query = `INSERT INTO message(user_sender_id, user_recipient_id, 
-                                      messages_json, give_name, barter_id )
+                                      messages_json, give_name, barter_id, count_unread )
                   VALUES (${sender}, ${recipient}, '${dataMessage}',
                           (SELECT give_name FROM barter WHERE id=${barter_id}),
-                          ${barter_id})`;
+                          ${barter_id}, 1)`;
     console.log(query);
     pool.query(query, function(err, resDB){
       if (!err)
@@ -746,16 +748,19 @@ app.post('/newMessage/', function (req, res){
   {
     // oldData=JSON.parse(oldData);
     // console.log('old DATA ', oldData);
-    oldData.push({
+    oldData.dataMessage.push({
         'time': time,
         'message': message,
         'senderUserId': req.cookies.userID,
     })
-    let newData=JSON.parse(JSON.stringify(oldData));
+    let newData=JSON.parse(JSON.stringify(oldData.dataMessage));
     // console.log('NEW DATA ', newData);
     newData=JSON.stringify(newData);
+    let countUnread=oldData.countUnread;
+    countUnread++;
     let query = `UPDATE message 
-          SET messages_json='${newData}' 
+          SET messages_json='${newData}',
+              count_unread=${countUnread} 
           WHERE 
             (user_sender_id=${sender} AND  
             user_recipient_id=${recipient} AND 
@@ -799,7 +804,7 @@ app.post('/newMessage/', function (req, res){
             {
               getDataMessageDB(data.sender, data.recipient, data.barter_id) // получаем старые данные
               .then(function(resultData){
-                  console.log(resultData);
+                  console.log('RESULT DATA',resultData);
                   // вставляем данные
                   console.log ('COOKIE USER ID: '+ req.cookies.userID)
                   insertSubsequentMessageOnDB(data.sender, data.recipient, 
@@ -844,7 +849,34 @@ app.post('/newMessage/', function (req, res){
   // })
   // res.send('OK');
 });
-
+function resetCountUnreadMessage(user_id, senderMessage, sender_id, recipient_id, barter_id){
+    return new Promise(function(resolve, reject){
+      if (user_id != senderMessage)
+      {
+        let query=`UPDATE message
+              SET count_unread = 0
+              WHERE 
+                (user_sender_id=${sender_id} AND  
+                user_recipient_id=${recipient_id} AND 
+                barter_id=${barter_id})
+              OR
+                (user_sender_id=${recipient_id} AND  
+                user_recipient_id=${sender_id} AND 
+                barter_id=${barter_id})`
+        pool.query(query, function(err, resDB){
+          if (!err)
+          {
+            resolve('success')
+            
+          }
+          else
+          {
+            resolve('notSucces')
+          }
+        })
+      }
+    })
+}
 app.post('/getMessage/', function(req, res){
     let data=JSON.parse(req.body.data);
     console.log(data)
@@ -871,8 +903,21 @@ app.post('/getMessage/', function(req, res){
             {
 
               let result = resDB.rows[0].messages_json;
+              senderMessage=result[result.length-1].senderUserId;
               result=JSON.stringify(result);
+              if (data.notResetCountUnread==false)
+              {
+
+                  resetCountUnreadMessage(req.cookies.userID,
+                    senderMessage,
+                    data.sender_id, data.recipient_id,
+                    data.barter_id)
+                .then(function(result2){
+                  console.log ('PROMISE RESET COUNT UNREAD'+result2)
+                })
+              }
               res.send(result);
+
             }
             else
             {

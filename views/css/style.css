@@ -490,7 +490,7 @@ html {
 }
 
 .contact {
-  display: flex;
+  display: none;
   padding: 0.5rem;
   border: 1px solid black;
   border-radius: 0.7rem;
@@ -512,6 +512,9 @@ html {
   font-size: 2rem;
   color: white;
 }
+.contact__cont {
+  flex-grow: 2;
+}
 .contact__name {
   margin-bottom: 0.7rem;
 }
@@ -520,8 +523,19 @@ html {
   overflow: hidden;
   white-space: no-wrap;
   text-overflow: ellipsis;
-  width: 23.5rem;
+  width: 17.5rem;
   height: 1.2rem;
+}
+.contact__count-messages {
+  display: none;
+  width: 4rem;
+  height: 2.5rem;
+  padding: 0.2rem;
+  border-radius: 1rem;
+  align-self: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: green;
 }
 
 .text-block {
