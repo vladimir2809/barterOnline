@@ -511,7 +511,10 @@ function getListContactsForMessanger(user_id)
       let query=`SELECT *, (SELECT
                             CONCAT(name, ' ', surname)
                             FROM tableuser WHERE message.user_sender_id = tableuser.id )
-                            AS namesurname2
+                            AS namesurname2,
+                            (SELECT color
+                            FROM tableuser WHERE message.user_sender_id = tableuser.id )
+                            AS color2
                  FROM message
                  JOIN tableuser ON message.user_recipient_id = tableuser.id 
 				                                    
@@ -522,9 +525,12 @@ function getListContactsForMessanger(user_id)
         {
           for (let i=0;i<resDB.rows.length;i++)
           {
+            console.log (resDB.rows[i])
             let nameSurname=resDB.rows[i].name + " " + resDB.rows[i].surname;
             let literal=nameSurname.toUpperCase()[0];
+            let literal2=resDB.rows[i].namesurname2.toUpperCase()[0];
             let color=resDB.rows[i].color;
+            let color2=resDB.rows[i].color2;
             let item={  nameSurname: nameSurname,
                         nameSurname2: resDB.rows[i].namesurname2,
                         barter_id: resDB.rows[i].barter_id,
@@ -532,7 +538,9 @@ function getListContactsForMessanger(user_id)
                         recipient_id: resDB.rows[i].user_recipient_id,
                         giveName: resDB.rows[i].give_name,
                         literal: literal,
-                        color: color
+                        literal2: literal2,
+                        color: color,
+                        color2: color2,
                       }
                         // let item=resDB.rows[i].give_name;
             result.push(item);

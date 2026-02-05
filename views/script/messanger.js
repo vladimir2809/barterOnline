@@ -61,13 +61,20 @@ function clearSelectContacts()
 function moveToCorrespondence(index)
 {       
     console.log(index)
-    document.getElementsByClassName("text-block__info-name")[0].innerText = contactsData[index].nameSurname;
-    document.getElementsByClassName("text-block__info-give")[0].innerText = contactsData[index].giveName;
     selectContactData={
         barter_id: contactsData[index].barter_id,
         recipient_id: contactsData[index].recipient_id,
         sender_id: contactsData[index].sender_id,
     }
+    if (cookieUserId == contactsData[index].sender_id)
+    {
+        document.getElementsByClassName("text-block__info-name")[0].innerText = contactsData[index].nameSurname;
+    }
+    else
+    {
+        document.getElementsByClassName("text-block__info-name")[0].innerText = contactsData[index].nameSurname2;
+    }
+    document.getElementsByClassName("text-block__info-give")[0].innerText = contactsData[index].giveName;
     getMessageList(selectContactData.sender_id,
                         selectContactData.recipient_id,
                         selectContactData.barter_id)
@@ -111,7 +118,7 @@ getCookieUserId().then(function(result){
                 let contactItem=contact.cloneNode(true);
                 contactItem.style.display='flex';
                 contactItem.querySelector('.contact__literal span').innerText=response[i].literal;
-                contactItem.querySelector('.contact__literal span').style.backgroundColor=response[i].color;
+                contactItem.querySelector('.contact__literal').style.backgroundColor=response[i].color;
                 
                 contactItem.querySelector('.contact__name').innerText=response[i].nameSurname;
                 contactItem.querySelector('.contact__preview-text').innerText=response[i].giveName;
@@ -122,8 +129,8 @@ getCookieUserId().then(function(result){
             {
                 let contactItem=contact.cloneNode(true);
                 contactItem.style.display='flex';
-                contactItem.querySelector('.contact__literal span').innerText=''//response[i].nameSurname2[0];
-                contactItem.querySelector('.contact__literal span').style.backgroundColor=response[i].color;
+                contactItem.querySelector('.contact__literal span').innerText=response[i].literal2;
+                contactItem.querySelector('.contact__literal').style.backgroundColor=response[i].color2;
                 
                 contactItem.querySelector('.contact__name').innerText=response[i].nameSurname2;
                 contactItem.querySelector('.contact__preview-text').innerText=response[i].giveName;
