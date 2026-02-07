@@ -542,7 +542,7 @@ html {
   padding: 1rem 1rem 0 1rem;
 }
 .text-block__info {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
   height: 4rem;
@@ -606,7 +606,7 @@ html {
 }
 
 .input-block {
-  display: flex;
+  display: none;
   position: fixed;
   justify-content: space-between;
   align-items: flex-end;
@@ -632,6 +632,7 @@ html {
   outline: 0.1rem solid black;
 }
 .input-block__button-img {
+  display: none;
   width: 4rem;
   height: 4rem;
   border: 2px solid blue;

@@ -1398,6 +1398,7 @@ function calcBarterArr(rowsDB)
             nameSurname=resDB.rows[0].name_user+" "+resDB.rows[0].surname_user;
             let user_id=resDB.rows[0].user_id;
             let city_name=resDB.rows[0].city_name;
+            let flagWrite = flagBarterIdAndUserId == false && req.cookies.userID != undefined;
             res.render('viewsBarter',{categoryList: categoryListStr,  
                                       dataUser: data, 
                                       recipient_id: user_id,
@@ -1405,7 +1406,9 @@ function calcBarterArr(rowsDB)
                                       city: city_name,
                                       noViewsCity: true,
                                       barterData: barterData,
-                                      defectNoQuery: flagBarterIdAndUserId});
+                                      defectNoQuery: flagBarterIdAndUserId,
+                                      flagWrite: flagWrite,
+                                      });
           }
           else
           {
