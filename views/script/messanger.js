@@ -8,7 +8,10 @@ var widthContacts=310;
 var widthMaxContainer=1360;
 var widthButtonSend=40;
 var flagNoContactView=false;
-var widthScreen=window.innerWidth;
+
+var widthScreen = window.innerWidth;
+var widthScreenStart = widthScreen;
+var flagStartWidthScreen=false;
 
 var contacts = document.getElementsByClassName('contact');
 var contactSelect = document.getElementsByClassName('contact-select')[0];
@@ -57,6 +60,7 @@ function addEventSelectContact()
 }
 function clearSelectContacts()
 {
+    console.log('Clear Select Contacts');
     for (let j=0; j < contacts.length;j++)
     {
         contacts[j].style.backgroundColor='#FFF';
@@ -112,53 +116,53 @@ function getMessageList(sender_id,recipient_id, barter_id)
 // setInterval(function(){
 
 
-    getCookieUserId().then(function(result){
-        cookieUserId=result;
-        contactSelect.replaceChildren();
-        contactsData=[];
-        SendRequest('POST', '/getContactListMessanger/','',function(request){
-            response=JSON.parse(request.response);
-            console.log(response);
-            // let contact=document.getElementsByClassName('contact')[0];
-            contact.style.display='none';
-            for (let i=0;i < response.length;i++)
+getCookieUserId().then(function(result){
+    cookieUserId=result;
+    contactSelect.replaceChildren();
+    contactsData=[];
+    SendRequest('POST', '/getContactListMessanger/','',function(request){
+        response=JSON.parse(request.response);
+        console.log(response);
+        // let contact=document.getElementsByClassName('contact')[0];
+        contact.style.display='none';
+        for (let i=0;i < response.length;i++)
+        {
+            console.log(cookieUserId)
+            if (Number(response[i].countUnread)!=0)
             {
-                console.log(cookieUserId)
-                if (Number(response[i].countUnread)!=0)
-                {
-                    let data={
-                            recipient_id: response[i].recipient_id,
-                            sender_id: response[i].sender_id,
-                            barter_id: response[i].barter_id,
-                            notResetCountUnread: true,
-                        }
-                    data=JSON.stringify(data);
-                    SendRequest('POST', '/getMessage/',`data=${data}`,function(requestTwo){
-                        let responseTwo=JSON.parse(requestTwo.response);
-                        if (cookieUserId == responseTwo[responseTwo.length-1].senderUserId)
-                        {
-                            servisItemContact(response[i]);
-                        }
-                        else
-                        {
-                            servisItemContact(response[i], response[i].countUnread);
-                        }
-                    })
-                }
-                else
-                {
-                    servisItemContact(response[i], 0);
-                }
-                contactsData.push(response[i]);
-            
+                let data={
+                        recipient_id: response[i].recipient_id,
+                        sender_id: response[i].sender_id,
+                        barter_id: response[i].barter_id,
+                        notResetCountUnread: true,
+                    }
+                data=JSON.stringify(data);
+                SendRequest('POST', '/getMessage/',`data=${data}`,function(requestTwo){
+                    let responseTwo=JSON.parse(requestTwo.response);
+                    if (cookieUserId == responseTwo[responseTwo.length-1].senderUserId)
+                    {
+                        servisItemContact(response[i]);
+                    }
+                    else
+                    {
+                        servisItemContact(response[i], response[i].countUnread);
+                    }
+                })
             }
-            // addEventSelectContact();
-            // addEventClickContact();
-            // document.getElementById('buttonSendMessage').style.display='block';
-            // console.log(contactsData);
-        });
-    
+            else
+            {
+                servisItemContact(response[i], 0);
+            }
+            contactsData.push(response[i]);
+        
+        }
+        // addEventSelectContact();
+        // addEventClickContact();
+        // document.getElementById('buttonSendMessage').style.display='block';
+        // console.log(contactsData);
     });
+
+});
 
 // }, 1000);
 function servisItemContact(data, countMessage=0)
@@ -175,7 +179,7 @@ function servisItemContact(data, countMessage=0)
         contactItem.querySelector('.contact__literal').style.backgroundColor=data.color;
         
         contactItem.querySelector('.contact__name').innerText=data.nameSurname;
-        
+
         contactSelect.append(contactItem);
         //  contactsData.push(data);
     }
@@ -229,26 +233,45 @@ setInterval(function(){
             //     document.getElementsByClassName('text-block__info-name')[0].innerText=request.response;
                 
             // });
-            flagNoContactView=true;
-            goPressContactsOnly()
+            // flagNoContactView=true;
+            // document.getElementsByClassName('text-block__info')[0].style.display="flex";
+            // goPressContactsOnly()
         }
         flagStart=true;
     }
     if (widthScreen <= widthOnlyContacts)
     {
+        // if (widthScreenOld != widthScreen)
+        // {
+        //     clearSelectContacts();
+        //     widthScreenOld = widthScreen;
+        // }
         arrowBack.style.display='block';
         menuElem.style.display='block';
-        if (flagNoContactView==false)
+        if (flagNoContactView==true)
         {
-            contactSelect.style.display='block';
-            textBlock.style.display="none";
-            textBlock.style.gridColumn="1 / 3";
-            inputBlock.style.display="none";
+            if (selectContactData!=null)
+            {
+                goPressContactsOnly()
+            }
+        }
+        else
+        {
+
+            // arrowBack.style.display='block';
+            // menuElem.style.display='block';
+           // if (flagNoContactView==false)
+            {
+                contactSelect.style.display='block';
+                textBlock.style.display="none";
+                textBlock.style.gridColumn="1 / 3";
+                inputBlock.style.display="none";
+            }
         }
     }
     if (flagNoContactView==true && widthScreen <= widthOnlyContacts)
     {
-        goPressContactsOnly()
+        // goPressContactsOnly()
         // flagNoContactView=true;
         // flagNoContactView=false;
         // contactSelect.style.display='none';
@@ -274,6 +297,12 @@ setInterval(function(){
             }  
                     
         }
+        // if (widthScreenStart > widthOnlyContacts && flagStartWidthScreen==false)
+        // {
+        //     flagNoContactView=true;
+        //     flagStartWidthScreen=true;
+        // }   
+        
     }
     // расчет ширины поля ввода сообщения
     let minus =  0; 
@@ -559,8 +588,9 @@ function goPressContactsOnly() // когда кликаю на контакт в
     textBlock.style.gridColumn="1 / 3";
     textBlock.style.width='100%';
     inputBlock.style.display="flex";
-    document.getElementsByClassName('text-block__info')[0].style.display="flex";
-    document.getElementById('buttonSendMessage').style.display='block';
+
+    // document.getElementsByClassName('text-block__info')[0].style.display="flex";
+    // document.getElementById('buttonSendMessage').style.display='block';
 }
 // function getRandomColor() {
 //   // Генерация случайного числа и преобразование в HEX-строку

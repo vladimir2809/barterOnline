@@ -129,7 +129,8 @@ app.post('/clearCookie/', function(req,res){
 })
 app.post('/getCookieUserId/', function(req,res){
   console.log('query cookie userID')
-  res.send(req.cookies.userID);
+
+  res.send(req.cookies.userID!=undefined  ? req.cookies.userID : null);
 } )
 app.post('/getColorAndDataUser/', function(req, res){
   initDataUser(req.cookies)
@@ -586,7 +587,16 @@ app.get('/messanger/', function(req, res){
   console.log("messageNow="+req.query.messageNow)
   if (messageNow==undefined || messageNow==false)
   {
-    res.render('messanger',{'dataUser': data, 'noViewsCity': true } )
+    // console.log('11111111111', data)
+    if (req.cookies.userID != undefined)
+    {
+
+      res.render('messanger',{'dataUser': data, 'noViewsCity': true } )
+    }
+    else
+    {
+      res.send('Авторизуйтесь чтобы пользоваться этой страницей.')
+    }
     // getListContactsForMessanger(req.cookies.userID)
     // .then(function(result){
     //   res.render('messanger',{'dataUser': data, 'noViewsCity': true, 
@@ -597,7 +607,7 @@ app.get('/messanger/', function(req, res){
   }
   else
   {
-    console.log(req.query)
+    console.log('message query', req.query)
     let barter_id=req.query.barter_id;
     // let query=`SELECT name, surname FROM tableuser WHERE id=${recipient}`;
     getNameSurnameGiveName(barter_id)
@@ -1066,7 +1076,14 @@ app.get('/myBarter', function(req, res){
   {
     data=dataUser[0][0];
   }
-  res.render('myBarter',{dataUser: data, noViewsCity: true })
+  if (req.cookies.userID!=undefined)
+  {
+    res.render('myBarter',{dataUser: data, noViewsCity: true })
+  }
+  else
+  {
+    res.send('Для просмотра бартеров нужно авторизоваться.');
+  }
 });
 app.get('/getBarterArr/', function(req, res){
     // let query=`SELECT * FROM barter;`
