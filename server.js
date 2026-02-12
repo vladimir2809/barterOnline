@@ -543,6 +543,7 @@ function getListContactsForMessanger(user_id)
                         color: color,
                         color2: color2,
                         countUnread: resDB.rows[i].count_unread,
+                        lastSenderId: resDB.rows[i].last_sender_id,
                       }
                         // let item=resDB.rows[i].give_name;
             result.push(item);
@@ -573,6 +574,29 @@ function getRecipientForMessageDB(barter_id) // Получить получят�
       }) 
   });
 }
+
+app.post('/getDataNewRecipient/', function(req, res){
+  console.log("DATA NEW RECIPIENT", req.body.data)
+  let data=JSON.parse(req.body.data)
+  let recipient_id = data.recipient_id;
+  let barter_id = data.barter_id;
+  query=`SELECT CONCAT(tableuser.name, ' ', tableuser.surname) AS namesurname, 
+                barter.give_name 
+        FROM barter
+        JOIN tableuser ON barter.user_id = tableuser.id
+        WHERE barter.id=${barter_id} AND tableuser.id = ${recipient_id};`
+  pool.query(query, function(err, resDB){
+    if (!err)
+    {
+      res.send(resDB.rows[0]);
+    }
+    else
+    {
+      console.log (err)
+    }
+
+  })
+})
 app.get('/messanger/', function(req, res){
   initDataUser(req.cookies)
   console.log(req.cookies)
@@ -738,10 +762,11 @@ app.post('/newMessage/', function (req, res){
     ];
     dataMessage=JSON.stringify(dataMessage);
     let query = `INSERT INTO message(user_sender_id, user_recipient_id, 
-                                      messages_json, give_name, barter_id, count_unread )
+                                      messages_json, give_name, barter_id, 
+                                      count_unread, last_sender_id )
                   VALUES (${sender}, ${recipient}, '${dataMessage}',
                           (SELECT give_name FROM barter WHERE id=${barter_id}),
-                          ${barter_id}, 1)`;
+                          ${barter_id}, 1, ${sender})`;
     console.log(query);
     pool.query(query, function(err, resDB){
       if (!err)
@@ -767,10 +792,12 @@ app.post('/newMessage/', function (req, res){
     // console.log('NEW DATA ', newData);
     newData=JSON.stringify(newData);
     let countUnread=oldData.countUnread;
+    let lastUnreadId=req.cookies.userID;
     countUnread++;
     let query = `UPDATE message 
           SET messages_json='${newData}',
-              count_unread=${countUnread} 
+              count_unread=${countUnread},
+              last_sender_id=${lastUnreadId}
           WHERE 
             (user_sender_id=${sender} AND  
             user_recipient_id=${recipient} AND 

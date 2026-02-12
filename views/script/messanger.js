@@ -128,26 +128,35 @@ getCookieUserId().then(function(result){
         for (let i=0;i < response.length;i++)
         {
             console.log(cookieUserId)
-            if (Number(response[i].countUnread)!=0)
+            if (Number(response[i].countUnread)!=0 && response[i].lastSenderId != null)
             {
-                let data={
-                        recipient_id: response[i].recipient_id,
-                        sender_id: response[i].sender_id,
-                        barter_id: response[i].barter_id,
-                        notResetCountUnread: true,
-                    }
-                data=JSON.stringify(data);
-                SendRequest('POST', '/getMessage/',`data=${data}`,function(requestTwo){
-                    let responseTwo=JSON.parse(requestTwo.response);
-                    if (cookieUserId == responseTwo[responseTwo.length-1].senderUserId)
-                    {
-                        servisItemContact(response[i]);
-                    }
-                    else
-                    {
-                        servisItemContact(response[i], response[i].countUnread);
-                    }
-                })
+                console.log('LAST UNREAD',response[i].lastSenderId)
+                if (cookieUserId != response[i].lastSenderId )
+                {
+                     servisItemContact(response[i], response[i].countUnread);
+                }
+                else
+                {
+                    servisItemContact(response[i]);
+                }
+                // let data={
+                //         recipient_id: response[i].recipient_id,
+                //         sender_id: response[i].sender_id,
+                //         barter_id: response[i].barter_id,
+                //         notResetCountUnread: true,
+                //     }
+                // data=JSON.stringify(data);
+                // SendRequest('POST', '/getMessage/',`data=${data}`,function(requestTwo){
+                //     let responseTwo=JSON.parse(requestTwo.response);
+                //     if (cookieUserId == responseTwo[responseTwo.length-1].senderUserId)
+                //     {
+                //         servisItemContact(response[i]);
+                //     }
+                //     else
+                //     {
+                //         servisItemContact(response[i], response[i].countUnread);
+                //     }
+                // })
             }
             else
             {
@@ -160,7 +169,13 @@ getCookieUserId().then(function(result){
         // addEventClickContact();
         // document.getElementById('buttonSendMessage').style.display='block';
         // console.log(contactsData);
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('messageNow')==="true")
+        {
+            servisContactMessageNow(cookieUserId)
+        }
     });
+  
 
 });
 
@@ -214,31 +229,91 @@ function servisItemContact(data, countMessage=0)
     document.getElementById('buttonSendMessage').style.display='block';
     console.log(contactsData);
 }
+function checkInContactList(sender_id, recipient_id, barter_id)
+{
+    for (let i=0; i < contactsData.length;i++)
+    {
+        if (contactsData[i].sender_id==sender_id &&
+            contactsData[i].recipient_id==recipient_id &&
+            contactsData[i].barter_id==barter_id
+        )
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+function servisContactMessageNow(userSenderId)
+{
+    const params = new URLSearchParams(window.location.search);
+    console.log('COOKIE USER ID', userSenderId)
+    console.log('CONTACT LIST', contactsData)
+    let index=checkInContactList(Number(userSenderId), 
+                            Number(params.get('recipient_id')),
+                            Number(params.get('barter_id')))
+    if (index!=-1)
+    {
+        moveToCorrespondence(index);
+        contacts[index].style.backgroundColor='#AFA';
+        flagNoContactView=true;
+        
+    }
+    else
+    {
+        let data={
+            recipient_id: params.get('recipient_id'),
+            barter_id: params.get('barter_id')
+        }
+        data=JSON.stringify(data)
+        console.log('NOW YES')
+        SendRequest('POST', '/getDataNewRecipient/',`data=${data}`,function(request){ 
+            console.log('NEW RECIPIENT', request.response)
+        });
+    }
+}
 setInterval(function(){
     widthScreen=window.innerWidth;
     let heightScreen=window.innerHeight;
     // console.log(widthScreen);
-    if (flagStart==false)
-    {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('messageNow')==="true")
-        {
-            // let data={
-            //     'sender': params.get('sender'),
-            //     'recipient': params.get('recipient'),
-            // }
-            // data=JSON.stringify(data);
-            // SendRequest('POST', '/newRecipient/', `data=${data}`,function(request){
-            //     console.log(request)
-            //     document.getElementsByClassName('text-block__info-name')[0].innerText=request.response;
+    // if (flagStart==false)
+    // {
+    //     const params = new URLSearchParams(window.location.search);
+    //     if (params.get('messageNow')==="true")
+    //     {
+    //         // let data={
+    //         //     'sender': params.get('sender'),
+    //         //     'recipient': params.get('recipient'),
+    //         // }
+    //         // data=JSON.stringify(data);
+    //         // SendRequest('POST', '/newRecipient/', `data=${data}`,function(request){
+    //         //     console.log(request)
+    //         //     document.getElementsByClassName('text-block__info-name')[0].innerText=request.response;
                 
-            // });
-            // flagNoContactView=true;
-            // document.getElementsByClassName('text-block__info')[0].style.display="flex";
-            // goPressContactsOnly()
-        }
-        flagStart=true;
-    }
+    //         // });
+    //         // flagNoContactView=true;
+    //         // document.getElementsByClassName('text-block__info')[0].style.display="flex";
+    //         // goPressContactsOnly()
+    //         getCookieUserId().then(function(userSenderId){
+    //             // console.log('COOKIE USER ID', userSenderId)
+    //             // console.log('CONTACT LIST', contactsData)
+    //             // if (checkInContactList(Number(userSenderId), 
+    //             //                        Number(params.get('recipient_id')),
+    //             //                        Number(params.get('barter_id')))==true)
+    //             // {
+    //             //     let data={
+    //             //         recipient_id: params.get('recipient_id'),
+    //             //         barter_id: params.get('barter_id')
+    //             //     }
+    //             //     console.log('NOW YES')
+    //             //     SendRequest('POST', '/getDataNewRecipient/',`data=${data}`,function(request){ 
+    //             //         console.log('NEW RECIPIENT', request.response)
+    //             //     });
+                   
+    //             // }
+    //         });
+    //     }
+    //     flagStart=true;
+    // }
     if (widthScreen <= widthOnlyContacts)
     {
         // if (widthScreenOld != widthScreen)
@@ -297,11 +372,11 @@ setInterval(function(){
             }  
                     
         }
-        // if (widthScreenStart > widthOnlyContacts && flagStartWidthScreen==false)
-        // {
-        //     flagNoContactView=true;
-        //     flagStartWidthScreen=true;
-        // }   
+        if (widthScreenStart > widthOnlyContacts && flagStartWidthScreen==false)
+        {
+            flagNoContactView=true;
+            flagStartWidthScreen=true;
+        }   
         
     }
     // расчет ширины поля ввода сообщения
