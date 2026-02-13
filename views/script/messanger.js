@@ -347,6 +347,7 @@ function servisContactMessageNow(userSenderId)
                     nameSurname: response.namesurname,
                     giveName: response.give_name,
                     literal: literal,
+                    color: response.color
                 }
                 // servisContactsData().then(function(){
                     contactsData.unshift(contactItem);

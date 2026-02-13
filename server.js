@@ -581,7 +581,7 @@ app.post('/getDataNewRecipient/', function(req, res){
   let recipient_id = data.recipient_id;
   let barter_id = data.barter_id;
   query=`SELECT CONCAT(tableuser.name, ' ', tableuser.surname) AS namesurname, 
-                barter.give_name 
+                barter.give_name, tableuser.color 
         FROM barter
         JOIN tableuser ON barter.user_id = tableuser.id
         WHERE barter.id=${barter_id} AND tableuser.id = ${recipient_id};`
