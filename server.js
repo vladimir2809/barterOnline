@@ -763,10 +763,10 @@ app.post('/newMessage/', function (req, res){
     dataMessage=JSON.stringify(dataMessage);
     let query = `INSERT INTO message(user_sender_id, user_recipient_id, 
                                       messages_json, give_name, barter_id, 
-                                      count_unread, last_sender_id )
+                                      count_unread, last_sender_id, last_time )
                   VALUES (${sender}, ${recipient}, '${dataMessage}',
                           (SELECT give_name FROM barter WHERE id=${barter_id}),
-                          ${barter_id}, 1, ${sender})`;
+                          ${barter_id}, 1, ${sender}, NOW())`;
     console.log(query);
     pool.query(query, function(err, resDB){
       if (!err)
@@ -797,7 +797,8 @@ app.post('/newMessage/', function (req, res){
     let query = `UPDATE message 
           SET messages_json='${newData}',
               count_unread=${countUnread},
-              last_sender_id=${lastUnreadId}
+              last_sender_id=${lastUnreadId},
+              last_time=NOW()
           WHERE 
             (user_sender_id=${sender} AND  
             user_recipient_id=${recipient} AND 
@@ -891,7 +892,8 @@ function resetCountUnreadMessage(user_id, senderMessage, sender_id, recipient_id
       if (user_id != senderMessage)
       {
         let query=`UPDATE message
-              SET count_unread = 0
+              SET count_unread = 0,
+                  last_time = NOW()
               WHERE 
                 (user_sender_id=${sender_id} AND  
                 user_recipient_id=${recipient_id} AND 
