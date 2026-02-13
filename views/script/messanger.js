@@ -42,6 +42,8 @@ let selectContactData=null;
 let listMessage=[];
 
 let flagStart=false;
+
+let flagContactAddresssBar=false;
 // let textBlockContTop=textBlockCont.top;
 function addEventSelectContact()
 {
@@ -56,6 +58,18 @@ function addEventSelectContact()
             }
             this.style.backgroundColor='#AFA';
             moveToCorrespondence(i);
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('messageNow')!=undefined)
+            {
+                if (contactsData[i].recipient_id != params.get('recipient_id') && 
+                    contactsData[i].barter_id != params.get('barter_id')  )
+
+                {
+                    flagContactAddresssBar=false;
+                }
+            }   
+    
+
         })
         
     }
@@ -76,6 +90,7 @@ function moveToCorrespondence(index)
         recipient_id: contactsData[index].recipient_id,
         sender_id: contactsData[index].sender_id,
     }
+    
     if (cookieUserId == contactsData[index].sender_id)
     {
         document.getElementsByClassName("text-block__info-name")[0].innerText = contactsData[index].nameSurname;
@@ -115,9 +130,27 @@ function getMessageList(sender_id,recipient_id, barter_id)
         clearMessageDraw();
         for (let i=0;i < response.length; i++)
         {
-            let time=new Date(response[i].time)
+            let time = new Date(response[i].time)
+            let timeOld = null;
+            if (i > 0) timeOld=new Date(response[i-1].time)
             console.log(response[i].senderUserId)
             let side = (cookieUserId == Number(response[i].senderUserId)) ? 'aim' : 'noaim';
+            if (i>0)
+              console.log('TIME COMPARE: '+ timeOld.getDate() +' '+ time.getDate() + " "+
+                    timeOld.getMonth() +' '+ time.getMonth() + ' '+
+                    timeOld.getFullYear() +' '+ time.getFullYear())
+
+            if (i==0 || (timeOld != null && 
+                (
+                    timeOld.getDate() != time.getDate() ||
+                    timeOld.getMonth() != time.getMonth() ||
+                    timeOld.getFullYear() != time.getFullYear()
+                )
+            ))
+            {
+                insertDay(time);
+            } 
+
             insertMessage(response[i].message, side, time)
         }
     });
@@ -171,6 +204,7 @@ getCookieUserId().then(function(result){
     const params = new URLSearchParams(window.location.search);
     if (params.get('messageNow')==="true")
     {
+        flagContactAddresssBar=true;
         servisContactMessageNow(cookieUserId)
     }
     else
@@ -595,7 +629,9 @@ buttonSendMessage.addEventListener('click', function(){
     if (message!='')
     {
         insertMessage(sendInput.innerText, 'aim');
-        if ((params.get('recipient_id')!=null && params.get('recipient_id')!=undefined) &&
+
+        if (flagContactAddresssBar==true &&
+            (params.get('recipient_id')!=null && params.get('recipient_id')!=undefined) &&
             (params.get('barter_id')!=null && params.get('barter_id')!=undefined))
         {
             
@@ -612,8 +648,9 @@ buttonSendMessage.addEventListener('click', function(){
                 
             })
         }
-        else if (selectContactData.recipient_id!=undefined &&
-                selectContactData.barter_id!=undefined )
+        else if (flagContactAddresssBar==false &&
+                 selectContactData.recipient_id!=undefined &&
+                 selectContactData.barter_id!=undefined )
         {
             let dataMessage=JSON.stringify({
                 'time': time,
@@ -711,6 +748,7 @@ function insertDay(date)
     }
     let dayStr=date.getDate() + ' ' + month + ' '+date.getFullYear();
     // console.log (dayStr);
+    dayElem.style.display='flex';
     dayElem.getElementsByClassName('day-item__value')[0].innerText=dayStr;
     textBlockCont.append(dayElem);
 }
