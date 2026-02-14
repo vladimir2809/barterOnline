@@ -32,6 +32,7 @@ let flagHeightElem=false;
 
 let contactsData=[];
 let selectContactData=null;
+let contactsPingData=null;
 
 let listMessage=[];
 
@@ -39,6 +40,7 @@ let flagStart=false;
 
 let flagContactAddresssBar=false;
 // let textBlockContTop=textBlockCont.top;
+let newMessageAudio = new Audio('../sound/newMessage.mp3');
 function addEventSelectContact()
 {
     for (let i=0; i < contacts.length;i++)
@@ -189,9 +191,8 @@ function servisContactsData()
         });
     });
 }
-
-getCookieUserId().then(function(result){
-    cookieUserId=result;
+function updateContactList()
+{
     contactSelect.replaceChildren();
     contactsData=[];
     const params = new URLSearchParams(window.location.search);
@@ -206,6 +207,24 @@ getCookieUserId().then(function(result){
             servisContactsList(contactsData);
         });
     }
+}
+getCookieUserId().then(function(result){
+    cookieUserId=result;
+    updateContactList();
+    // contactSelect.replaceChildren();
+    // contactsData=[];
+    // const params = new URLSearchParams(window.location.search);
+    // if (params.get('messageNow')==="true")
+    // {
+    //     flagContactAddresssBar=true;
+    //     servisContactMessageNow(cookieUserId)
+    // }
+    // else
+    // {
+    //     servisContactsData().then(function(){;
+    //         servisContactsList(contactsData);
+    //     });
+    // }
 });
 function servisItemContact(data, countMessage=0)
 {    
@@ -310,6 +329,67 @@ function servisContactMessageNow(userSenderId)
         }
     });
 }
+function compareContactsPing(dataOld, dataNew)
+{
+    let flag=true;
+    let resultIndex=null;
+    for (let i=0; i<dataOld.length; i++)
+    {
+        let id=dataOld[i].id;
+        for (let j = 0; j<dataNew.length; j++)
+        {
+            if (id==dataNew[j].id)
+            {
+                for (attr in dataNew[j])
+                {
+                    if (dataOld[i][attr]!=dataNew[j][attr])
+                    {           
+                        flag=false;
+                        resultIndex=j;
+                    }
+                }
+            }
+        }
+    }
+    if (flag==false && dataNew[resultIndex].last_sender_id != cookieUserId)
+    {
+        return false;
+
+    }
+    else
+    {
+        return true;
+    }
+}
+setInterval(function(){
+    let time = new Date();
+    let data={
+        sender_id: cookieUserId,
+        time: time,
+    }
+    data=JSON.stringify(data);
+    SendRequest('POST', '/pingMessage/',`data=${data}`,function(request){ 
+        let resultData=JSON.parse(request.response)
+        if (contactsPingData == null)
+        {
+            contactsPingData=resultData;
+        }
+        else
+        {
+            if (compareContactsPing(contactsPingData,resultData)==false)
+            {
+                //if (resultData.last_sender_id != cookieUserId)
+                {
+                    contactsPingData=resultData;
+                    updateContactList();
+                    newMessageAudio.play();
+                    //alert('new Message');
+                }
+            }
+        }
+        
+    });
+},1000)
 setInterval(function(){
     widthScreen=window.innerWidth;
     let heightScreen=window.innerHeight;

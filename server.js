@@ -972,6 +972,39 @@ app.post('/getMessage/', function(req, res){
         }) 
       //});
 })
+app.post('/pingMessage/', function(req, res){
+  // console.log (req.body.data)
+  let data = JSON.parse(req.body.data);
+  let time = data.time;
+  let query = ` SELECT * 
+                FROM message
+                WHERE (user_sender_id = ${data.sender_id} OR user_recipient_id = ${data.sender_id}) AND
+                       count_unread > 0`
+  pool.query(query, function(err, resDB){
+    if (!err)
+    {
+      let result=[];
+      for (let i=0; i<resDB.rows.length; i++)
+      {
+          let resultItem = {
+            id: resDB.rows[i].id,
+            sender_id: resDB.rows[i].user_sender_id,
+            recipient_id: resDB.rows[i].user_recipient_id,
+            barter_id: resDB.rows[i].barter_id,
+            countUnread: resDB.rows[i].count_unread,
+            last_sender_id: resDB.rows[i].last_sender_id,
+          }
+          result.push(resultItem);
+      }
+      res.send(result);
+    }
+    else
+    {
+      console.log(err);
+    }
+  })
+  
+})
 app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
  
 
