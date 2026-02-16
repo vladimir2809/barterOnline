@@ -753,72 +753,77 @@ app.post('/newMessage/', function (req, res){
   }
   function insertFirstMessageInDB(sender, recipient, message, time, barter_id) // создать новый чат в БД
   {
-    let dataMessage=[
-      {
-        'time': time,
-        'message': message,
-        'senderUserId': sender
-      },
-    ];
-    dataMessage=JSON.stringify(dataMessage);
-    let query = `INSERT INTO message(user_sender_id, user_recipient_id, 
-                                      messages_json, give_name, barter_id, 
-                                      count_unread, last_sender_id, last_time )
-                  VALUES (${sender}, ${recipient}, '${dataMessage}',
-                          (SELECT give_name FROM barter WHERE id=${barter_id}),
-                          ${barter_id}, 1, ${sender}, NOW())`;
-    console.log(query);
-    pool.query(query, function(err, resDB){
-      if (!err)
-      {
-        console.log('newMessage',dataMessage);
-      }
-      else
-      {
-        console.log(err);
-      }
+    return new Promise(function(resolve, reject){  
+      let dataMessage=[
+        {
+          'time': time,
+          'message': message,
+          'senderUserId': sender
+        },
+      ];
+      dataMessage=JSON.stringify(dataMessage);
+      let query = `INSERT INTO message(user_sender_id, user_recipient_id, 
+                                        messages_json, give_name, barter_id, 
+                                        count_unread, last_sender_id, last_time )
+                    VALUES (${sender}, ${recipient}, '${dataMessage}',
+                            (SELECT give_name FROM barter WHERE id=${barter_id}),
+                            ${barter_id}, 1, ${sender}, NOW())`;
+      console.log(query);
+      pool.query(query, function(err, resDB){
+        if (!err)
+        {
+          console.log('newMessage',dataMessage);
+        }
+        else
+        {
+          console.log(err);
+        }
+        resolve (true)
+      })
     })
   }
   function insertSubsequentMessageOnDB(sender, recipient, message, time, barter_id, oldData) // вставить сообшение в сушествуюший чат
   {
     // oldData=JSON.parse(oldData);
     // console.log('old DATA ', oldData);
-    oldData.dataMessage.push({
-        'time': time,
-        'message': message,
-        'senderUserId': req.cookies.userID,
+    return new Promise(function(resolve, reject){
+      oldData.dataMessage.push({
+          'time': time,
+          'message': message,
+          'senderUserId': req.cookies.userID,
+      })
+      let newData=JSON.parse(JSON.stringify(oldData.dataMessage));
+      // console.log('NEW DATA ', newData);
+      newData=JSON.stringify(newData);
+      let countUnread=oldData.countUnread;
+      let lastUnreadId=req.cookies.userID;
+      countUnread++;
+      let query = `UPDATE message 
+            SET messages_json='${newData}',
+                count_unread=${countUnread},
+                last_sender_id=${lastUnreadId},
+                last_time=NOW()
+            WHERE 
+              (user_sender_id=${sender} AND  
+              user_recipient_id=${recipient} AND 
+              barter_id=${barter_id})`      
+            // OR
+            //   (user_sender_id=${recipient} AND  
+            //   user_recipient_id=${sender} AND 
+            //   barter_id=${barter_id};`;
+      console.log(query);
+      pool.query(query, function(err, resDB){
+        if (!err)
+        {
+          console.log('new subsequent message', message);
+        }
+        else
+        {
+          console.log(!err)
+        }
+        resolve(true);
+      })
     })
-    let newData=JSON.parse(JSON.stringify(oldData.dataMessage));
-    // console.log('NEW DATA ', newData);
-    newData=JSON.stringify(newData);
-    let countUnread=oldData.countUnread;
-    let lastUnreadId=req.cookies.userID;
-    countUnread++;
-    let query = `UPDATE message 
-          SET messages_json='${newData}',
-              count_unread=${countUnread},
-              last_sender_id=${lastUnreadId},
-              last_time=NOW()
-          WHERE 
-            (user_sender_id=${sender} AND  
-            user_recipient_id=${recipient} AND 
-            barter_id=${barter_id})`      
-          // OR
-          //   (user_sender_id=${recipient} AND  
-          //   user_recipient_id=${sender} AND 
-          //   barter_id=${barter_id};`;
-    console.log(query);
-    pool.query(query, function(err, resDB){
-      if (!err)
-      {
-        console.log('new subsequent message', message);
-      }
-      else
-      {
-        console.log(!err)
-      }
-    })
-          
   }
   checkBarterIdAndUserId(data.barter_id, data.sender)// проверяем бартер и юзер ИД
   .then(function (check){
@@ -836,7 +841,10 @@ app.post('/newMessage/', function (req, res){
             {                      //req.cookies.userID
               insertFirstMessageInDB(req.cookies.userID, data.recipient, data.message, 
                   data.time, data.barter_id)
-                 // res.send(null);
+              .then(function(resultPromise){
+                res.send(null);
+              });
+                 
             }
             else // если переписка есть
             {
@@ -847,7 +855,9 @@ app.post('/newMessage/', function (req, res){
                   console.log ('COOKIE USER ID: '+ req.cookies.userID)
                   insertSubsequentMessageOnDB(data.sender, data.recipient, 
                                         data.message, data.time, data.barter_id, resultData)
-                 /// res.send(null);
+                  .then(function(resultPromise){
+                    res.send(null);
+                  });
               });
             }
           } 
@@ -947,15 +957,20 @@ app.post('/getMessage/', function(req, res){
               if (data.notResetCountUnread==false)
               {
 
-                  resetCountUnreadMessage(req.cookies.userID,
+                resetCountUnreadMessage(req.cookies.userID,
                     senderMessage,
                     data.sender_id, data.recipient_id,
                     data.barter_id)
                 .then(function(result2){
                   console.log ('PROMISE RESET COUNT UNREAD'+result2)
                 })
+                res.send(result);
               }
-              res.send(result);
+              else
+              {
+                res.send(result);
+                
+              }
 
             }
             else
@@ -979,6 +994,7 @@ app.post('/pingMessage/', function(req, res){
   let query = ` SELECT * 
                 FROM message
                 WHERE (user_sender_id = ${data.sender_id} OR user_recipient_id = ${data.sender_id}) AND
+                    
                        count_unread > 0`
   pool.query(query, function(err, resDB){
     if (!err)
@@ -993,6 +1009,7 @@ app.post('/pingMessage/', function(req, res){
             barter_id: resDB.rows[i].barter_id,
             countUnread: resDB.rows[i].count_unread,
             last_sender_id: resDB.rows[i].last_sender_id,
+            last_time: resDB.rows[i].last_time,
           }
           result.push(resultItem);
       }
@@ -1001,6 +1018,7 @@ app.post('/pingMessage/', function(req, res){
     else
     {
       console.log(err);
+      res.send('');
     }
   })
   

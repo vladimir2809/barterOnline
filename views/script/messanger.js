@@ -86,7 +86,11 @@ function moveToCorrespondence(index)
         recipient_id: contactsData[index].recipient_id,
         sender_id: contactsData[index].sender_id,
     }
-    
+    //contactsData[index].countMessage=0;
+    //servisItemContact(contactsData[index], 0, false);
+    let countMessageELem=contactSelect.children[index].getElementsByClassName('contact__count-messages')[0];
+    countMessageELem.style.display='block';
+    countMessageELem.innerHTML='';  
     if (cookieUserId == contactsData[index].sender_id)
     {
         document.getElementsByClassName("text-block__info-name")[0].innerText = contactsData[index].nameSurname;
@@ -103,7 +107,7 @@ function moveToCorrespondence(index)
                         selectContactData.recipient_id,
                         selectContactData.barter_id)
 }
-function getMessageList(sender_id,recipient_id, barter_id)
+function getMessageList(sender_id,recipient_id, barter_id,/*, resetUnread=false*/)
 {
     let data={
         recipient_id: recipient_id,
@@ -249,15 +253,30 @@ function servisItemContact(data, countMessage=0)
         contactItem.querySelector('.contact__literal').style.backgroundColor=data.color2;
         
         contactItem.querySelector('.contact__name').innerText=data.nameSurname2;
-
-        contactSelect.append(contactItem);
+         contactSelect.append(contactItem);
     }
+
+    // let countMessageELem=contactItem.getElementsByClassName('contact__count-messages')[0];
+    // countMessageELem.style.display='block';
+
     if (countMessage!=0)
     {
         let countMessageELem=contactItem.getElementsByClassName('contact__count-messages')[0];
         countMessageELem.style.display='block';
-        countMessageELem.innerHTML='+'+countMessage;
+        countMessageELem.innerHTML='+'+countMessage;       
     }
+    // if (noAppend == false)
+    // {
+    //     let countMessageELem=contactItem.getElementsByClassName('contact__count-messages')[0];
+    //     countMessageELem.style.display='block';
+    //     countMessageELem.innerHTML='';
+    // }
+    // if (noAppend == false)
+    // {
+    //     let countMessageELem=contactItem.getElementsByClassName('contact__count-messages')[0];
+    //     countMessageELem.style.display='block';
+    //     countMessageELem.innerHTML='';
+    // }
     addEventSelectContact();
     addEventClickContact();
     document.getElementById('buttonSendMessage').style.display='block';
@@ -329,10 +348,54 @@ function servisContactMessageNow(userSenderId)
         }
     });
 }
-function compareContactsPing(dataOld, dataNew)
+// function checkContactsPing(dataOld, dataNew)
+// {
+//     let flag=true;
+//     let resultIndex=null;
+//     if (dataOld.length != 0 && dataNew.length == 0) 
+//     {
+//         return false;
+//     }
+//     for (let i=0; i<dataOld.length; i++)
+//     {
+//         let id=dataOld[i].id;
+//         for (let j = 0; j<dataNew.length; j++)
+//         {
+//             if (id==dataNew[j].id)
+//             {
+//                 for (attr in dataNew[j])
+//                 {
+//                     if (dataOld[i][attr]!=dataNew[j][attr])
+//                     {           
+//                         flag=false;
+//                         resultIndex=j;
+//                        // break;
+//                     }
+//                 }
+                
+//             }
+//             //if (flag == false) break;
+//         }
+//       //  if (flag == false) break;
+//     }
+//     if (flag==false && dataNew[resultIndex].last_sender_id != cookieUserId)
+//     {
+//         return false;
+
+//     }
+//     else
+//     {
+//         return true;
+//     }
+// }
+function getIndexContactsPing(dataOld, dataNew)
 {
     let flag=true;
-    let resultIndex=null;
+    let resultIndex=-1;
+    // if (dataOld.length == 0 || dataNew.length == 0) 
+    // {
+    //     return -1;
+    // }
     for (let i=0; i<dataOld.length; i++)
     {
         let id=dataOld[i].id;
@@ -340,26 +403,38 @@ function compareContactsPing(dataOld, dataNew)
         {
             if (id==dataNew[j].id)
             {
+                // let flagCompare=true
                 for (attr in dataNew[j])
                 {
                     if (dataOld[i][attr]!=dataNew[j][attr])
                     {           
-                        flag=false;
+                        
+                        // flag=false;
+                        // flagCompare = false;
                         resultIndex=j;
+                        if (resultIndex != -1 && dataNew[resultIndex].last_sender_id != cookieUserId)
+                        {
+                            return resultIndex;
+
+                        }
                     }
                 }
+                // if (flagCompare==true) resultIndex=j;
             }
+            // if (flag == false) break;
         }
+        // if (flag == false) break;
     }
-    if (flag==false && dataNew[resultIndex].last_sender_id != cookieUserId)
-    {
-        return false;
+    // if (resultIndex != -1 && dataNew[resultIndex].last_sender_id != cookieUserId)
+    // {
+    //     return resultIndex;
 
-    }
-    else
+    // }
+    //else
     {
-        return true;
+        return -1;
     }
+    //return resultIndex;
 }
 setInterval(function(){
     let time = new Date();
@@ -370,23 +445,53 @@ setInterval(function(){
     data=JSON.stringify(data);
     SendRequest('POST', '/pingMessage/',`data=${data}`,function(request){ 
         let resultData=JSON.parse(request.response)
+        
         if (contactsPingData == null)
         {
             contactsPingData=resultData;
         }
-        else
+        else //if (contactsPingData.length > 0)
         {
-            if (compareContactsPing(contactsPingData,resultData)==false)
+            //console.log('RESULT AND PING DATA', resultData, contactsPingData)
+            let index=getIndexContactsPing(contactsPingData,resultData);
+            //if (checkContactsPing(contactsPingData, resultData)==false)
+            if (index != -1)
             {
                 //if (resultData.last_sender_id != cookieUserId)
+
                 {
+                    
+                    //let index=getIndexContactsPing(contactsPingData,resultData);
+                    console.log('UPDATE INDEX', index)
+                    // updateContactList();
+                    if (index != -1 && selectContactData != null &&
+                        resultData[index].sender_id==selectContactData.sender_id &&
+                        resultData[index].recipient_id==selectContactData.recipient_id &&
+                        resultData[index].barter_id==selectContactData.barter_id
+                        )
+                    {
+                        console.log('UPDATE PEREPISKA')
+                        //updateContactList();
+                        //contactsPingData=resultData;
+                        //alert('new Message');
+                        getMessageList(selectContactData.sender_id,
+                            selectContactData.recipient_id,
+                            selectContactData.barter_id)
+                        // updateContactList()
+                    }
+                    else
+                    {
+                        //contactsPingData=resultData;
+                        updateContactList();
+                    }
                     contactsPingData=resultData;
-                    updateContactList();
                     newMessageAudio.play();
                     //alert('new Message');
                 }
             }
+           // contactsPingData=resultData;
         }
+        //contactsPingData=resultData;
         
     });
 },1000)
