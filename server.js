@@ -15,9 +15,18 @@ const upload = multer({ dest: 'uploads/' })
 var categoryList=[];
 var categoryListStr='';
 var categoryListId=[];
+var listUnreadMessage=[];
 var cityList=[];
 var dataUser=[];
 var cityStart="Москва";
+var itemUnreadMessage={
+  sender: null,
+  recipient: null,
+  time: null,
+  lastSender: null,
+  barterId:null,
+
+}
 const pool = new Pool({
   user: "myuser",
   host: "localhost",
@@ -60,6 +69,24 @@ pool.query("SELECT * FROM category", (err, resDB) =>{
     console.log(err);
   }
 });
+pool.query(`SELECT * FROM message;`, function(err, resDB){
+  if(!err)
+  { 
+    for(let i=0;i<resDB.rows.length;i++)
+    {
+      if (resDB.rows[i].count_unread>0)
+      {
+        // addInListUnreadMessage(sender, recipient, time, lastSender, barterId)
+        addInListUnreadMessage(resDB.rows[i].user_sender_id, resDB.rows[i].user_recipient_id,
+              resDB.rows[i].last_time, resDB.rows[i].last_sender_id, resDB.rows[i].barter_id)
+      }
+    }
+  }
+  else
+  {
+    console.log(err)
+  }
+})
 function getIdCategoryFromDB(num)
 {
   
@@ -473,6 +500,9 @@ function getDataForRecordDb(req/*, files*/)
   dataForDB.cityName=req.cookies.city;
   return {dataForDB: dataForDB, getStuff: getStuff, giveStuff: giveStuff};
 }
+
+
+
 // КОД ОТВЕЧАЮШИЙ ЗА СТРАНИЦУ МЕССАНДЖЕР
 
 function getNameSurnameGiveName(barter_id)
@@ -488,7 +518,7 @@ function getNameSurnameGiveName(barter_id)
       if (!err)
       {
         console.log ("new recipient")
-        console.log (resDB.rows[0])
+        //console.log (resDB.rows[0])
         let nameSurname=resDB.rows[0].name +' '+resDB.rows[0].surname;
         let giveName=resDB.rows[0].give_name;
         // let color=resDB.rows[0].color;
@@ -526,7 +556,7 @@ function getListContactsForMessanger(user_id)
         {
           for (let i=0;i<resDB.rows.length;i++)
           {
-            console.log (resDB.rows[i])
+            //console.log (resDB.rows[i])
             let nameSurname=resDB.rows[i].name + " " + resDB.rows[i].surname;
             let literal=nameSurname.toUpperCase()[0];
             let literal2=resDB.rows[i].namesurname2.toUpperCase()[0];
@@ -648,6 +678,42 @@ app.post('/getContactListMessanger/', function(req, res){
       res.send(result)
     })
 })
+function addInListUnreadMessage(sender, recipient, time, lastSender, barterId)
+{
+  let item = JSON.parse(JSON.stringify(itemUnreadMessage));
+  item.sender=Number(sender);
+  item.recipient=Number(recipient);
+  item.time=time;
+  item.lastSender=Number(lastSender);
+  item.barterId = Number(barterId);
+  if ( listUnreadMessage.length == 0 ||
+        searchInListUnreadMessage(sender, recipient, barterId)==-1)
+  {
+    listUnreadMessage.push(item);
+    console.log('listUnreadMessage', listUnreadMessage)
+  }
+}
+function searchInListUnreadMessage(sender, recipient, barterId)
+{
+  for (let i=0; i < listUnreadMessage.length;i++)
+  {
+    if (
+          ((listUnreadMessage[i].sender == sender &&
+          listUnreadMessage[i].recipient == recipient)
+          ||
+          (listUnreadMessage[i].sender == recipient &&
+          listUnreadMessage[i].recipient == sender)
+          )
+        &&
+          listUnreadMessage[i].barterId == barterId
+       )
+    {
+      return i;
+    }
+
+  }
+  return -1;
+}
 app.post('/newMessage/', function (req, res){
   let data=JSON.parse(req.body.data);
   // console.log("newMessage: ",data.message);
@@ -772,7 +838,8 @@ app.post('/newMessage/', function (req, res){
       pool.query(query, function(err, resDB){
         if (!err)
         {
-          console.log('newMessage',dataMessage);
+          //console.log('newMessage',dataMessage);
+          addInListUnreadMessage(sender, recipient, time, sender, barter_id);
         }
         else
         {
@@ -811,11 +878,12 @@ app.post('/newMessage/', function (req, res){
             //   (user_sender_id=${recipient} AND  
             //   user_recipient_id=${sender} AND 
             //   barter_id=${barter_id};`;
-      console.log(query);
+      //console.log(query);
       pool.query(query, function(err, resDB){
         if (!err)
         {
-          console.log('new subsequent message', message);
+          //console.log('new subsequent message', message);
+          addInListUnreadMessage(sender, recipient, time, lastUnreadId, barter_id);
         }
         else
         {
@@ -834,7 +902,7 @@ app.post('/newMessage/', function (req, res){
       //   console.log(result);
         getSenderRecipientDB(data.sender, data.recipient, data.barter_id) // проверяем на повтор в БД, что это переписка есть
         .then(function(result2){
-          console.log('sender recipient in DB: '+result2);
+          //console.log('sender recipient in DB: '+result2);
           if (data.sender != data.recipient)
           {  
             if (result2==false)// если нет переписки
@@ -850,9 +918,9 @@ app.post('/newMessage/', function (req, res){
             {
               getDataMessageDB(data.sender, data.recipient, data.barter_id) // получаем старые данные
               .then(function(resultData){
-                  console.log('RESULT DATA',resultData);
+                 // console.log('RESULT DATA',resultData);
                   // вставляем данные
-                  console.log ('COOKIE USER ID: '+ req.cookies.userID)
+                  //console.log ('COOKIE USER ID: '+ req.cookies.userID)
                   insertSubsequentMessageOnDB(data.sender, data.recipient, 
                                         data.message, data.time, data.barter_id, resultData)
                   .then(function(resultPromise){
@@ -947,7 +1015,7 @@ app.post('/getMessage/', function(req, res){
         pool.query(query, function(err, resDB){
           if (!err)
           {
-            console.log(resDB)
+            //console.log(resDB)
             if (resDB.rows.length != 0)
             {
 
@@ -988,39 +1056,58 @@ app.post('/getMessage/', function(req, res){
       //});
 })
 app.post('/pingMessage/', function(req, res){
-  // console.log (req.body.data)
   let data = JSON.parse(req.body.data);
-  let time = data.time;
-  let query = ` SELECT * 
-                FROM message
-                WHERE (user_sender_id = ${data.sender_id} OR user_recipient_id = ${data.sender_id})`
-  pool.query(query, function(err, resDB){
-    if (!err)
+  for (let i=0; i < listUnreadMessage.length; i++)
+  {
+    if ((listUnreadMessage[i].sender == data.sender_id ||
+        listUnreadMessage[i].recipient == data.sender_id)
+      &&
+      listUnreadMessage[i].lastSender != req.cookies.userID)
     {
-      let result=[];
-      for (let i=0; i<resDB.rows.length; i++)
-      {
-          let resultItem = {
-            id: resDB.rows[i].id,
-            sender_id: resDB.rows[i].user_sender_id,
-            recipient_id: resDB.rows[i].user_recipient_id,
-            barter_id: resDB.rows[i].barter_id,
-            //countUnread: resDB.rows[i].count_unread,
-            last_sender_id: resDB.rows[i].last_sender_id,
-            last_time: resDB.rows[i].last_time,
-          }
-          result.push(resultItem);
-      }
-      res.send(result);
+      let item=JSON.parse(JSON.stringify(listUnreadMessage[i]))
+      item=JSON.stringify(item);
+      listUnreadMessage.splice(i, 1);
+      res.send(item);
+      return 0;
     }
-    else
-    {
-      console.log(err);
-      res.send('');
-    }
-  })
-  
+  }
+  res.send(JSON.stringify(null))
+
 })
+// app.post('/pingMessage/', function(req, res){
+//   // console.log (req.body.data)
+//   let data = JSON.parse(req.body.data);
+//   let time = data.time;
+//   let query = ` SELECT * 
+//                 FROM message
+//                 WHERE (user_sender_id = ${data.sender_id} OR user_recipient_id = ${data.sender_id})`
+//   pool.query(query, function(err, resDB){
+//     if (!err)
+//     {
+//       let result=[];
+//       for (let i=0; i<resDB.rows.length; i++)
+//       {
+//           let resultItem = {
+//             id: resDB.rows[i].id,
+//             sender_id: resDB.rows[i].user_sender_id,
+//             recipient_id: resDB.rows[i].user_recipient_id,
+//             barter_id: resDB.rows[i].barter_id,
+//             //countUnread: resDB.rows[i].count_unread,
+//             last_sender_id: resDB.rows[i].last_sender_id,
+//             last_time: resDB.rows[i].last_time,
+//           }
+//           result.push(resultItem);
+//       }
+//       res.send(result);
+//     }
+//     else
+//     {
+//       console.log(err);
+//       res.send('');
+//     }
+//   })
+  
+// })
 app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
  
 

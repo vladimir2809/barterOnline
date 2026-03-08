@@ -348,13 +348,21 @@ function servisContactMessageNow(userSenderId)
         }
     });
 }
-// function checkContactsPing(dataOld, dataNew)
+
+
+
+
+// function getIndexContactsPing(dataOld, dataNew)
 // {
 //     let flag=true;
-//     let resultIndex=null;
-//     if (dataOld.length != 0 && dataNew.length == 0) 
+//     let resultIndex=-1;
+//     // if (dataOld.length == 0 || dataNew.length == 0) 
+//     // {
+//     //     return -1;
+//     // }
+//     if (dataOld.length < dataNew.length)
 //     {
-//         return false;
+//         return -2//dataNew.length-1;
 //     }
 //     for (let i=0; i<dataOld.length; i++)
 //     {
@@ -363,170 +371,169 @@ function servisContactMessageNow(userSenderId)
 //         {
 //             if (id==dataNew[j].id)
 //             {
+//                 // let flagCompare=true
 //                 for (attr in dataNew[j])
 //                 {
 //                     if (dataOld[i][attr]!=dataNew[j][attr])
 //                     {           
-//                         flag=false;
+                        
+//                         // flag=false;
+//                         // flagCompare = false;
 //                         resultIndex=j;
-//                        // break;
+//                         if (resultIndex != -1 //&& dataNew[resultIndex].last_sender_id != cookieUserId
+//                             // &&  dataNew[resultIndex].countUnread > 0
+//                         )
+//                         {
+//                             return resultIndex;
+
+//                         }
 //                     }
 //                 }
-                
+//                 // if (flagCompare==true) resultIndex=j;
 //             }
-//             //if (flag == false) break;
+//             // if (flag == false) break;
 //         }
-//       //  if (flag == false) break;
+//         // if (flag == false) break;
 //     }
-//     if (flag==false && dataNew[resultIndex].last_sender_id != cookieUserId)
-//     {
-//         return false;
+//     // if (resultIndex != -1 && dataNew[resultIndex].last_sender_id != cookieUserId)
+//     // {
+//     //     return resultIndex;
 
-//     }
-//     else
+//     // }
+//     //else
 //     {
-//         return true;
+//         return -1;
 //     }
+//     //return resultIndex;
 // }
-function getIndexContactsPing(dataOld, dataNew)
-{
-    let flag=true;
-    let resultIndex=-1;
-    // if (dataOld.length == 0 || dataNew.length == 0) 
-    // {
-    //     return -1;
-    // }
-    if (dataOld.length < dataNew.length)
-    {
-        return -2//dataNew.length-1;
-    }
-    for (let i=0; i<dataOld.length; i++)
-    {
-        let id=dataOld[i].id;
-        for (let j = 0; j<dataNew.length; j++)
-        {
-            if (id==dataNew[j].id)
-            {
-                // let flagCompare=true
-                for (attr in dataNew[j])
-                {
-                    if (dataOld[i][attr]!=dataNew[j][attr])
-                    {           
-                        
-                        // flag=false;
-                        // flagCompare = false;
-                        resultIndex=j;
-                        if (resultIndex != -1 //&& dataNew[resultIndex].last_sender_id != cookieUserId
-                            // &&  dataNew[resultIndex].countUnread > 0
-                        )
-                        {
-                            return resultIndex;
 
-                        }
-                    }
-                }
-                // if (flagCompare==true) resultIndex=j;
-            }
-            // if (flag == false) break;
-        }
-        // if (flag == false) break;
-    }
-    // if (resultIndex != -1 && dataNew[resultIndex].last_sender_id != cookieUserId)
-    // {
-    //     return resultIndex;
-
-    // }
-    //else
-    {
-        return -1;
-    }
-    //return resultIndex;
-}
 setInterval(function(){
-    let time = new Date();
     let data={
         sender_id: cookieUserId,
-        time: time,
+        // time: time,
     }
     data=JSON.stringify(data);
     SendRequest('POST', '/pingMessage/',`data=${data}`,function(request){ 
-        let resultData=JSON.parse(request.response)
-        //console.log('resultData.last_sender_id ' +resultData[0].last_sender_id)
-        if (contactsPingData == null)
+        let resultData=JSON.parse(request.response);
+        if (resultData != null)
         {
-            contactsPingData=resultData;
-        }
-        else //if (contactsPingData.length > 0)
-        {
-            //console.log('RESULT AND PING DATA', resultData, contactsPingData)
-            let index=getIndexContactsPing(contactsPingData,resultData);
-            //if (checkContactsPing(contactsPingData, resultData)==false)
-            if (index > -1)
+            console.log(resultData);
+            if (resultData.lastSender != cookieUserId)
             {
-                //if (resultData.last_sender_id != cookieUserId)
 
+                if (selectContactData != null &&
+                    (
+                        (resultData.sender==selectContactData.sender_id &&
+                        resultData.recipient==selectContactData.recipient_id) 
+                        ||
+                        (resultData.recipient==selectContactData.sender_id &&
+                        resultData.sender==selectContactData.recipient_id)
+                    )
+                    &&
+                    resultData.barterId==selectContactData.barter_id
+                    )
                 {
-                    
-                    //let index=getIndexContactsPing(contactsPingData,resultData);
-                    console.log('UPDATE INDEX', index)
-                    // updateContactList();
-
-                    contactsPingData=JSON.parse(JSON.stringify(resultData));
-
-                    if (index > -1 && selectContactData != null &&
-                        resultData[index].sender_id==selectContactData.sender_id &&
-                        resultData[index].recipient_id==selectContactData.recipient_id &&
-                        resultData[index].barter_id==selectContactData.barter_id
-                        )
-                    {
-                        console.log('UPDATE PEREPISKA')
-                        //updateContactList();
-                        //contactsPingData=resultData;
-                        //alert('new Message');
-                        getMessageList(selectContactData.sender_id,
-                            selectContactData.recipient_id,
-                            selectContactData.barter_id)
-                        // updateContactList()
-
-                        // if (resultData.lastSenderId != cookieUserId)
-                        // {
-                        //     newMessageAudio.play();
-                        // }
-                    }
-                    else
-                    {
-                        //contactsPingData=resultData;
-                        updateContactList();
-                        // if (resultData.lastSenderId != cookieUserId)
-                        // {
-                        //     newMessageAudio.play();
-                        // }
-                        //newMessageAudio.play();
-                    }
-                    console.log('resultData[index].last_sender_id ' +resultData[index].last_sender_id
-                            + ' cookieUserId ' +cookieUserId);
-                   
-                    if (resultData[index].last_sender_id != cookieUserId)
-                    {
-                        newMessageAudio.play();
-                    }
-                    //contactsPingData=JSON.parse(JSON.stringify(resultData));
-                    // newMessageAudio.play();
-                    //alert('new Message');
+                    getMessageList(selectContactData.sender_id,
+                                selectContactData.recipient_id,
+                                selectContactData.barter_id)
                 }
-            }
-            if (index == -2)
-            {
-                updateContactList();
-                contactsPingData=JSON.parse(JSON.stringify(resultData));
+                else
+                {
+                    updateContactList();
+                }
+                
                 newMessageAudio.play();
             }
-           // contactsPingData=resultData;
         }
-        //contactsPingData=resultData;
-        
     });
+
 },1000)
+
+// setInterval(function(){
+//     let time = new Date();
+//     let data={
+//         sender_id: cookieUserId,
+//         time: time,
+//     }
+//     data=JSON.stringify(data);
+//     SendRequest('POST', '/pingMessage/',`data=${data}`,function(request){ 
+//         let resultData=JSON.parse(request.response)
+//         //console.log('resultData.last_sender_id ' +resultData[0].last_sender_id)
+//         if (contactsPingData == null)
+//         {
+//             contactsPingData=resultData;
+//         }
+//         else //if (contactsPingData.length > 0)
+//         {
+//             //console.log('RESULT AND PING DATA', resultData, contactsPingData)
+//             let index=getIndexContactsPing(contactsPingData,resultData);
+//             //if (checkContactsPing(contactsPingData, resultData)==false)
+//             if (index > -1)
+//             {
+//                 //if (resultData.last_sender_id != cookieUserId)
+
+//                 {
+                    
+//                     //let index=getIndexContactsPing(contactsPingData,resultData);
+//                     console.log('UPDATE INDEX', index)
+//                     // updateContactList();
+
+//                     contactsPingData=JSON.parse(JSON.stringify(resultData));
+
+//                     if (index > -1 && selectContactData != null &&
+//                         resultData[index].sender_id==selectContactData.sender_id &&
+//                         resultData[index].recipient_id==selectContactData.recipient_id &&
+//                         resultData[index].barter_id==selectContactData.barter_id
+//                         )
+//                     {
+//                         console.log('UPDATE PEREPISKA')
+//                         //updateContactList();
+//                         //contactsPingData=resultData;
+//                         //alert('new Message');
+//                         getMessageList(selectContactData.sender_id,
+//                             selectContactData.recipient_id,
+//                             selectContactData.barter_id)
+//                         // updateContactList()
+
+//                         // if (resultData.lastSenderId != cookieUserId)
+//                         // {
+//                         //     newMessageAudio.play();
+//                         // }
+//                     }
+//                     else
+//                     {
+//                         //contactsPingData=resultData;
+//                         updateContactList();
+//                         // if (resultData.lastSenderId != cookieUserId)
+//                         // {
+//                         //     newMessageAudio.play();
+//                         // }
+//                         //newMessageAudio.play();
+//                     }
+//                     console.log('resultData[index].last_sender_id ' +resultData[index].last_sender_id
+//                             + ' cookieUserId ' +cookieUserId);
+                   
+//                     if (resultData[index].last_sender_id != cookieUserId)
+//                     {
+//                         newMessageAudio.play();
+//                     }
+//                     //contactsPingData=JSON.parse(JSON.stringify(resultData));
+//                     // newMessageAudio.play();
+//                     //alert('new Message');
+//                 }
+//             }
+//             if (index == -2)
+//             {
+//                 updateContactList();
+//                 contactsPingData=JSON.parse(JSON.stringify(resultData));
+//                 newMessageAudio.play();
+//             }
+//            // contactsPingData=resultData;
+//         }
+//         //contactsPingData=resultData;
+        
+//     });
+// },1000)
 setInterval(function(){
     widthScreen=window.innerWidth;
     let heightScreen=window.innerHeight;
