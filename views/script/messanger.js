@@ -396,6 +396,10 @@ function getIndexContactsPing(dataOld, dataNew)
     // {
     //     return -1;
     // }
+    if (dataOld.length < dataNew.length)
+    {
+        return -2//dataNew.length-1;
+    }
     for (let i=0; i<dataOld.length; i++)
     {
         let id=dataOld[i].id;
@@ -457,7 +461,7 @@ setInterval(function(){
             //console.log('RESULT AND PING DATA', resultData, contactsPingData)
             let index=getIndexContactsPing(contactsPingData,resultData);
             //if (checkContactsPing(contactsPingData, resultData)==false)
-            if (index != -1)
+            if (index > -1)
             {
                 //if (resultData.last_sender_id != cookieUserId)
 
@@ -469,7 +473,7 @@ setInterval(function(){
 
                     contactsPingData=JSON.parse(JSON.stringify(resultData));
 
-                    if (index != -1 && selectContactData != null &&
+                    if (index > -1 && selectContactData != null &&
                         resultData[index].sender_id==selectContactData.sender_id &&
                         resultData[index].recipient_id==selectContactData.recipient_id &&
                         resultData[index].barter_id==selectContactData.barter_id
@@ -501,6 +505,7 @@ setInterval(function(){
                     }
                     console.log('resultData[index].last_sender_id ' +resultData[index].last_sender_id
                             + ' cookieUserId ' +cookieUserId);
+                   
                     if (resultData[index].last_sender_id != cookieUserId)
                     {
                         newMessageAudio.play();
@@ -509,6 +514,12 @@ setInterval(function(){
                     // newMessageAudio.play();
                     //alert('new Message');
                 }
+            }
+            if (index == -2)
+            {
+                updateContactList();
+                contactsPingData=JSON.parse(JSON.stringify(resultData));
+                newMessageAudio.play();
             }
            // contactsPingData=resultData;
         }
@@ -682,7 +693,7 @@ buttonSendMessage.addEventListener('click', function(){
             let dataMessage=JSON.stringify({
                 'time': time,
                 'message' : sendInput.innerText,
-                // 'sender' : cookieUserId,
+                'sender' : cookieUserId,
                 'recipient' : params.get('recipient_id'),
                 'barter_id' : params.get('barter_id'),
             }); 
