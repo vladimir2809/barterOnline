@@ -107,13 +107,13 @@ function moveToCorrespondence(index)
                         selectContactData.recipient_id,
                         selectContactData.barter_id)
 }
-function getMessageList(sender_id,recipient_id, barter_id,/*, resetUnread=false*/)
+function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
 {
     let data={
         recipient_id: recipient_id,
         sender_id: sender_id,
         barter_id: barter_id,
-        notResetCountUnread: false,
+        notResetCountUnread: resetUnread,
     }
     data=JSON.stringify(data);
     SendRequest('POST', '/getMessage/',`data=${data}`,function(request){   
@@ -136,9 +136,9 @@ function getMessageList(sender_id,recipient_id, barter_id,/*, resetUnread=false*
             console.log(response[i].senderUserId)
             let side = (cookieUserId == Number(response[i].senderUserId)) ? 'aim' : 'noaim';
             if (i>0)
-              console.log('TIME COMPARE: '+ timeOld.getDate() +' '+ time.getDate() + " "+
-                    timeOld.getMonth() +' '+ time.getMonth() + ' '+
-                    timeOld.getFullYear() +' '+ time.getFullYear())
+            //   console.log('TIME COMPARE: '+ timeOld.getDate() +' '+ time.getDate() + " "+
+            //         timeOld.getMonth() +' '+ time.getMonth() + ' '+
+            //         timeOld.getFullYear() +' '+ time.getFullYear())
 
             if (i==0 || (timeOld != null && 
                 (
@@ -412,7 +412,9 @@ function getIndexContactsPing(dataOld, dataNew)
                         // flag=false;
                         // flagCompare = false;
                         resultIndex=j;
-                        if (resultIndex != -1 && dataNew[resultIndex].last_sender_id != cookieUserId)
+                        if (resultIndex != -1 //&& dataNew[resultIndex].last_sender_id != cookieUserId
+                            // &&  dataNew[resultIndex].countUnread > 0
+                        )
                         {
                             return resultIndex;
 
@@ -445,7 +447,7 @@ setInterval(function(){
     data=JSON.stringify(data);
     SendRequest('POST', '/pingMessage/',`data=${data}`,function(request){ 
         let resultData=JSON.parse(request.response)
-        
+        //console.log('resultData.last_sender_id ' +resultData[0].last_sender_id)
         if (contactsPingData == null)
         {
             contactsPingData=resultData;
@@ -464,6 +466,9 @@ setInterval(function(){
                     //let index=getIndexContactsPing(contactsPingData,resultData);
                     console.log('UPDATE INDEX', index)
                     // updateContactList();
+
+                    contactsPingData=JSON.parse(JSON.stringify(resultData));
+
                     if (index != -1 && selectContactData != null &&
                         resultData[index].sender_id==selectContactData.sender_id &&
                         resultData[index].recipient_id==selectContactData.recipient_id &&
@@ -478,14 +483,30 @@ setInterval(function(){
                             selectContactData.recipient_id,
                             selectContactData.barter_id)
                         // updateContactList()
+
+                        // if (resultData.lastSenderId != cookieUserId)
+                        // {
+                        //     newMessageAudio.play();
+                        // }
                     }
                     else
                     {
                         //contactsPingData=resultData;
                         updateContactList();
+                        // if (resultData.lastSenderId != cookieUserId)
+                        // {
+                        //     newMessageAudio.play();
+                        // }
+                        //newMessageAudio.play();
                     }
-                    contactsPingData=resultData;
-                    newMessageAudio.play();
+                    console.log('resultData[index].last_sender_id ' +resultData[index].last_sender_id
+                            + ' cookieUserId ' +cookieUserId);
+                    if (resultData[index].last_sender_id != cookieUserId)
+                    {
+                        newMessageAudio.play();
+                    }
+                    //contactsPingData=JSON.parse(JSON.stringify(resultData));
+                    // newMessageAudio.play();
                     //alert('new Message');
                 }
             }
@@ -661,7 +682,7 @@ buttonSendMessage.addEventListener('click', function(){
             let dataMessage=JSON.stringify({
                 'time': time,
                 'message' : sendInput.innerText,
-                'sender' : cookieUserId,
+                // 'sender' : cookieUserId,
                 'recipient' : params.get('recipient_id'),
                 'barter_id' : params.get('barter_id'),
             }); 

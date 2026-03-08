@@ -902,8 +902,7 @@ function resetCountUnreadMessage(user_id, senderMessage, sender_id, recipient_id
       if (user_id != senderMessage)
       {
         let query=`UPDATE message
-              SET count_unread = 0,
-                  last_time = NOW()
+              SET count_unread = 0
               WHERE 
                 (user_sender_id=${sender_id} AND  
                 user_recipient_id=${recipient_id} AND 
@@ -912,6 +911,7 @@ function resetCountUnreadMessage(user_id, senderMessage, sender_id, recipient_id
                 (user_sender_id=${recipient_id} AND  
                 user_recipient_id=${sender_id} AND 
                 barter_id=${barter_id})`
+                //last_time = NOW()
         pool.query(query, function(err, resDB){
           if (!err)
           {
@@ -993,9 +993,7 @@ app.post('/pingMessage/', function(req, res){
   let time = data.time;
   let query = ` SELECT * 
                 FROM message
-                WHERE (user_sender_id = ${data.sender_id} OR user_recipient_id = ${data.sender_id}) AND
-                    
-                       count_unread > 0`
+                WHERE (user_sender_id = ${data.sender_id} OR user_recipient_id = ${data.sender_id})`
   pool.query(query, function(err, resDB){
     if (!err)
     {
@@ -1007,7 +1005,7 @@ app.post('/pingMessage/', function(req, res){
             sender_id: resDB.rows[i].user_sender_id,
             recipient_id: resDB.rows[i].user_recipient_id,
             barter_id: resDB.rows[i].barter_id,
-            countUnread: resDB.rows[i].count_unread,
+            //countUnread: resDB.rows[i].count_unread,
             last_sender_id: resDB.rows[i].last_sender_id,
             last_time: resDB.rows[i].last_time,
           }
