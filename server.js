@@ -69,7 +69,7 @@ pool.query("SELECT * FROM category", (err, resDB) =>{
     console.log(err);
   }
 });
-pool.query(`SELECT * FROM message;`, function(err, resDB){
+pool.query(`SELECT * FROM message WHERE cashed_ping = false;`, function(err, resDB){
   if(!err)
   { 
     for(let i=0;i<resDB.rows.length;i++)
@@ -574,6 +574,7 @@ function getListContactsForMessanger(user_id)
                         color2: color2,
                         countUnread: resDB.rows[i].count_unread,
                         lastSenderId: resDB.rows[i].last_sender_id,
+                        time: resDB.rows[i].last_time,
                       }
                         // let item=resDB.rows[i].give_name;
             result.push(item);
@@ -1065,6 +1066,29 @@ app.post('/pingMessage/', function(req, res){
       listUnreadMessage[i].lastSender != req.cookies.userID)
     {
       let item=JSON.parse(JSON.stringify(listUnreadMessage[i]))
+      let query=`UPDATE message
+            SET cashed_ping = true
+            WHERE 
+              (user_sender_id=${item.sender} AND  
+              user_recipient_id=${item.recipient} AND 
+              barter_id=${item.barterId})
+             OR
+               (user_sender_id=${item.recipient} AND  
+               user_recipient_id=${item.sender} AND 
+               barter_id=${item.barterId})`
+      console.log(query);
+      pool.query(query, function(err, resDB){
+        if (!err)
+        {
+          // item=JSON.stringify(item);
+          // listUnreadMessage.splice(i, 1);
+          // res.send(item);
+        }
+        else
+        {
+          console.log(err);
+        }
+      })
       item=JSON.stringify(item);
       listUnreadMessage.splice(i, 1);
       res.send(item);

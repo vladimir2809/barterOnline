@@ -199,6 +199,18 @@ function servisContactsData()
             {    
                 contactsData.push(response[i]);
             }
+            contactsData.sort(function(a, b){
+                console.log("a.time", a.time)
+                if (a.time > b.time)
+                {
+                    return -1;
+
+                }
+                else
+                {
+                    return 1;
+                }
+            })
             resolve(contactsData);
         });
     });
@@ -688,6 +700,7 @@ arrowBack.addEventListener('click', function(event){
             goPressButtonBack()
             textBlockCont.replaceChildren();
             document.getElementsByClassName('text-block__info')[0].style.display="none";
+            updateContactList();
             selectContactData=null;
         }
     }
