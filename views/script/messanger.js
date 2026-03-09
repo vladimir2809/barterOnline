@@ -15,6 +15,8 @@ var textBlock = document.getElementsByClassName('text-block')[0];
 var textBlockCont = document.getElementsByClassName('text-block__cont')[0];
 var arrowBack=document.getElementsByClassName('text-block__info-back')[0];
 var menuElem=document.getElementsByClassName('text-block__info-menu')[0];
+let noContactElem=document.getElementById('noContact');
+let noMessageElem=document.getElementById('noMessage');
 // alert('AIM MESSANGER JS');
 let inputBlock = document.getElementsByClassName('input-block')[0];
 inputBlock.style.display="none";
@@ -127,6 +129,7 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
         response=JSON.parse(request.response);
         console.log(response);
         // alert(cookieUserId);
+        noMessageElem.style.display='none'
         clearMessageDraw();
         for (let i=0;i < response.length; i++)
         {
@@ -157,6 +160,11 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
 }
 function servisContactsList(data)
 {
+    if (data.length == 0)
+    {
+        noContactElem.style.display='block';
+        return 0;
+    }
     for (let i=0;i < data.length;i++)
     {
         console.log(cookieUserId)
@@ -197,17 +205,22 @@ function servisContactsData()
 }
 function updateContactList()
 {
-    contactSelect.replaceChildren();
+    // contactSelect.replaceChildren();
     contactsData=[];
     const params = new URLSearchParams(window.location.search);
     if (params.get('messageNow')==="true")
     {
         flagContactAddresssBar=true;
+        contactSelect.replaceChildren();
         servisContactMessageNow(cookieUserId)
     }
     else
     {
-        servisContactsData().then(function(){;
+        servisContactsData().then(function(){
+            if (contactsData.length != 0)
+            {
+                contactSelect.replaceChildren();
+            }
             servisContactsList(contactsData);
         });
     }
@@ -541,6 +554,7 @@ setInterval(function(){
     {
         arrowBack.style.display='block';
         menuElem.style.display='block';
+        noMessageElem.style.display='none'
         if (flagNoContactView==true)
         {
             if (selectContactData!=null)
@@ -570,6 +584,10 @@ setInterval(function(){
     {
         arrowBack.style.display='none';
         menuElem.style.display='none';
+        if (selectContactData == null)
+        {
+            noMessageElem.style.display='block'
+        }
         {
             contactSelect.style.display='block';
             textBlock.style.display="block";

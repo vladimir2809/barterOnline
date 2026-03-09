@@ -488,6 +488,9 @@ html {
     border-right: none;
   }
 }
+.contact-select__noContact {
+  display: none;
+}
 
 .contact {
   display: none;
@@ -588,6 +591,9 @@ html {
 }
 .text-block__cont-hidden::-webkit-scrollbar {
   display: none;
+}
+.text-block__noMessage {
+  text-align: center;
 }
 .text-block__flex-cont {
   display: flex;
