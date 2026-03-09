@@ -19,6 +19,7 @@ var listUnreadMessage=[];
 var cityList=[];
 var dataUser=[];
 var cityStart="Москва";
+var quantityMessages = 10;
 var itemUnreadMessage={
   sender: null,
   recipient: null,
@@ -1020,8 +1021,16 @@ app.post('/getMessage/', function(req, res){
             if (resDB.rows.length != 0)
             {
 
-              let result = resDB.rows[0].messages_json;
-              senderMessage=result[result.length-1].senderUserId;
+              let messageArr = resDB.rows[0].messages_json;
+              
+              //messageArr=JSON.parse(messageArr);
+              let result=[];
+              for (let i=messageArr.length-quantityMessages;i < messageArr.length; i++)
+              {
+                result.push(messageArr[i]);
+              }
+              senderMessage=messageArr[messageArr.length-1].senderUserId;
+              console.log(result)
               result=JSON.stringify(result);
               if (data.notResetCountUnread==false)
               {
@@ -1056,6 +1065,42 @@ app.post('/getMessage/', function(req, res){
         }) 
       //});
 })
+app.post('/getMoreMessage/', function(req, res){
+    let data=JSON.parse(req.body.data);
+
+    let query = `SELECT messages_json 
+        FROM message
+        WHERE 
+          (user_sender_id=${data.sender_id} AND  
+          user_recipient_id=${data.recipient_id} AND 
+          barter_id=${data.barter_id})
+          OR
+            (user_sender_id=${data.recipient_id} AND  
+            user_recipient_id=${data.sender_id} AND 
+            barter_id=${data.barter_id})`
+
+    console.log(query)
+
+    pool.query(query, function(err, resDB){
+      if (!err)
+      {
+        let messageArr = resDB.rows[0].messages_json;
+              
+        //messageArr=JSON.parse(messageArr);
+        let result=[];
+        for (let i=0; i < messageArr.length-quantityMessages; i++)
+        {
+            result.push(messageArr[i]);
+        }
+        result=JSON.stringify(result);
+        res.send(result);
+      }
+      else
+      {
+        console.log(err);
+      }
+    });
+});
 app.post('/pingMessage/', function(req, res){
   let data = JSON.parse(req.body.data);
   for (let i=0; i < listUnreadMessage.length; i++)

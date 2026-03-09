@@ -710,6 +710,13 @@ html {
   font-weight: 900;
 }
 
+.loadMoreMessages {
+  display: none;
+  width: 80%;
+  padding: 0.5rem;
+  margin: 1rem auto;
+}
+
 .views-barter {
   grid-column: content-start/content-end;
   display: grid;

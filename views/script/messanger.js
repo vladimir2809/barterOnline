@@ -17,6 +17,7 @@ var arrowBack=document.getElementsByClassName('text-block__info-back')[0];
 var menuElem=document.getElementsByClassName('text-block__info-menu')[0];
 let noContactElem=document.getElementById('noContact');
 let noMessageElem=document.getElementById('noMessage');
+let moreMessagesButton=document.getElementById('loadMoreMessages');
 // alert('AIM MESSANGER JS');
 let inputBlock = document.getElementsByClassName('input-block')[0];
 inputBlock.style.display="none";
@@ -130,34 +131,113 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
         console.log(response);
         // alert(cookieUserId);
         noMessageElem.style.display='none'
+
         clearMessageDraw();
-        for (let i=0;i < response.length; i++)
-        {
-            let time = new Date(response[i].time)
-            let timeOld = null;
-            if (i > 0) timeOld=new Date(response[i-1].time)
-            console.log(response[i].senderUserId)
-            let side = (cookieUserId == Number(response[i].senderUserId)) ? 'aim' : 'noaim';
-            if (i>0)
-            //   console.log('TIME COMPARE: '+ timeOld.getDate() +' '+ time.getDate() + " "+
-            //         timeOld.getMonth() +' '+ time.getMonth() + ' '+
-            //         timeOld.getFullYear() +' '+ time.getFullYear())
 
-            if (i==0 || (timeOld != null && 
-                (
-                    timeOld.getDate() != time.getDate() ||
-                    timeOld.getMonth() != time.getMonth() ||
-                    timeOld.getFullYear() != time.getFullYear()
-                )
-            ))
-            {
-                insertDay(time);
-            } 
+        textBlockCont.append(moreMessagesButton);
+        moreMessagesButton.style.display='block';
 
-            insertMessage(response[i].message, side, time)
-        }
+        servisListMessage(response);
+        // for (let i=0;i < response.length; i++)
+        // {
+        //     let time = new Date(response[i].time)
+        //     let timeOld = null;
+        //     if (i > 0) timeOld=new Date(response[i-1].time)
+        //     console.log(response[i].senderUserId)
+        //     let side = (cookieUserId == Number(response[i].senderUserId)) ? 'aim' : 'noaim';
+        //     if (i>0)
+        //     //   console.log('TIME COMPARE: '+ timeOld.getDate() +' '+ time.getDate() + " "+
+        //     //         timeOld.getMonth() +' '+ time.getMonth() + ' '+
+        //     //         timeOld.getFullYear() +' '+ time.getFullYear())
+
+        //     if (i==0 || (timeOld != null && 
+        //         (
+        //             timeOld.getDate() != time.getDate() ||
+        //             timeOld.getMonth() != time.getMonth() ||
+        //             timeOld.getFullYear() != time.getFullYear()
+        //         )
+        //     ))
+        //     {
+        //         insertDay(time);
+        //     } 
+
+        //     insertMessage(response[i].message, side, time)
+        // }
     });
 }
+function servisListMessage(response, flagMore=false)
+{
+    let messageMoreNodeArr=[];
+    if (flagMore==true)
+    {
+        //moreMessagesButton.style.display='none';
+        
+    }
+    for (let i=0;i < response.length; i++)
+    {
+        let time = new Date(response[i].time)
+        let timeOld = null;
+        if (i > 0) timeOld=new Date(response[i-1].time)
+        console.log(response[i].senderUserId)
+        let side = (cookieUserId == Number(response[i].senderUserId)) ? 'aim' : 'noaim';
+        if (i>0)
+        //   console.log('TIME COMPARE: '+ timeOld.getDate() +' '+ time.getDate() + " "+
+        //         timeOld.getMonth() +' '+ time.getMonth() + ' '+
+        //         timeOld.getFullYear() +' '+ time.getFullYear())
+
+        if (i==0 || (timeOld != null && 
+            (
+                timeOld.getDate() != time.getDate() ||
+                timeOld.getMonth() != time.getMonth() ||
+                timeOld.getFullYear() != time.getFullYear()
+            )
+        ))
+        {
+            if (flagMore == false)
+            {
+                insertDay(time);
+            }
+            else
+            {
+                messageMoreNodeArr.push(insertDay(time, true))
+            }
+        } 
+        if (flagMore == false)
+        {
+            insertMessage(response[i].message, side, time);
+        }
+        else
+        {
+            messageMoreNodeArr.push(insertMessage(response[i].message, side, time, true));
+        }
+    }
+    if (flagMore == true)
+    {
+        return messageMoreNodeArr;
+    }
+
+}
+moreMessagesButton.addEventListener('click', function(){
+    let data={
+        recipient_id: selectContactData.recipient_id,
+        sender_id: selectContactData.sender_id,
+        barter_id: selectContactData.barter_id,
+       // notResetCountUnread: false,
+    }
+
+    data=JSON.stringify(data);
+    SendRequest('POST', '/getMoreMessage/',`data=${data}`,function(request){
+        let response=JSON.parse(request.response);
+        // let response = request.response;
+        console.log(response)
+        let arrMes=servisListMessage(response, true);
+        // textBlockCont.prepend(arrMes);
+        textBlockCont.prepend(...arrMes);
+        moreMessagesButton.scrollIntoView(true);
+        moreMessagesButton.style.display='none';
+        console.log(arrMes);
+    });
+});
 function servisContactsList(data)
 {
     if (data.length == 0)
@@ -763,7 +843,7 @@ buttonSendMessage.addEventListener('click', function(){
     
     sendInput.innerText='';
 });
-function insertMessage(message, sideSend, timeParam=null,)
+function insertMessage(message, sideSend, timeParam=null, flagMore=false)
 {
     let textBlockContHidden=document.getElementsByClassName('text-block__cont-hidden')[0];
     let textItemOrigin = document.getElementsByClassName('text-item')[0];
@@ -771,7 +851,7 @@ function insertMessage(message, sideSend, timeParam=null,)
     textItem.style.display='block';
     // let textBlockContTwo=document.getElementsByClassName('text-block__cont2')[0];
     let timeStart = new Date();
-    let time= timeParam==null ? new Date(timeStart) : new Date();
+    let time= timeParam==null ? new Date(timeStart) : new Date(timeParam);
     let hours=time.getHours() <= 9 ? '0'+time.getHours() : time.getHours();
     let minutes=time.getMinutes() <= 9 ? '0'+time.getMinutes() : time.getMinutes();
     let timeStr=hours+':'+minutes;
@@ -802,15 +882,22 @@ function insertMessage(message, sideSend, timeParam=null,)
     textItem.getElementsByClassName('text-item__message')[0].innerHTML=message;
     textItem.getElementsByClassName('text-item__data-time')[0].innerHTML=timeStr;
     // textBlockContTwo.before(textItem);
-    textBlockCont.append(textItem);
-    textBlockContHidden.scrollTop=1000000;
+    if (flagMore == false)
+    {   
+        textBlockCont.append(textItem);
+        textBlockContHidden.scrollTop=1000000;
+    }
+    else
+    {
+        return textItem;
+    }
     // if (clearSendInput==true) sendInput.innerText='';
 }
 function clearMessageDraw()
 {
     textBlockCont.innerHTML='';
 } 
-function insertDay(date)
+function insertDay(date, flagMore=false)
 {
     let dayElem = document.getElementsByClassName('day-item')[0].cloneNode(true);
     let monthNum=date.getMonth();
@@ -834,7 +921,14 @@ function insertDay(date)
     // console.log (dayStr);
     dayElem.style.display='flex';
     dayElem.getElementsByClassName('day-item__value')[0].innerText=dayStr;
-    textBlockCont.append(dayElem);
+    if (flagMore == false)
+    {
+        textBlockCont.append(dayElem);
+    }
+    else
+    {
+        return dayElem;
+    }
 }
 function noScroll()
 {   
