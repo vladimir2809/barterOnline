@@ -1,3 +1,5 @@
+// const { response } = require("express");
+
 var widthScreenValue=925//430;
 var widthOnlyContacts=925;
 var widthContacts=310;
@@ -38,6 +40,8 @@ let selectContactData=null;
 let contactsPingData=null;
 
 let listMessage=[];
+
+var quantityMessages=null;
 
 let flagStart=false;
 
@@ -127,17 +131,22 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
             clearMessageDraw();
             return 0;
         }
-        response=JSON.parse(request.response);
-        console.log(response);
+        let response=JSON.parse(request.response);
+        let messageList=response.messageList;
+        let maxQuantityMessages=response.maxQuantityMessages;
+        console.log(messageList);
         // alert(cookieUserId);
         noMessageElem.style.display='none'
 
         clearMessageDraw();
+        console.log('impjrtantDATA',maxQuantityMessages, quantityMessages)
+        if (maxQuantityMessages > quantityMessages)
+        {
+            textBlockCont.append(moreMessagesButton);
+            moreMessagesButton.style.display='block';
+        }
 
-        textBlockCont.append(moreMessagesButton);
-        moreMessagesButton.style.display='block';
-
-        servisListMessage(response);
+        servisListMessage(messageList);
         // for (let i=0;i < response.length; i++)
         // {
         //     let time = new Date(response[i].time)
@@ -165,7 +174,7 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
         // }
     });
 }
-function servisListMessage(response, flagMore=false)
+function servisListMessage(messageList, flagMore=false)
 {
     let messageMoreNodeArr=[];
     if (flagMore==true)
@@ -173,13 +182,13 @@ function servisListMessage(response, flagMore=false)
         //moreMessagesButton.style.display='none';
         
     }
-    for (let i=0;i < response.length; i++)
+    for (let i=0;i < messageList.length; i++)
     {
-        let time = new Date(response[i].time)
+        let time = new Date(messageList[i].time)
         let timeOld = null;
-        if (i > 0) timeOld=new Date(response[i-1].time)
-        console.log(response[i].senderUserId)
-        let side = (cookieUserId == Number(response[i].senderUserId)) ? 'aim' : 'noaim';
+        if (i > 0) timeOld=new Date(messageList[i-1].time)
+        console.log(messageList[i].senderUserId)
+        let side = (cookieUserId == Number(messageList[i].senderUserId)) ? 'aim' : 'noaim';
         if (i>0)
         //   console.log('TIME COMPARE: '+ timeOld.getDate() +' '+ time.getDate() + " "+
         //         timeOld.getMonth() +' '+ time.getMonth() + ' '+
@@ -204,11 +213,11 @@ function servisListMessage(response, flagMore=false)
         } 
         if (flagMore == false)
         {
-            insertMessage(response[i].message, side, time);
+            insertMessage(messageList[i].message, side, time);
         }
         else
         {
-            messageMoreNodeArr.push(insertMessage(response[i].message, side, time, true));
+            messageMoreNodeArr.push(insertMessage(messageList[i].message, side, time, true));
         }
     }
     if (flagMore == true)
@@ -317,8 +326,11 @@ function updateContactList()
         });
     }
 }
-getCookieUserId().then(function(result){
-    cookieUserId=result;
+getImportantData().then(function(result){
+    result=JSON.parse(result);
+    cookieUserId=Number(result.cookieUserId);
+    quantityMessages=Number(result.quantityMessages);
+    // alert(quantityMessages);
     updateContactList();
     // contactSelect.replaceChildren();
     // contactsData=[];

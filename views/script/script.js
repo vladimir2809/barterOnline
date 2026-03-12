@@ -44,10 +44,10 @@ setInterval(function(){
       // document.getElementsByClassName('developer__scale')[0].innerText=scale;;
     }
 },16);
-function getCookieUserId()
+function getImportantData()
 {
   return new Promise(function (resolve, reject){
-    SendRequest('POST','/getCookieUserId/', '', function(request){
+    SendRequest('POST','/getImportantData/', '', function(request){
       resolve(request.response);
     })
   })
@@ -55,9 +55,10 @@ function getCookieUserId()
 window.addEventListener('load',()=>{
     //alert('load end');
     // resizeText();
-    getCookieUserId().then(function(result){
-         cookieUserId=result;
-        })
+    getImportantData().then(function(result){
+        result=JSON.parse(result);
+        cookieUserId=Number(result.cookieUserId);
+    })
     console.log (generateRandomName(10));
     // resultNode=document.getElementsByClassName('result')[0];
     // resultItemNode=document.getElementsByClassName('result-item')[0];
@@ -112,8 +113,9 @@ window.addEventListener('load',()=>{
       // }
       if (event.code == 'F8')
       {
-        getCookieUserId().then(function(result){
-          alert(result);
+        getImportantData().then(function(result){
+          result=JSON.parse(result);
+          alert(result.cookieUserId);
         })
       }
     });

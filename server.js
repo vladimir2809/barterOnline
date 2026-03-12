@@ -19,7 +19,7 @@ var listUnreadMessage=[];
 var cityList=[];
 var dataUser=[];
 var cityStart="Москва";
-var quantityMessages = 10;
+var quantityMessages = 30;
 var itemUnreadMessage={
   sender: null,
   recipient: null,
@@ -155,10 +155,13 @@ app.post('/clearCookie/', function(req,res){
   res.clearCookie('city');
   res.send('cookie Clear')
 })
-app.post('/getCookieUserId/', function(req,res){
+app.post('/getImportantData/', function(req,res){
   console.log('query cookie userID')
-
-  res.send(req.cookies.userID!=undefined  ? req.cookies.userID : null);
+  let result={cookieUserId: req.cookies.userID!=undefined  ? req.cookies.userID : null,
+            quantityMessages: quantityMessages,
+  }
+  result=JSON.stringify(result)
+  res.send(result);
 } )
 app.post('/getColorAndDataUser/', function(req, res){
   initDataUser(req.cookies)
@@ -1025,13 +1028,16 @@ app.post('/getMessage/', function(req, res){
               
               //messageArr=JSON.parse(messageArr);
               let result=[];
-              for (let i=messageArr.length-quantityMessages;i < messageArr.length; i++)
+              let start = messageArr.length-quantityMessages > 0 ?
+                             messageArr.length-quantityMessages : 0;
+              for (let i=start;i < messageArr.length; i++)
               {
                 result.push(messageArr[i]);
               }
               senderMessage=messageArr[messageArr.length-1].senderUserId;
               console.log(result)
-              result=JSON.stringify(result);
+              let resultTotal=JSON.stringify({messageList: result,
+                                    maxQuantityMessages: messageArr.length});
               if (data.notResetCountUnread==false)
               {
 
@@ -1042,11 +1048,11 @@ app.post('/getMessage/', function(req, res){
                 .then(function(result2){
                   console.log ('PROMISE RESET COUNT UNREAD'+result2)
                 })
-                res.send(result);
+                res.send(resultTotal);
               }
               else
               {
-                res.send(result);
+                res.send(resultTotal);
                 
               }
 
@@ -1088,7 +1094,9 @@ app.post('/getMoreMessage/', function(req, res){
               
         //messageArr=JSON.parse(messageArr);
         let result=[];
-        for (let i=0; i < messageArr.length-quantityMessages; i++)
+        let end = messageArr.length-quantityMessages > 0 ?
+                        messageArr.length-quantityMessages : 0;
+        for (let i=0; i < end; i++)
         {
             result.push(messageArr[i]);
         }
