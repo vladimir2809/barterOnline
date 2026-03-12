@@ -19,6 +19,10 @@ var listUnreadMessage=[];
 var cityList=[];
 var dataUser=[];
 var cityStart="Москва";
+
+const timeZoneOffset = new Date().getTimezoneOffset();
+
+
 var quantityMessages = 30;
 var itemUnreadMessage={
   sender: null,
@@ -143,7 +147,7 @@ app.set('view engine', 'hbs');
 
 app.listen(80, function(){
   console.log('running');
-
+  console.log('timeZone offset UTC '+ timeZoneOffset +' minutes'); // Например, -180 (для UTC+3)
   // console.log(__dirname);
 });
 app.use(express.static(__dirname + '/views/'))
@@ -159,6 +163,7 @@ app.post('/getImportantData/', function(req,res){
   console.log('query cookie userID')
   let result={cookieUserId: req.cookies.userID!=undefined  ? req.cookies.userID : null,
             quantityMessages: quantityMessages,
+            timeZoneServer: timeZoneOffset
   }
   result=JSON.stringify(result)
   res.send(result);
@@ -939,36 +944,6 @@ app.post('/newMessage/', function (req, res){
       //})
     }
   })
-  // getRecipientForMessageDB(data.barter_id).then(
-  //   function(response){
-    //     console.log (response)
-    //     recipient=response;
-    //   },
-  //   function(error){ console.log (error)}
-  // )
-  // let query = `SELECT * FROM message 
-  //             WHERE 
-  //             (user_sender_id=${data.sender} AND  user_recipient_id=${recipient})
-  //             OR
-  //             (user_sender_id=${recipient} AND  user_recipient_id=${data.sender})`;
-  // console.log("newMessage query: ",query);
-  // pool.query(query, function(err, resDB){
-  //   if (!err)
-  //   {
-  //     // console.log (resDB)
-  //     if (resDB.rows.length==0)
-  //     {
-  //       console.log ("NO links sender recipient")
-
-  //     }
-  //     res.send('OK');
-  //   }
-  //   else
-  //   {
-  //     console.log (err)
-  //   }
-  // })
-  // res.send('OK');
 });
 function resetCountUnreadMessage(user_id, senderMessage, sender_id, recipient_id, barter_id){
     return new Promise(function(resolve, reject){
@@ -1151,40 +1126,7 @@ app.post('/pingMessage/', function(req, res){
   res.send(JSON.stringify(null))
 
 })
-// app.post('/pingMessage/', function(req, res){
-//   // console.log (req.body.data)
-//   let data = JSON.parse(req.body.data);
-//   let time = data.time;
-//   let query = ` SELECT * 
-//                 FROM message
-//                 WHERE (user_sender_id = ${data.sender_id} OR user_recipient_id = ${data.sender_id})`
-//   pool.query(query, function(err, resDB){
-//     if (!err)
-//     {
-//       let result=[];
-//       for (let i=0; i<resDB.rows.length; i++)
-//       {
-//           let resultItem = {
-//             id: resDB.rows[i].id,
-//             sender_id: resDB.rows[i].user_sender_id,
-//             recipient_id: resDB.rows[i].user_recipient_id,
-//             barter_id: resDB.rows[i].barter_id,
-//             //countUnread: resDB.rows[i].count_unread,
-//             last_sender_id: resDB.rows[i].last_sender_id,
-//             last_time: resDB.rows[i].last_time,
-//           }
-//           result.push(resultItem);
-//       }
-//       res.send(result);
-//     }
-//     else
-//     {
-//       console.log(err);
-//       res.send('');
-//     }
-//   })
-  
-// })
+
 app.post("/saveBarter/", /*upload.single("give_loadImg"),*/ function(req, res, next){
  
 
