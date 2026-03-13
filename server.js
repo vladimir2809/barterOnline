@@ -724,10 +724,24 @@ function searchInListUnreadMessage(sender, recipient, barterId)
   }
   return -1;
 }
+function noCorrectSenderOrRecipient(sender, recipient, req)
+{
+  if (sender != req.cookies.userID &&
+      recipient != req.cookies.userID)
+  {
+    return true;
+  }
+  return false;
+}
 app.post('/newMessage/', function (req, res){
   let data=JSON.parse(req.body.data);
-  // console.log("newMessage: ",data.message);
+  if (noCorrectSenderOrRecipient(data.sender, data.recipient, req) == true)
+  {
+    res.send(null);
+    return false;
+  }
   console.log("newMessage: ",data);
+  // console.log("newMessage: ",data.message);
   let recipient=null;
   // function getRecipientForMessageDB(barter_id) // Получить получятеля сообшения по бартер ид
   // {
@@ -977,6 +991,11 @@ function resetCountUnreadMessage(user_id, senderMessage, sender_id, recipient_id
 app.post('/getMessage/', function(req, res){
     let data=JSON.parse(req.body.data);
     console.log(data)
+    if (noCorrectSenderOrRecipient(data.sender_id, data.recipient_id, req) == true)
+    {
+      res.send(null);
+      return false;
+    }
     // getRecipientForMessageDB(data.barter_id) // находим получатя сообшения
     //   .then(function(recipient)
       //{
@@ -1048,6 +1067,11 @@ app.post('/getMessage/', function(req, res){
 })
 app.post('/getMoreMessage/', function(req, res){
     let data=JSON.parse(req.body.data);
+    if (noCorrectSenderOrRecipient(data.sender_id, data.recipient_id, req) == true)
+    {
+      res.send(null);
+      return false;
+    }
 
     let query = `SELECT messages_json 
         FROM message
@@ -1086,6 +1110,11 @@ app.post('/getMoreMessage/', function(req, res){
 });
 app.post('/pingMessage/', function(req, res){
   let data = JSON.parse(req.body.data);
+  if (noCorrectSenderOrRecipient(data.sender_id, data.recipient_id, req) == true)
+  {
+    res.send(null);
+    return false;
+  }
   for (let i=0; i < listUnreadMessage.length; i++)
   {
     if ((listUnreadMessage[i].sender == data.sender_id ||

@@ -306,7 +306,7 @@ getImportantData().then(function(result){
     cookieUserId=Number(result.cookieUserId);
     quantityMessages=Number(result.quantityMessages);
     const timeZoneClient = new Date().getTimezoneOffset();
-    alert("timeZone "+timeZoneClient+' minutes'); // Например, -180 (для UTC+3)
+    //alert("timeZone "+timeZoneClient+' minutes'); // Например, -180 (для UTC+3)
     // alert(quantityMessages);
     updateContactList();
 });
