@@ -595,6 +595,9 @@ html {
 .text-block__noMessage {
   text-align: center;
 }
+.text-block__noCorrespondence {
+  text-align: center;
+}
 .text-block__flex-cont {
   display: flex;
   flex-direction: column;

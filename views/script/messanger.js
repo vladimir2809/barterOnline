@@ -17,8 +17,12 @@ var textBlock = document.getElementsByClassName('text-block')[0];
 var textBlockCont = document.getElementsByClassName('text-block__cont')[0];
 var arrowBack=document.getElementsByClassName('text-block__info-back')[0];
 var menuElem=document.getElementsByClassName('text-block__info-menu')[0];
+
 let noContactElem=document.getElementById('noContact');
 let noMessageElem=document.getElementById('noMessage');
+let noCorrespondenceElem = document.getElementById("noCorrespondence");
+let flagNoCorrespondence=false;
+
 let moreMessagesButton=document.getElementById('loadMoreMessages');
 // alert('AIM MESSANGER JS');
 let inputBlock = document.getElementsByClassName('input-block')[0];
@@ -129,6 +133,7 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
             request.response == undefined    )
         {
             clearMessageDraw();
+            flagNoCorrespondence=true;
             return 0;
         }
         let response=JSON.parse(request.response);
@@ -136,7 +141,18 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
         let maxQuantityMessages=response.maxQuantityMessages;
         console.log(messageList);
         // alert(cookieUserId);
+
+        const params = new URLSearchParams(window.location.search);
+        if (messageList.length == 0)
+        {
+           flagNoCorrespondence=true;
+        }
+        else
+        {
+            flagNoCorrespondence=false;
+        }
         noMessageElem.style.display='none'
+
 
         clearMessageDraw();
         console.log('impjrtantDATA',maxQuantityMessages, quantityMessages)
@@ -288,6 +304,7 @@ function updateContactList()
     {
         flagContactAddresssBar=true;
         contactSelect.replaceChildren();
+        noMessageElem.style.display='none';
         servisContactMessageNow(cookieUserId)
     }
     else
@@ -421,6 +438,7 @@ function servisContactMessageNow(userSenderId)
                 servisContactsList(contactsData);
                 moveToCorrespondence(0);
                 contacts[0].style.backgroundColor='#AFA';
+
                 flagNoContactView=true;
                 
                 
@@ -509,27 +527,37 @@ setInterval(function(){
     {
         arrowBack.style.display='none';
         menuElem.style.display='none';
-        if (selectContactData == null)
+
+        if (selectContactData == null && flagContactAddresssBar == false)
         {
             noMessageElem.style.display='block'
         }
+        
+        contactSelect.style.display='block';
+        textBlock.style.display="block";
+        textBlock.style.gridColumn="2 / 3";
+
+        if(selectContactData != null )
         {
-            contactSelect.style.display='block';
-            textBlock.style.display="block";
-            textBlock.style.gridColumn="2 / 3";
-            if(selectContactData != null )
-            {
-                inputBlock.style.display="flex";
-                document.getElementById('buttonSendMessage').style.display='block';
-            }  
+            inputBlock.style.display="flex";
+            document.getElementById('buttonSendMessage').style.display='block';
+        }  
                     
-        }
+        
         if (widthScreenStart > widthOnlyContacts && flagStartWidthScreen==false)
         {
             flagNoContactView=true;
             flagStartWidthScreen=true;
         }   
         
+    }
+    if (flagNoCorrespondence == true)
+    {
+        noCorrespondenceElem.style.display='block'
+    }
+    else
+    {
+        noCorrespondenceElem.style.display='none'
     }
     // расчет ширины поля ввода сообщения
     let minus =  0; 
@@ -579,6 +607,7 @@ setInterval(function(){
         // console.log (addHeight)
 
     }
+    
 },16)
 function addEventClickContact()
 {
