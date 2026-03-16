@@ -45,4 +45,39 @@
         text-align: center
         margin-top: 1rem
         //color: red
-    
+.confirmationEmail
+    grid-column: content-start / content-end
+    grid-row: 2 / 3
+    display: grid
+    grid-template-columns: 100%
+    grid-template-rows: 50rem
+    justify-items: center
+    align-items: center
+    // width: 30rem
+    // border: 1px solid black
+    &__form
+        grid-column: 1 / 2
+        grid-row: 1 / 2
+        width: 30rem
+        height: 18rem
+        padding: 2rem
+        border: 1px solid gray
+        border-radius: 1rem
+        @include respond(phone-middle)
+            width: 26rem
+    &__name
+        position: relative
+        top: -2.5rem
+        width: 12rem
+        background-color: white
+    &__text
+        margin-bottom: 2rem
+        font-size: 1.6rem
+    &__label
+        font-size: 1.6rem
+    &__value
+    &__submit
+        margin-bottom: 1rem
+    &__cancel
+        text-decoration: none
+        font-size: 1.6rem

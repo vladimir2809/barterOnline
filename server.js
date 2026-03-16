@@ -292,7 +292,7 @@ app.post("/newUser/",(req, res)=>{
           if (resDB.rows[0].count != 0)
           {
             console.log('user repeat registration');
-            res.render('registration',{flagModal: true, data: req.body});
+            res.render('registration',{flagModal: true, enterData: true ,data: req.body});
             //return;
           }
           else
