@@ -10,6 +10,7 @@ var  SHA256  =  require ( "crypto-js/sha256" ) ;
 const cookieParser=require('cookie-parser');
 const expressSession=require('express-session');
 const multer  = require('multer')
+const nodemailer = require('nodemailer');
 const upload = multer({ dest: 'uploads/' })
 //console.log (SHA256(" Сообщение")) ;
 
@@ -23,6 +24,11 @@ var cityStart="Москва";
 
 const timeZoneOffset = new Date().getTimezoneOffset();
 
+var registrationDataList=[];
+var itemRegistrationData={
+  data:{},
+  checkNum: null
+}
 
 var quantityMessages = 30;
 var itemUnreadMessage={
@@ -40,6 +46,34 @@ const pool = new Pool({
   password: "qwerty",
   port: 5432,
 });
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com', // или smtp.yandex.ru
+  port: 465,
+  secure: true, // true для 465, false для других портов
+  auth: {
+    user: 'barteronlinedev@gmail.com',
+    pass: 'udjcqfyxizrvuntq' // Пароль приложения
+  }
+});
+function sendToEmailCode(email, code)
+{
+  // 2. Настройка письма
+  const mailOptions = {
+    from: 'barter-online',
+    to: email,
+    subject: 'Код для регистрации',
+    text: '',
+    html: `<b>Для завершения регистрации в Barter-Online используйте: ${code} </b>`
+  };
+
+  // 3. Отправка
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log('Ошибка:', error);
+    }
+    console.log('Письмо отправлено:', info.messageId);
+  });
+}
 pool.query('SELECT NOW()', (err, res) => {
   if(err) {
     console.error('Error connecting to the database', err.stack);
@@ -299,15 +333,35 @@ app.post("/newUser/",(req, res)=>{
           if (resDB.rows[0].count != 0)
           {
             console.log('user repeat registration');
-            res.send('emailSecond')
+
+
+           // res.send('emailSecond')
+
+
             //res.render('registration',{flagModal: true, enterCode: false, data: req.body});
             //return;
-          }
-          else
-          {
+
+
+          // }
+          // else
+          // {
     //         flagNewUser=true;
               ///res.send(null);
+
+              //sendToEmailCode(email, code)
+              code=getRandomInt(1000, 9999);
+              data.code=code;
+              // registrationDataList.push({data: data, code: code})
+              registrationDataList.push(data)
+
+              console.log(registrationDataList);
+              sendToEmailCode(registrationDataList[registrationDataList.length-1].registrationEmail, code)
               res.send('success')
+
+
+
+
+
               // res.render('registration',{flagModal: false, enterCode: true, data: req.body});
            //   addNewUser ()
           }
@@ -1852,6 +1906,11 @@ function getRandomColor() {
     const randomColor=`#${R}${G}${B}`
     console.log(randomColor);
     return randomColor;
+}
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 /*
 08.08.2025 останивился на том что подготавливал данные бартера для записи в БД
