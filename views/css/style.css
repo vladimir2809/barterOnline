@@ -1015,7 +1015,7 @@ html {
 .confirmationEmail {
   grid-column: content-start/content-end;
   grid-row: 2/3;
-  display: grid;
+  display: none;
   grid-template-columns: 100%;
   grid-template-rows: 50rem;
   justify-items: center;
@@ -1052,6 +1052,6 @@ html {
   margin-bottom: 1rem;
 }
 .confirmationEmail__cancel {
-  text-decoration: none;
   font-size: 1.6rem;
+  color: #551A8B;
 }/*# sourceMappingURL=style.css.map */

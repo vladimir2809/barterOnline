@@ -8,6 +8,7 @@ const {Pool} = require('pg');
 var  AES  =  require ( "crypto-js/aes" ) ; 
 var  SHA256  =  require ( "crypto-js/sha256" ) ;
 const cookieParser=require('cookie-parser');
+const expressSession=require('express-session');
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })
 //console.log (SHA256(" Сообщение")) ;
@@ -130,11 +131,14 @@ pool.query('SELECT * FROM city ORDER BY name',function(err, resDB){
   }
 });
 const secretCookie='qwerty';
-
+const secretSession='qwerty';
 app.use(fileUpload({}));
 
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(secretCookie));
+app.use(expressSession({
+	secret: secretSession,
+}));
 const handlebars = expressHandlebars.create({
   defaultLayout: 'main', 
   extname: 'hbs'
@@ -242,7 +246,8 @@ app.get("/signIn/",function(req,res){
 })
 app.get("/registration/",function(req,res){
 
-  res.render('registration');
+  // console.log(req.session.test);
+  res.render('registration', {flagModal: false, enterCode: false});
 })
 app.get("/exitUser/",function(req,res){
   dataUser[0]=undefined;
@@ -274,6 +279,7 @@ app.get("/test/",function(req,res){
 });
 app.post("/newUser/",(req, res)=>{
   console.log(req.body);
+  let data=JSON.parse(req.body.data);
   //if (SHA256(req.body.registrationPassword+'')===SHA256("1234567") )
 
   // if (isArraysEqual(SHA256(req.body.registrationPassword),SHA256("1234567")))
@@ -282,8 +288,9 @@ app.post("/newUser/",(req, res)=>{
 
   // }
   //let flagNewUser=false;
+  // req.session.test=req.body.registrationEmail;
   pool.query(`SELECT count(*) FROM tableuser 
-              WHERE email='${req.body.registrationEmail+''}'`,(err,resDB)=>{
+              WHERE email='${data.registrationEmail+''}'`,(err,resDB)=>{
       if (err==undefined)
       {
         
@@ -292,16 +299,21 @@ app.post("/newUser/",(req, res)=>{
           if (resDB.rows[0].count != 0)
           {
             console.log('user repeat registration');
-            res.render('registration',{flagModal: true, enterData: true ,data: req.body});
+            res.send('emailSecond')
+            //res.render('registration',{flagModal: true, enterCode: false, data: req.body});
             //return;
           }
           else
           {
     //         flagNewUser=true;
-              addNewUser ()
+              ///res.send(null);
+              res.send('success')
+              // res.render('registration',{flagModal: false, enterCode: true, data: req.body});
+           //   addNewUser ()
           }
       }
   });
+    //res.render('registration',{flagModal: false, enterCode: false, data: req.body});
   /*
     ЗАПРОС НА РЕГИСТРАЦИЮ НОВОГО ПОЛЬЗОВАТЕЛЯ
   */

@@ -17,6 +17,9 @@ var changePasswordDouble=false;
     passwordDouble.value='';
     submit=document.getElementById('registrationSubmit');
     form=document.getElementById('registrationForm');
+    registrationElem=document.getElementById('registration')
+    confirmationEmailElem=document.getElementById('confirmationEmail');
+    cancelElem=document.getElementById('confirmationEmailCancel');
     passwordDouble.addEventListener("change", ()=>{
         changePasswordDouble=true;
 
@@ -61,9 +64,39 @@ submit.onclick=(e)=>{
 }
 form.addEventListener("submit",(e)=>{
     //alert('cha otpraflu');
-    //e.preventDefault();
+    e.preventDefault();
     const formData = new FormData(form);
-    console.log(formData.get('registrationName'));
+    let data = Object.fromEntries(formData);
+    // console.log(data);
+    // console.log(formData.get('registrationName'));
+    // let data={
+    //     recipient_id: recipient_id,
+    //     sender_id: sender_id,
+    //     barter_id: barter_id,
+    //     notResetCountUnread: resetUnread,
+    // }
+    data=JSON.stringify(data);
+    SendRequest('POST', '/newUser/',`data=${data}`,function(request){ 
+        let response=request.response;
+        console.log(response);
+        if (response=="emailSecond")
+        {
+            alert('Пользователь с таким Email уже существует.');
+        }
+        if (response=="success")
+        {
+            registrationElem.style.display='none';
+            confirmationEmailElem.style.display='grid';
+        }
+        // alert("Данные формы успешно отпраленны")
+    })
+    // registrationElem.style.display='none';
+    // confirmationEmailElem.style.display='grid'
     //password.value='TESTING';
 });
-
+cancelElem.addEventListener("click", function(){
+    registrationElem.style.display='grid';
+    confirmationEmailElem.style.display='none';
+    //window.history.back();
+   // window.location.replace('https://google.com');
+})
