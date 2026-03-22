@@ -16,7 +16,10 @@ var changePasswordDouble=false;
     passwordDouble=document.getElementById('registrationPasswordDouble');
     passwordDouble.value='';
     submit=document.getElementById('registrationSubmit');
+
     form=document.getElementById('registrationForm');
+    formConfirmationEmail=document.getElementsByClassName("confirmationEmail__form")[0];
+
     registrationElem=document.getElementById('registration')
     confirmationEmailElem=document.getElementById('confirmationEmail');
     cancelElem=document.getElementById('confirmationEmailCancel');
@@ -94,6 +97,30 @@ form.addEventListener("submit",(e)=>{
     // confirmationEmailElem.style.display='grid'
     //password.value='TESTING';
 });
+formConfirmationEmail.addEventListener('submit', function(e){
+    e.preventDefault();
+    const formData = new FormData(formConfirmationEmail);
+    let data = Object.fromEntries(formData);
+    data=JSON.stringify(data);
+    // alert(data)
+    SendRequest('POST', '/confirmationEmail/',`data=${data}`,function(request){ 
+        let response=request.response;
+        console.log(response);
+        if (response=="registrationSuccess")
+        {
+            alert('Регистрация успешно пройдена');
+            window.location.href='/signIn/';
+        }
+        if (response=="error")
+        {
+            alert('Во время регистрации возникла ошибка');
+        }
+        if (response=="errorCode")
+        {
+            alert('Не верно введен код подтверждения');
+        }
+    });
+})
 cancelElem.addEventListener("click", function(){
     registrationElem.style.display='grid';
     confirmationEmailElem.style.display='none';

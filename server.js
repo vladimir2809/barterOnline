@@ -335,24 +335,49 @@ app.post("/newUser/",(req, res)=>{
             console.log('user repeat registration');
 
 
-           // res.send('emailSecond')
+            res.send('emailSecond')
 
 
             //res.render('registration',{flagModal: true, enterCode: false, data: req.body});
             //return;
 
 
-          // }
-          // else
-          // {
+          }
+          else
+          {
     //         flagNewUser=true;
               ///res.send(null);
 
               //sendToEmailCode(email, code)
-              code=getRandomInt(1000, 9999);
+              let flag=false;
+              do
+              {
+                flag = false;
+                code = getRandomInt(10000, 99999);
+
+                for (let i = 0; i < registrationDataList.length; i++)
+                {
+                  if (registrationDataList[i].code == code)
+                  {
+                    flag = true;
+                  }
+                }
+
+              }while(flag == true);
               data.code=code;
               // registrationDataList.push({data: data, code: code})
-              registrationDataList.push(data)
+              let flagData=false;
+              for (let i = 0;i < registrationDataList.length; i++)
+              {
+                if (registrationDataList[i].registrationEmail == data.registrationEmail)
+                {
+                  flagData = true;
+                }
+              }
+              if (flagData == false)
+              {
+                registrationDataList.push(data);
+              }
 
               console.log(registrationDataList);
               sendToEmailCode(registrationDataList[registrationDataList.length-1].registrationEmail, code)
@@ -367,22 +392,63 @@ app.post("/newUser/",(req, res)=>{
           }
       }
   });
+});
+  app.post('/confirmationEmail/', function(req, res){
+    console.log('query on confirmation Email accept ' +req.body.data /*valueCode*/)
+    let valueCode=JSON.parse(req.body.data).confirmationEmailValue;
+    let index=null;
+    for (let i = 0; i < registrationDataList.length; i++)
+    {
+      if (registrationDataList[i].code == valueCode)
+      {
+        index = i;
+        break;
+      }
+    }
+    if (index != null)
+    {
+      addNewUser(registrationDataList[index]).then(function(result) {
+        console.log("result = "+result)
+        if (result == 'success')
+        {
+          // res.render()
+          registrationDataList.splice(index, 1);
+          //res.render('signIn');
+          res.send('registrationSuccess');
+        }
+        else
+        {
+          res.send('error')
+          // res.send('При регистрации возникла ошибка. Перейдите назад, для повторной регистрации')
+
+        }
+
+      })
+    }
+    else
+    {
+      res.send('errorCode')
+    }
+       
+      // addNewUser (data)
+    //res.send('query on confirmation Email accept');
+  });
     //res.render('registration',{flagModal: false, enterCode: false, data: req.body});
   /*
     ЗАПРОС НА РЕГИСТРАЦИЮ НОВОГО ПОЛЬЗОВАТЕЛЯ
   */
   //if (flagNewUser==true)
-  function addNewUser ()
+  function addNewUser (data)
   {
-
-        let password=(SHA256(req.body.registrationPassword).words.join(','))
+    return new Promise(function(resolve, reject){
+        let password=(SHA256(data.registrationPassword).words.join(','))
         console.log(password)
         let color=getRandomColor();
         let query=`
             INSERT INTO tableuser(name, surname, email, password, role, color)
-            VALUES ('${req.body.registrationName+''}',
-                    '${req.body.registrationSurname+''}',
-                    '${req.body.registrationEmail+''}',
+            VALUES ('${data.registrationName+''}',
+                    '${data.registrationSurname+''}',
+                    '${data.registrationEmail+''}',
                     '${password}',
                     'user',
                     '${color}');
@@ -390,17 +456,20 @@ app.post("/newUser/",(req, res)=>{
         pool.query(query, (err, resDB) =>{
             if (err==undefined)
             {
-              console.log("newUser "+req.body.registrationName)
+              console.log("newUser "+data.registrationName)
+              resolve('success')
             }
             else
             {
               console.log("Error newUser",err);
+              resolve('error')
             }
         });
       
-    res.send('User New');
+    //res.send('User New');
+   });
   }
-})
+
 /*
   Код отвечаюший за вход пользователя
 */

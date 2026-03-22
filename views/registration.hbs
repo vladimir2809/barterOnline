@@ -7,17 +7,20 @@
 {{/if}}
 {{!-- {{#if enterCode}} --}}
     <div class="confirmationEmail" id="confirmationEmail">
-        <form action="" class="confirmationEmail__form">
+
+        <form action="/confirmationEmail/" method="POST" class="confirmationEmail__form">
             <h3 class="confirmationEmail__name">Подтверждение Email</h3>
             <p class="confirmationEmail__text">Для завершения регистрации введите номер, 
                     из письма, которое мы отправили на ваш email.</p>
             <label for="confirmationEmailValue" class="confirmationEmail__label">Введите номер</label>
             <br>
-            <input type="text" class="confirmationEmail__value" id="confirmationEmailValue">
+            <input type="text" class="confirmationEmail__value" id="confirmationEmailValue" 
+                    name="confirmationEmailValue">
             <input type="submit" class="confirmationEmail__submit">
             <br>
             <p class="confirmationEmail__cancel" id="confirmationEmailCancel">отмена</p>
         </form>
+
     </div>
     <script src="/script/registration.js" type="text/javascript"></script>
 {{!-- {{else}} --}}
