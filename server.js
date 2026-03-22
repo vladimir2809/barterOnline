@@ -471,6 +471,14 @@ app.post("/newUser/",(req, res)=>{
   }
 
 /*
+  Код отвечаюший за обновление пароля
+*/
+
+app.get('/recoverPassword/', function(req, res){
+  res.render('recoverPassword');
+})
+
+/*
   Код отвечаюший за вход пользователя
 */
 app.post('/userIn/', function(req, res){
