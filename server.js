@@ -64,7 +64,7 @@ function sendToEmailCodeRegistration(email, code)
     to: email,
     subject: 'Код для регистрации',
     text: '',
-    html: `<b>Для завершения регистрации в Barter-Online используйте: ${code} </b>`
+    html: `<p>Для завершения регистрации в Barter-Online используйте: <b>${code}</b> </p>`
   };
 
   // 3. Отправка
@@ -83,7 +83,7 @@ function sendToEmailCodeRecoverPassword(email, code)
     to: email,
     subject: 'Код для восстановления пароля',
     text: '',
-    html: `<b>Для восстановления пароля в Barter-Online используйте: ${code} </b>`
+    html: `<p>Для восстановления пароля в Barter-Online используйте: <b>${code}</b> </p>`
   };
 
   // 3. Отправка
@@ -331,6 +331,7 @@ app.get("/test/",function(req,res){
     }
   })
 });
+
 app.post("/newUser/",(req, res)=>{
   console.log(req.body);
   let data=JSON.parse(req.body.data);
@@ -516,9 +517,23 @@ app.post('/emailForRecoverPassword/', function(req, res){
       console.log(resDB.rows[0].count);
       if (resDB.rows[0].count == 1)
       {
-        let code = getRandomInt(10000, 99999);
+        let code = null;
+        let flag=false;
+        do
+        {
+          flag = false;
+          code = getRandomInt(10000, 99999);
+          for (let i = 0; i < recoverPasswordDataList.length; i++)
+          {
+            if (recoverPasswordDataList[i].code == code)
+            {
+              flag = true;
+            }
+          }
+
+        }while(flag == true);
         let time = new Date();
-        recoverPasswordDataList.push({email: email, code: code, time: time});
+        recoverPasswordDataList.push({email: email, code: code, confirm: false, time: time});
         console.log("recoverPasswordDataList",recoverPasswordDataList);
         sendToEmailCodeRecoverPassword(email, code);
         res.send('success');
@@ -534,7 +549,46 @@ app.post('/emailForRecoverPassword/', function(req, res){
     }
   })
 })
+app.post('/codeForRecoverPassword/', function(req, res){
+  console.log(req.body.data)
+  let codeConfirm = JSON.parse(req.body.data).codeForRecover;
+  for (let i=0; i < recoverPasswordDataList.length; i++)
+  {
+    if (recoverPasswordDataList[i].confirm == false &&
+        recoverPasswordDataList[i].code == codeConfirm)
+    {
+      recoverPasswordDataList[i].confirm = true;
+      console.log("recoverPasswordDataList",recoverPasswordDataList);
+      res.send("success");
+      return 0;  
+    }
 
+  }
+  res.send('error')
+})
+app.post('/newPassword/', function(req, res){
+  console.log(req.body.data)
+  let password = JSON.parse(req.body.data).passwordRecover;
+  let passwordTwo = JSON.parse(req.body.data).passwordDoubleRecover;
+  let data = JSON.parse(req.body.data);
+  if (password != passwordTwo)
+  {
+    res.send('ErrorDoublePassword');
+  }
+  else
+  {
+    for (let i=0; i<recoverPasswordDataList.length; i++)
+    {
+      let itemData=recoverPasswordDataList[i];
+      if (itemData.confirm == true && itemData.email == data.email &&
+                                      itemData.code == data.code)
+      {
+        res.send('success');
+      }
+    }
+  
+  }
+});
 setInterval(function(){
   let index = null;
   for (let i = 0; i < recoverPasswordDataList.length; i++)
@@ -542,11 +596,14 @@ setInterval(function(){
     let timeNow = new Date().getTime();
     let timeOld = recoverPasswordDataList[i].time.getTime();
     ///console.log (recoverPasswordDataList[i].time,timeNow);
-    if (timeOld + 1000 * 60 * 3 < timeNow)
+    // if (recoverPasswordDataList[i].confirm == false)
     {
-      index = i;
-      //console.log (timeNow);
-      break;
+      if (timeOld + 1000 * 60 * 3 < timeNow)
+      {
+        index = i;
+        //console.log (timeNow);
+        break;
+      }
     }
   }
   if (index != null)
