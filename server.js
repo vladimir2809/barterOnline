@@ -25,6 +25,7 @@ var cityStart="Москва";
 const timeZoneOffset = new Date().getTimezoneOffset();
 
 var registrationDataList=[];
+var recoverPasswordDataList=[];
 var itemRegistrationData={
   data:{},
   checkNum: null
@@ -55,7 +56,7 @@ const transporter = nodemailer.createTransport({
     pass: 'udjcqfyxizrvuntq' // Пароль приложения
   }
 });
-function sendToEmailCode(email, code)
+function sendToEmailCodeRegistration(email, code)
 {
   // 2. Настройка письма
   const mailOptions = {
@@ -64,6 +65,25 @@ function sendToEmailCode(email, code)
     subject: 'Код для регистрации',
     text: '',
     html: `<b>Для завершения регистрации в Barter-Online используйте: ${code} </b>`
+  };
+
+  // 3. Отправка
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log('Ошибка:', error);
+    }
+    console.log('Письмо отправлено:', info.messageId);
+  });
+}
+function sendToEmailCodeRecoverPassword(email, code)
+{
+  // 2. Настройка письма
+  const mailOptions = {
+    from: 'barter-online',
+    to: email,
+    subject: 'Код для восстановления пароля',
+    text: '',
+    html: `<b>Для восстановления пароля в Barter-Online используйте: ${code} </b>`
   };
 
   // 3. Отправка
@@ -348,7 +368,7 @@ app.post("/newUser/",(req, res)=>{
     //         flagNewUser=true;
               ///res.send(null);
 
-              //sendToEmailCode(email, code)
+              //sendToEmailCodeRegistration(email, code)
               let flag=false;
               do
               {
@@ -380,7 +400,7 @@ app.post("/newUser/",(req, res)=>{
               }
 
               console.log(registrationDataList);
-              sendToEmailCode(registrationDataList[registrationDataList.length-1].registrationEmail, code)
+              sendToEmailCodeRegistration(registrationDataList[registrationDataList.length-1].registrationEmail, code)
               res.send('success')
 
 
@@ -477,6 +497,65 @@ app.post("/newUser/",(req, res)=>{
 app.get('/recoverPassword/', function(req, res){
   res.render('recoverPassword');
 })
+app.post('/emailForRecoverPassword/', function(req, res){
+  console.log(req.body.data)
+  let email = JSON.parse(req.body.data).emailForRecover;
+  for (let i=0;i < recoverPasswordDataList.length; i++)
+  {
+    if (recoverPasswordDataList[i].email == email)
+    {
+      res.send('timeoutEmail');
+      return 0;
+      //break;
+    }
+  }
+  let query = `SELECT count(*) FROM tableuser WHERE email = '${email}';`;
+  pool.query(query, function(err, resDB){
+    if (!err)
+    {
+      console.log(resDB.rows[0].count);
+      if (resDB.rows[0].count == 1)
+      {
+        let code = getRandomInt(10000, 99999);
+        let time = new Date();
+        recoverPasswordDataList.push({email: email, code: code, time: time});
+        console.log("recoverPasswordDataList",recoverPasswordDataList);
+        sendToEmailCodeRecoverPassword(email, code);
+        res.send('success');
+      }
+      else
+      {
+        res.send("notEmailInDB");
+      }
+    }
+    else
+    {
+      console.log(err);
+    }
+  })
+})
+
+setInterval(function(){
+  let index = null;
+  for (let i = 0; i < recoverPasswordDataList.length; i++)
+  {
+    let timeNow = new Date().getTime();
+    let timeOld = recoverPasswordDataList[i].time.getTime();
+    ///console.log (recoverPasswordDataList[i].time,timeNow);
+    if (timeOld + 1000 * 60 * 3 < timeNow)
+    {
+      index = i;
+      //console.log (timeNow);
+      break;
+    }
+  }
+  if (index != null)
+  {
+    recoverPasswordDataList.splice(index, 1);
+    console.log ('DELETE recoverPasswordDataItem')
+    console.log("recoverPasswordDataList",recoverPasswordDataList);
+  }
+}, 100)
 
 /*
   Код отвечаюший за вход пользователя

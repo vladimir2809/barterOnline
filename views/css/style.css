@@ -1068,7 +1068,7 @@ html {
 }
 
 .enterEmail {
-  display: none;
+  display: block;
   width: 28.5rem;
   height: 5rem;
   justify-self: center;
@@ -1105,7 +1105,7 @@ html {
 }
 
 .newPassword {
-  display: block;
+  display: none;
   width: 28.5rem;
   height: 13rem;
   justify-self: center;
