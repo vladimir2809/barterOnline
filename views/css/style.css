@@ -1068,7 +1068,8 @@ html {
 }
 
 .enterEmail {
-  width: 30rem;
+  display: none;
+  width: 28.5rem;
   height: 5rem;
   justify-self: center;
   align-self: center;
@@ -1078,7 +1079,46 @@ html {
 }
 .enterEmail__label {
   font-size: 1.6rem;
+  font-weight: 900;
 }
 .enterEmail__email {
   width: 20rem;
+}
+
+.enterCode {
+  display: none;
+  width: 28.5rem;
+  height: 10rem;
+  justify-self: center;
+  align-self: center;
+  padding: 1rem;
+  border: 1px solid black;
+  border-radius: 1rem;
+}
+.enterCode__text {
+  margin-bottom: 0.8rem;
+  font-size: 1.6rem;
+}
+.enterCode__label {
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+.newPassword {
+  display: block;
+  width: 28.5rem;
+  height: 13rem;
+  justify-self: center;
+  align-self: center;
+  padding: 1rem;
+  border: 1px solid black;
+  border-radius: 1rem;
+}
+.newPassword input[type=password] {
+  width: 24rem;
+  margin-bottom: 0.8rem;
+}
+.newPassword label {
+  font-size: 1.6rem;
+  font-weight: 900;
 }/*# sourceMappingURL=style.css.map */
