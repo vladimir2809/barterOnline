@@ -1,6 +1,8 @@
 var enterEmailForm=document.getElementsByClassName('enterEmail')[0];
 var enterCodeForm=document.getElementsByClassName('enterCode')[0];
 var newPasswordForm=document.getElementsByClassName('newPassword')[0];
+var timeElemArr=document.querySelectorAll('.timeCodeValid>span');
+var time=new Date();
 var dataKey={
     email: null,
     code: null,
@@ -19,6 +21,7 @@ enterEmailForm.addEventListener('submit', function(e){
             if (response == 'success')
             {
                 dataKey.email = JSON.parse(data).emailForRecover;
+                time=new Date();
                 enterEmailForm.style.display = 'none';
                 enterCodeForm.style.display = 'block';
             }
@@ -47,12 +50,13 @@ enterCodeForm.addEventListener('submit', function(e){
             {
                 //alert('Правильный код')
                 dataKey.code = JSON.parse(data).codeForRecover;
+                time=new Date();
                 enterCodeForm.style.display = 'none';
                 newPasswordForm.style.display = 'block';
             }
             if (response == 'error')
             {
-                alert('Неверный код')
+                alert('Неверный код. Или истекло время действия кода. Если истекло время, обновите страницу.')
             }
         });
     }
@@ -82,6 +86,11 @@ newPasswordForm.addEventListener('submit', function(e){
             {
                 alert('Длина пароля должна быть 7 или более, символов.');
             }
+            if (response=="error")
+            {
+                alert('Ошибка. Возможно истекло время смены пароля. Попробуйте заново.');
+                window.location.href='/recoverPassword/';
+            }
             
         });
     }
@@ -90,3 +99,16 @@ newPasswordForm.addEventListener('submit', function(e){
         alert('Длина пароля должна быть 7 или более, символов.');   
     }
 });
+setInterval(function(){
+ 
+    timeElemArr[0].innerText = getDeltaTime();
+    timeElemArr[1].innerText = getDeltaTime();
+},100)
+function getDeltaTime()
+{
+    var timeNow=new Date().getTime();
+    var timeDelta=time.getTime()+1000 * 60/*60*/ * 3 - timeNow;
+    timeDelta = timeDelta > 0 ? timeDelta : 0;
+    let zeroSeconds = new Date(timeDelta).getSeconds() >= 10 ? "" : '0';
+    return new Date(timeDelta).getMinutes()+':'+zeroSeconds+new Date(timeDelta).getSeconds();  
+}

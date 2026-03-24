@@ -1088,7 +1088,7 @@ html {
 .enterCode {
   display: none;
   width: 28.5rem;
-  height: 10rem;
+  height: 12rem;
   justify-self: center;
   align-self: center;
   padding: 1rem;
@@ -1103,11 +1103,18 @@ html {
   font-size: 1.6rem;
   font-weight: 900;
 }
+.enterCode input[type=text] {
+  margin-bottom: 0.8rem;
+}
+
+.timeCodeValid {
+  font-size: 1.4rem;
+}
 
 .newPassword {
   display: none;
   width: 28.5rem;
-  height: 13rem;
+  height: 16rem;
   justify-self: center;
   align-self: center;
   padding: 1rem;
@@ -1117,6 +1124,9 @@ html {
 .newPassword input[type=password] {
   width: 24rem;
   margin-bottom: 0.8rem;
+}
+.newPassword input[type=submit] {
+  margin-bottom: 1.4rem;
 }
 .newPassword label {
   font-size: 1.6rem;

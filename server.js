@@ -558,6 +558,7 @@ app.post('/codeForRecoverPassword/', function(req, res){
         recoverPasswordDataList[i].code == codeConfirm)
     {
       recoverPasswordDataList[i].confirm = true;
+      recoverPasswordDataList[i].time = new Date();
       console.log("recoverPasswordDataList",recoverPasswordDataList);
       res.send("success");
       return 0;  
@@ -581,12 +582,14 @@ app.post('/newPassword/', function(req, res){
   }
   else
   {
+    let flag=false;
     for (let i=0; i<recoverPasswordDataList.length; i++)
     {
       let itemData=recoverPasswordDataList[i];
       if (itemData.confirm == true && itemData.email == data.email &&
                                       itemData.code == data.code)
       {
+        flag=true;
         changePassword(data.email, password).then(function(result){
           if (result=='success') 
           {
@@ -608,6 +611,10 @@ app.post('/newPassword/', function(req, res){
           }
         })
       }
+    }
+    if (flag == false)
+    {
+      res.send('error');
     }
   
   }
