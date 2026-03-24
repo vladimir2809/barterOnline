@@ -55,6 +55,10 @@ function getImportantData()
 window.addEventListener('load',()=>{
     //alert('load end');
     // resizeText();
+    if (document.getElementsByClassName('messanger')[0] != undefined)
+    {
+      document.getElementsByClassName('footer')[0].style.display = 'none';
+    }
     getImportantData().then(function(result){
         result=JSON.parse(result);
         cookieUserId=Number(result.cookieUserId);

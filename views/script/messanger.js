@@ -52,6 +52,7 @@ let flagStart=false;
 let flagContactAddresssBar=false;
 // let textBlockContTop=textBlockCont.top;
 let newMessageAudio = new Audio('../sound/newMessage.mp3');
+// document.getElementsByClassName('footer')[0].style.display = 'none';
 function addEventSelectContact()
 {
     for (let i=0; i < contacts.length;i++)

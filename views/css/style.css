@@ -203,6 +203,19 @@ html {
   cursor: pointer;
 }
 
+.footer {
+  grid-column: 2/3;
+  grid-row: 6/7;
+  display: grid;
+  grid-template-column: repeat(3, 33%);
+  grid-template-rows: repeat(3, 3rem);
+  margin-top: 4rem;
+  background-color: #00BFFF;
+}
+.footer h1 {
+  width: 100%;
+}
+
 .search {
   grid-column: content-start/content-end;
   grid-row: 2/3;
@@ -331,7 +344,7 @@ html {
 
 .myBarter-title {
   grid-column: content-start/content-end;
-  grid-row: 4/5;
+  grid-row: 2/3;
   padding: 2rem;
   font-size: 3rem;
 }
@@ -446,6 +459,7 @@ html {
 
 .myBarter {
   grid-column: content-start/content-end;
+  grid-row: 2/3;
   display: grid;
   justify-content: center;
   padding: 2rem;
