@@ -72,11 +72,21 @@ newPasswordForm.addEventListener('submit', function(e){
             if (response == 'success')
             {
                 alert('Запрос на изменения пароля принят!');
+                window.location.href='/signIn/'
             }
             if (response == 'ErrorDoublePassword')
             {
                 alert('Введеные пароли не совпадают');
             }
+            if (response == 'ErrorLengthPassword')
+            {
+                alert('Длина пароля должна быть 7 или более, символов.');
+            }
+            
         });
+    }
+    else
+    {
+        alert('Длина пароля должна быть 7 или более, символов.');   
     }
 });

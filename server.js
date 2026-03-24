@@ -575,6 +575,10 @@ app.post('/newPassword/', function(req, res){
   {
     res.send('ErrorDoublePassword');
   }
+  else if (password.length < 7 || passwordTwo.length < 7 )
+  {
+    res.send('ErrorLengthPassword');
+  }
   else
   {
     for (let i=0; i<recoverPasswordDataList.length; i++)
@@ -583,12 +587,53 @@ app.post('/newPassword/', function(req, res){
       if (itemData.confirm == true && itemData.email == data.email &&
                                       itemData.code == data.code)
       {
-        res.send('success');
+        changePassword(data.email, password).then(function(result){
+          if (result=='success') 
+          {
+            res.send('success');
+            let index=null;
+            for (let i=0; i<recoverPasswordDataList.length; i++)
+            {
+              if (recoverPasswordDataList[i].email == data.email)
+              {
+                index = i;
+              }
+            }
+            if (index != null)
+            {
+              recoverPasswordDataList.splice(index, 1);
+              console.log ('DELETE recoverPasswordDataItem')
+              console.log("recoverPasswordDataList",recoverPasswordDataList);
+            }
+          }
+        })
       }
     }
   
   }
 });
+function changePassword(email, passwordOrigin)
+{
+  return new Promise(function(resolve, reject){
+      let password=(SHA256(passwordOrigin).words.join(','))
+      let query=`UPDATE tableuser
+                SET  password = '${password}'
+                WHERE email = '${email}' 
+                `
+      pool.query(query,function(err, resDB){
+        if (!err)
+        {
+            resolve('success');
+        }
+        else
+        {
+          console.log(err);
+          resolve('error')
+        }
+      })
+  })
+        
+}
 setInterval(function(){
   let index = null;
   for (let i = 0; i < recoverPasswordDataList.length; i++)
