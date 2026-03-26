@@ -1,3 +1,29 @@
 <div class="footer">
-    <h1 class="">ЭТО футер</h1>
+    {{!-- <h1 class="">ЭТО футер</h1> --}}
+    <ul class="footer__list">
+        <li class="footer__item" id="footerInstruction">Инструкция</li>
+        <li class="footer__item" id="footerRules">Правила</li>
+        <li class="footer__item" id="footerFeedback">Отзывы и предложения</li>
+        <li class="footer__item" id="footerTanck">Поблагодорить</li>
+    </ul>
 </div>
+
+
+<div class="feedback" id="feedback">
+    <h2 class="feedback__title">Оставить отзыв</h2>
+    <form action="/feedback/" method="POST" class="feedback__form" id="feedbackForm">
+        <label for="feedBackName" class="feedback__label-name">Ваше имя</label>
+        <br>
+        <input type="text" class="feedback__name" id="feedbackName" name="feedbackName">
+        <br>
+        <label for="feedackText" class="feedback__lebel-text">Ваш отзыв</label>
+        <br>
+        <textarea class='feedback__text' name="feedbackText" id="feedbackText"></textarea>
+        <br>
+        <div class="feedback__cont-btn">
+            <button class="feedback__button-cancel" id="feedbackCancel">Отмена</button>
+            <input type="submit" class="feedback__submit">
+        </div>
+    </form>
+</div>
+<script src="/script/footer.js" type="text/javascript"></script>

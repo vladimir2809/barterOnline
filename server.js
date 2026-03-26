@@ -332,6 +332,45 @@ app.get("/test/",function(req,res){
   })
 });
 
+/*
+
+Код отвечаюший за оставление отзыва
+
+*/
+
+function sendToEmailFeedback(name, text)
+{
+  // 2. Настройка письма
+  const mailOptions = {
+    from: 'barter-online',
+    to: "barteronlinedev@gmail.com",
+    subject: `отзыв от ${name}`,
+    text: '',
+    html: `<p>${text}</p>`
+  };
+
+  // 3. Отправка
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log('Ошибка:', error);
+    }
+    console.log('Письмо отправлено:', info.messageId);
+  });
+}
+
+app.post('/feedback/', function(req, res){
+  console.log('feedback', req.body.data);
+  let data = JSON.parse(req.body.data);
+  sendToEmailFeedback(data.feedbackName, data.feedbackText)
+  res.send('success');
+})
+
+
+/*
+
+Код отвечаюший за регистрацию пользователя
+
+*/
 app.post("/newUser/",(req, res)=>{
   console.log(req.body);
   let data=JSON.parse(req.body.data);

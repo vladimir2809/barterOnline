@@ -12,7 +12,7 @@ html {
 .container {
   display: grid;
   width: 100%;
-  grid-template-columns: [full-start] 1fr [content-start] minmax(32.5rem, 134rem) [content-end] 1fr [full-end];
+  grid-template-columns: [full-start] 1fr [content-start] minmax(32rem, 134rem) [content-end] 1fr [full-end];
   grid-template-rows: max-content max-content;
 }
 
@@ -207,13 +207,57 @@ html {
   grid-column: 2/3;
   grid-row: 6/7;
   display: grid;
-  grid-template-column: repeat(3, 33%);
-  grid-template-rows: repeat(3, 3rem);
+  width: 100%;
+  height: 10rem;
   margin-top: 4rem;
   background-color: #00BFFF;
 }
-.footer h1 {
-  width: 100%;
+.footer__list {
+  text-align: center;
+  align-self: center;
+}
+.footer__item {
+  display: inline-block;
+  padding-right: 1.5rem;
+  padding-bottom: 0.8rem;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: white;
+}
+
+.feedback {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1.5rem;
+  border: 1px solid gray;
+  background-color: white;
+}
+.feedback__title {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.feedback label {
+  font-size: 1.8rem;
+}
+.feedback__name {
+  margin-bottom: 0.5rem;
+  border: 2px solid black;
+}
+.feedback__text {
+  margin-bottom: 0.5rem;
+  width: 30rem;
+  height: 20rem;
+  border: 2px solid black;
+}
+.feedback__cont-btn {
+  display: flex;
+  justify-content: space-between;
+}
+.feedback__submit {
+  text-align: end;
 }
 
 .search {
@@ -284,6 +328,11 @@ html {
   margin-bottom: 1rem;
   font-size: 2rem;
   padding-left: 1rem;
+}
+@media only screen and (max-width: 375px) {
+  .search-block__query {
+    width: 95%;
+  }
 }
 .search-block__label-query {
   width: 20rem;
