@@ -1,8 +1,15 @@
-feedbackForm = document.getElementById('feedbackForm');
 instructionElem = document.getElementById('footerInstruction');
+rulesElem=document.getElementById('footerRules');
+feedbackForm = document.getElementById('feedbackForm');
 
 instructionElem.addEventListener('click', function(event){
     window.location.href='/instruction/';
+})
+rulesElem.addEventListener('click', function(event){
+    window.location.href='/rules/';
+})
+document.getElementById("footerThank").addEventListener('click', function(){
+    document.getElementsByClassName('thank')[0].style.display="block";
 })
 
 document.getElementById('footerFeedback').addEventListener('click', function(){

@@ -337,8 +337,23 @@ app.get("/test/",function(req,res){
  FOOTER
 
 */
+app.get('/rules/', function(req, res){
+  initDataUser(req.cookies)
+  let data=null///*req.cookies[0]*/dataUser[0][0];
+  if (dataUser[0]!=undefined)
+  {
+    data=dataUser[0][0];
+  }
+  res.render('rules', {dataUser: data,});
+})
 app.get('/instruction/', function(req, res){
-  res.render('instruction/instructionBarterOnline');
+  initDataUser(req.cookies)
+  let data=null///*req.cookies[0]*/dataUser[0][0];
+  if (dataUser[0]!=undefined)
+  {
+    data=dataUser[0][0];
+  }
+  res.render('instruction/instructionBarterOnline',{dataUser: data,});
 })
 /*
 

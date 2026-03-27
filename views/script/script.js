@@ -162,9 +162,9 @@ window.addEventListener('load',()=>{
       thankElem.style.display="block";
       mainMenu.style.display='none'
     })
-    document.getElementById("footerThank").addEventListener('click', function(){
-      thankElem.style.display="block";
-    })
+    // document.getElementById("footerThank").addEventListener('click', function(){
+    //   thankElem.style.display="block";
+    // })
     document.getElementsByClassName("thank__close-img")[0].addEventListener("click", function(){
       thankElem.style.display="none";
     })
