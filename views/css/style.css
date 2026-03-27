@@ -204,10 +204,12 @@ html {
 }
 
 .thank {
+  display: none;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 100;
 }
 .thank__img {
   border: 1px solid black;
@@ -217,7 +219,7 @@ html {
   left: 77.8rem;
   top: -32.5rem;
   border: 1px solid black;
-  z-index: 10;
+  z-index: 100;
   cursor: pointer;
 }
 

@@ -108,9 +108,12 @@ window.addEventListener('load',()=>{
     cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
     createEventCityList();
 
-    document.getElementsByClassName("thank__close-img")[0].addEventListener("click", function(){
-      thankElem.style.display="none";
-    })
+    // document.getElementById('myBarter_mainThank').addEventListener('click', function(){
+    //   thankElem.style.display="block";
+    // })
+    // document.getElementsByClassName("thank__close-img")[0].addEventListener("click", function(){
+    //   thankElem.style.display="none";
+    // })
 
     //cityBlock.style.display='none';
     document.addEventListener('keydown', function(event) {
@@ -154,6 +157,17 @@ window.addEventListener('load',()=>{
 
     mainMenu=document.getElementById("main-menu")
 
+
+    document.getElementById('myBarter_mainThank').addEventListener('click', function(){
+      thankElem.style.display="block";
+      mainMenu.style.display='none'
+    })
+    document.getElementById("footerThank").addEventListener('click', function(){
+      thankElem.style.display="block";
+    })
+    document.getElementsByClassName("thank__close-img")[0].addEventListener("click", function(){
+      thankElem.style.display="none";
+    })
     // 
     // вывод бартеров на главной странице
     // 
