@@ -94,6 +94,9 @@ window.addEventListener('load',()=>{
     cityBlock=document.getElementById('city-block');
     cityBarterHTML=document.getElementById('newBarter-city');
     cityText=document.getElementById('city-text');
+
+    var thankElem=document.getElementsByClassName("thank")[0];
+
     for (let i=0;i<newStuffArr.length;i++)
     {
       //let previewImages = newStuffArr[i].querySelector('.new-stuff__img-preload');
@@ -104,6 +107,10 @@ window.addEventListener('load',()=>{
     // createEventLoadImage();
     cityListHTML.innerHTML=createHTMLListLiCity(cityArrDefault);
     createEventCityList();
+
+    document.getElementsByClassName("thank__close-img")[0].addEventListener("click", function(){
+      thankElem.style.display="none";
+    })
 
     //cityBlock.style.display='none';
     document.addEventListener('keydown', function(event) {

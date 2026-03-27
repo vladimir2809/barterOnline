@@ -203,6 +203,24 @@ html {
   cursor: pointer;
 }
 
+.thank {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.thank__img {
+  border: 1px solid black;
+}
+.thank__close-img {
+  position: relative;
+  left: 77.8rem;
+  top: -32.5rem;
+  border: 1px solid black;
+  z-index: 10;
+  cursor: pointer;
+}
+
 .footer {
   grid-column: 2/3;
   grid-row: 6/7;
