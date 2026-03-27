@@ -1,4 +1,9 @@
 feedbackForm = document.getElementById('feedbackForm');
+instructionElem = document.getElementById('footerInstruction');
+
+instructionElem.addEventListener('click', function(event){
+    window.location.href='/instruction/';
+})
 
 document.getElementById('footerFeedback').addEventListener('click', function(){
     document.getElementById('feedback').style.display='block';

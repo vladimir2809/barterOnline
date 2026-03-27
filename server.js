@@ -334,6 +334,14 @@ app.get("/test/",function(req,res){
 
 /*
 
+ FOOTER
+
+*/
+app.get('/instruction/', function(req, res){
+  res.render('instruction/instructionBarterOnline');
+})
+/*
+
 Код отвечаюший за оставление отзыва
 
 */
