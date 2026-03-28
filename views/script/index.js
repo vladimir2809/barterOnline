@@ -1,6 +1,9 @@
 var resultNode=document.getElementsByClassName('result')[0];
 var resultItemNode=document.querySelector('.result-item');
+var buttonViewsMore=document.getElementsByClassName('views-more')[0];
+
 let timePressBtnSearch=0;
+
 let checkboxFree=document.getElementById("checkbox-free");
 let title=document.querySelector('.title-label');
 if (resultItemNode!=undefined)
@@ -129,7 +132,13 @@ if (resultItemNode!=undefined)
       }
       resultNode.append(cloneResultItem);
     }
+    if (data.length > 1)
+    {
+      buttonViewsMore.style.display = 'block'
+      // resultNode.append(buttonViewsMore);
+    }
     Array.from(resultNode.children).forEach(element => {
+  
       element.addEventListener('click', function(event){
         let id=element.barterId;
         location.href='/viewsBarter?barter_id='+id;
@@ -137,5 +146,6 @@ if (resultItemNode!=undefined)
 
         // });
       })
+      
     });
   }
