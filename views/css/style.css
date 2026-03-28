@@ -211,15 +211,20 @@ html {
   transform: translate(-50%, -50%);
   z-index: 100;
 }
-.thank__img {
+.thank__img-background {
   border: 1px solid black;
+  width: 32rem;
+  height: 13rem;
+  background-image: url("/img/thanks.png");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 .thank__close-img {
   position: relative;
-  left: 77.8rem;
-  top: -32.5rem;
+  left: 29.5rem;
+  top: -13rem;
   border: 1px solid black;
-  z-index: 100;
+  z-index: 101;
   cursor: pointer;
 }
 
