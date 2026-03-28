@@ -31,6 +31,9 @@ var itemRegistrationData={
   checkNum: null
 }
 
+var quantityResultBarter = 10;
+var countMoreResultBarter = 0;
+
 var quantityMessages = 30;
 var itemUnreadMessage={
   sender: null,
@@ -1697,7 +1700,36 @@ app.get('/getBarterArr/', function(req, res){
     let query=`SELECT barter.*
                 FROM barter 
                 JOIN city ON barter.city_id = city.id
-                WHERE city.name = '${cityCurrent}';`
+                WHERE city.name = '${cityCurrent}'
+                LIMIT ${quantityResultBarter};`
+                // , city.id AS numcityId, barter.id AS numbarterid
+
+    pool.query(query, function(err, resDB){
+      if (!err)
+      {
+        //console.log(resDB.rows);
+
+        res.send(calcBarterArr(resDB.rows));
+      }
+      else
+      {
+        res.send('при чтении данных произошла ошибка')
+        console.log(err);
+      }
+    });
+});
+app.post('/getBarterMoreArr/', function(req, res){
+    // let query=`SELECT * FROM barter;`
+    let cityCurrent = req.cookies.city;
+    console.log(req.body);
+    let data=JSON.parse(req.body.data)
+    let L = quantityResultBarter ;
+    let M = quantityResultBarter * data.count;
+    let query=`SELECT barter.*
+                FROM barter 
+                JOIN city ON barter.city_id = city.id
+                WHERE city.name = '${cityCurrent}'
+                LIMIT ${L} OFFSET ${M};`
                 // , city.id AS numcityId, barter.id AS numbarterid
 
     pool.query(query, function(err, resDB){

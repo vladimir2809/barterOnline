@@ -2,6 +2,9 @@ var resultNode=document.getElementsByClassName('result')[0];
 var resultItemNode=document.querySelector('.result-item');
 var buttonViewsMore=document.getElementsByClassName('views-more')[0];
 
+var quantityResultBarter = 10;
+var countMoreResultBarter = 1;
+
 let timePressBtnSearch=0;
 
 let checkboxFree=document.getElementById("checkbox-free");
@@ -23,6 +26,7 @@ if (resultItemNode!=undefined)
           inputCategory.disabled=false;
         }
       })
+
       SendRequest('get', "/getBarterArr/", "", function(request){ 
         if (request.response!='')
         {      
@@ -36,7 +40,31 @@ if (resultItemNode!=undefined)
           viewsBarterArr(response);
         }
       });
+      buttonViewsMore.addEventListener('click', function(){
 
+        let data={
+          quantityBarter: quantityResultBarter,
+          count: countMoreResultBarter,
+        }
+        data=JSON.stringify(data);
+        SendRequest('POST', "/getBarterMoreArr/", `data=${data}`, function(request){ 
+          if (request.response!='')
+          {      
+            let response=JSON.parse(request.response);
+            console.log(response)
+            if (response.length > 0)
+            {
+              viewsBarterArr(response, '', false);
+              countMoreResultBarter++;
+            }
+            else
+            {
+              alert('В этом городе бартеров больше нет.')
+              buttonViewsMore.style.display='none';
+            }
+          }
+        });
+      });
       document.querySelector('.question-city__close').addEventListener('click',function(){
         document.querySelector('.question-city').style.display='none';
       });
@@ -93,11 +121,14 @@ if (resultItemNode!=undefined)
     }
 
   },25)
-  function viewsBarterArr(data, dataSearch='')
+  function viewsBarterArr(data, dataSearch='', clear=true)
   {
-    let numChild=resultNode.childElementCount;
-    for (let i=0;i<numChild;i++) {
-      resultNode.removeChild(resultNode.lastChild);
+    if (clear==true)
+    {  
+      let numChild=resultNode.childElementCount;
+      for (let i=0;i<numChild;i++) {
+        resultNode.removeChild(resultNode.lastChild);
+      }
     }
     for (let i=data.length-1;i >= 0; i--)
     {
@@ -132,7 +163,7 @@ if (resultItemNode!=undefined)
       }
       resultNode.append(cloneResultItem);
     }
-    if (data.length > 1)
+    if (data.length >= 1)
     {
       buttonViewsMore.style.display = 'block'
       // resultNode.append(buttonViewsMore);
