@@ -1769,6 +1769,32 @@ app.get('/getMyBarterArr/', function(req, res){
     }
   });
 });
+app.post('/deleteBarter/', function(req, res){
+  console.log(req.body.data)
+  let data=JSON.parse(req.body.data);
+ checkBarterIdAndUserId(data.barter_id, req.cookies.userID).then(function(resultCheck){
+
+  if (resultCheck == true) 
+  {
+      let query = `DELETE FROM barter WHERE id = ${data.barter_id}`;
+      pool.query(query, function(err, resDB){
+        if (!err)
+        {
+            res.send('success');
+        }
+        else
+        {
+          console.log(err);
+          res.send('error');
+        }
+      })
+    }
+    else
+    {
+      res.send('error');
+    }
+  })
+})
 function checkBarterIdAndUserId(barter_id, userID)
 {
   return new Promise(function (resolve){

@@ -1,5 +1,7 @@
 var buttonChange = document.querySelector('.views-barter__button-change');
+var buttonDelete = document.querySelector('.views-barter__button-delete');
 var buttonAuthor = document.querySelector('.barter__button-author')
+
 if (buttonChange!=undefined)
 {
     buttonChange.addEventListener('click', function(){
@@ -7,6 +9,30 @@ if (buttonChange!=undefined)
         //alert(params.get('barter_id'));
         window.location.href='/changebarter?barter_id='+params.get('barter_id');
     });
+}
+if (buttonDelete != undefined)
+{
+    buttonDelete.addEventListener('click', function(event){
+        let confirmCheck=confirm('Вы действительно хотите удалить бартер?');
+        if (confirmCheck == true)
+        {
+            const params = new URLSearchParams(window.location.search);
+            let data={
+                barter_id: Number(params.get('barter_id')),
+            }
+            data=JSON.stringify(data);
+            SendRequest('POST', '/deleteBarter/',`data=${data}`,function(request){   
+                console.log('LINE 25',request.response);
+                // let response = JSON.parse(request.response);
+                let response = request.response
+                if (response == 'success')
+                {
+                   alert('Бартер удален ');
+                   window.location.href = '/myBarter'; 
+                }
+            });
+        }
+    })
 }
 // document.querySelector('.barter__button-author')
 if (buttonAuthor!=undefined)
