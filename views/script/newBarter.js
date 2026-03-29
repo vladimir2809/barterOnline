@@ -216,7 +216,7 @@ function createEventLoadImage()
     let filesImages = newStuffArr[i].querySelector('input[type=file]');
     filesImages.addEventListener('change', function() {
        
-        if (filesImages.files[0].size <= 1024 * 1024)
+        if (filesImages.files[0].size <= 1024 * 1024 * 10)
         {
        
           previewFile(previewImages, filesImages.files[0]);
@@ -236,7 +236,7 @@ function createEventLoadImage()
         }
         else
         {
-          alert('Картинка должна весить меньше 1МБ.');
+          alert('Картинка должна весить меньше 10МБ.');
           filesImages.value='';
           previewImages.src='img/default.jpg';
           //previewFile(previewImages, filesImages.files[0]);
