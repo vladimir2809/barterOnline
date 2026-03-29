@@ -1,7 +1,11 @@
 <div class="newBarter">
 
     <form action="/saveBarter/" id="newBarterForm" class="newBarter__form" method="POST" enctype="multipart/form-data">
+    {{#if changeBarter}}
+        <h1 class="newBarter__title">Изменение бартера</h1>
+    {{else}}
         <h1 class="newBarter__title">Создание нового бартера</h1>
+    {{/if}}
         <div class="newBarter__city-cont">
 
             <h3 class="newBarter__city" id="newBarter-city">ооо</h3>
@@ -143,14 +147,16 @@
                 updateElemsCheckboxFree(true);
 
             }
-            document.getElementById('newStuff__getName').value=response[0].get.name;
+            document.getElementById('newStuff__getName').value=response[0].get.name != 'null' ?
+                                                                            response[0].get.name : '';
 
             let categoryGetSelect=document.getElementById('category-load-get');
             setupOptionSelected(categoryGetSelect, listCategoryId, response[0].get.category_id)
 
             //document.getElementById('category-load-get');
             document.getElementById('img-get-preload').src=response[0].get.imagePath;
-            document.getElementById('newBarter-get-description').innerHTML=response[0].get.description;;
+            document.getElementById('newBarter-get-description').innerHTML=response[0].get.description != 'null' ?
+                                                                                    response[0].get.description : '';;
         });
         function getCatagoryListIdFromServer() {
             return new Promise(function(resolve) {
