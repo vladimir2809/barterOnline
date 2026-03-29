@@ -277,6 +277,11 @@ html {
   height: 20rem;
   border: 2px solid black;
 }
+@media only screen and (max-height: 340px) {
+  .feedback__text {
+    height: 10rem;
+  }
+}
 .feedback__cont-btn {
   display: flex;
   justify-content: space-between;
@@ -844,7 +849,9 @@ html {
   text-align: center;
 }
 .barter__button-author {
-  margin-left: 2rem;
+  width: 100%;
+  height: 3.5rem;
+  font-size: 2rem;
 }
 
 .stuff-views * {
