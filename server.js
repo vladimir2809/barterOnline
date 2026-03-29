@@ -3,7 +3,8 @@ const app=express();
 
 var fileUpload = require('express-fileupload');
 
-const expressHandlebars =require('express-handlebars');
+const expressHandlebars = require('express-handlebars');
+const fs = require('fs')
 const {Pool} = require('pg');
 var  AES  =  require ( "crypto-js/aes" ) ; 
 var  SHA256  =  require ( "crypto-js/sha256" ) ;
@@ -1772,12 +1773,41 @@ app.get('/getMyBarterArr/', function(req, res){
 app.post('/deleteBarter/', function(req, res){
   console.log(req.body.data)
   let data=JSON.parse(req.body.data);
- checkBarterIdAndUserId(data.barter_id, req.cookies.userID).then(function(resultCheck){
+  checkBarterIdAndUserId(data.barter_id, req.cookies.userID).then(function(resultCheck){
 
   if (resultCheck == true) 
   {
-      let query = `DELETE FROM barter WHERE id = ${data.barter_id}`;
+      let query = `SELECT give_link_image, get_link_image FROM barter WHERE id =${data.barter_id}`
       pool.query(query, function(err, resDB){
+        if (checkLinkImage(resDB.rows[0].give_link_image)==true)
+        {
+          fs.unlink("views\\"+resDB.rows[0].give_link_image, function(err){
+            if (!err)
+            {
+              console.log('success delete file: '+resDB.rows[0].give_link_image)
+            }
+            else
+            {
+              console.log(err);
+            }
+          })
+        }
+        if (checkLinkImage(resDB.rows[0].get_link_image)==true)
+        {
+          fs.unlink("views\\"+resDB.rows[0].get_link_image, function(err){
+            if (!err)
+            {
+              console.log('success delete file: '+resDB.rows[0].get_link_image)
+            }
+            else
+            {
+              console.log(err);
+            }
+          })
+        }
+      })
+      let query2 = `DELETE FROM barter WHERE id = ${data.barter_id}`;
+      pool.query(query2, function(err, resDB){
         if (!err)
         {
             res.send('success');
@@ -1794,6 +1824,17 @@ app.post('/deleteBarter/', function(req, res){
       res.send('error');
     }
   })
+  function checkLinkImage(linkImage)
+  {
+    if (linkImage.indexOf('imgUser') != -1)
+    {
+      return true
+    }
+    else
+    {
+      return false;
+    }
+  }
 })
 function checkBarterIdAndUserId(barter_id, userID)
 {
