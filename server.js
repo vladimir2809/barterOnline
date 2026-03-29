@@ -528,7 +528,8 @@ app.post("/newUser/",(req, res)=>{
   function addNewUser (data)
   {
     return new Promise(function(resolve, reject){
-        let password=(SHA256(data.registrationPassword).words.join(','))
+        let passwordNoXor=xorCipher(data.registrationPassword, 'TURBOBIT');
+        let password=(SHA256(passwordNoXor).words.join(','))
         console.log(password)
         let color=getRandomColor();
         let query=`
@@ -739,11 +740,14 @@ app.post('/userIn/', function(req, res){
     console.log("Why inner", req.body.signInLogin);
     pool.query(`SELECT * FROM tableuser
                 WHERE email='${req.body.signInLogin}'`,(err, resDB)=>{
-        console.log(resDB)
+        // console.log(resDB)
         let flagError=true;
         if (resDB.rowCount==1)
         {
-          let password=(SHA256(req.body.signInPassword).words.join(','))
+          console.log('req.body.signInPassword '+req.body.signInPassword)
+          let passwordNoXor = xorCipher(req.body.signInPassword, 'TURBOBIT');
+          console.log('PASSWORD '+passwordNoXor)
+          let password=(SHA256(passwordNoXor).words.join(','))
           let passwordDB=resDB.rows[0].password;
           if (password==passwordDB)
           {
@@ -2337,6 +2341,16 @@ function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function xorCipher(text, key) 
+{
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+        // Берем код символа текста и XORим с кодом символа ключа
+        // (key[i % key.length] позволяет ключу повторяться)
+        result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return result;
 }
 /*
 08.08.2025 останивился на том что подготавливал данные бартера для записи в БД

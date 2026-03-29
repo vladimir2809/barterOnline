@@ -78,6 +78,10 @@ form.addEventListener("submit",(e)=>{
     //     barter_id: barter_id,
     //     notResetCountUnread: resetUnread,
     // }
+    data.registrationPassword = xorCipher(data.registrationPassword, 'TURBOBIT');
+    // data.password = xorCipher(data.password, '123456789');
+    data.registrationPasswordDouble = xorCipher(data.registrationPasswordDouble, 'TURBOBIT');
+    console.log('registration DAta',data);
     data=JSON.stringify(data);
     SendRequest('POST', '/newUser/',`data=${data}`,function(request){ 
         let response=request.response;

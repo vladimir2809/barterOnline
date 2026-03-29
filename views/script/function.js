@@ -193,7 +193,16 @@ function insertTextToPos(originalString, stringToInsert, index)
     return newString;
 }
 // distinguishTextYellow('м', "Привет, мир!")
-
+function xorCipher(text, key) 
+{
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+        // Берем код символа текста и XORим с кодом символа ключа
+        // (key[i % key.length] позволяет ключу повторяться)
+        result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    }
+    return result;
+}
 function formatByteSize(bytes) // перевод значения памяти в человека понятный вид
 {
     if(bytes < 1024) return bytes + " bytes";
