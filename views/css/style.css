@@ -550,11 +550,10 @@ html {
   grid-column: content-start/content-end;
   grid-row: 2/3;
   display: grid;
+  grid-template-rows: 1rem;
   justify-content: center;
   padding: 2rem;
-}
-.myBarter__title {
-  font-size: 3rem;
+  min-height: 100vh;
 }
 
 .messanger {
