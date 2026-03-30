@@ -1,3 +1,7 @@
+// .container
+//     grid-template-rows:  max-content max-content max-content minmax(50vh, max-content) !important
+// .footer
+//     grid-row: 5 / 6 !important
 .search
     grid-column: content-start / content-end
     grid-row: 2 / 3
@@ -94,7 +98,16 @@
     &__ok
     &__select
 .link-newBarter
+    grid-column: 2 / 3
+    grid-row: 4 / 5
     text-align: center
+    max-height: 2rem
+    margin-bottom: 2.5rem
+.container-result
+    grid-column: 2 / 3
+
+.title-label
+    grid-row: 1 / 2
 .views-more
     display: none
     grid-column: 2 / 3

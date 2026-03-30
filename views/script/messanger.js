@@ -584,7 +584,7 @@ setInterval(function(){
         let widthInput=widthMaxContainer - widthContacts - widthButtonSend*2 - minus ;
         widthInput /= 10;
         sendInput.style.width=`${widthInput}rem`;
-        let left = (widthScreen-widthMaxContainer) / 2 + widthContacts + 15;
+        let left = (widthScreen-widthMaxContainer) / 2 + widthContacts + 15 + 10;
         inputBlock.style.left= `${left}px`
     }
 

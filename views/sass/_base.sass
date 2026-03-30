@@ -41,6 +41,9 @@ html
 .container
     display: grid
     width: 100%
+    // min-height: 100rem
     grid-template-columns: [full-start] 1fr  [content-start] minmax(32.0rem, 134rem) [content-end] 1fr [full-end]
-    grid-template-rows:  max-content max-content //10rem//7rem 100rem
+    // grid-template-rows:  max-content max-content //10rem//7rem 100rem
+    grid-template-rows:  max-content max-content //10rem//max-content 10rem//minmax(10rem, max-content)
+    // row-gap: 2rem 
     

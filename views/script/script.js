@@ -59,6 +59,41 @@ window.addEventListener('load',()=>{
     {
       document.getElementsByClassName('footer')[0].style.display = 'none';
     }
+
+    // делаем так что бы футер был прибит к низу на разных страницах
+    if (document.getElementsByClassName('link-newBarter')[0] != undefined) // страница главная
+    {
+      document.getElementsByClassName('container')[0].style.gridTemplateRows ="max-content max-content 8rem"+
+                                                                        " minmax(80vh, max-content) 10rem"
+      document.getElementsByClassName('footer')[0].style.gridRow = '5 / 6'
+    }
+
+    if (document.getElementsByClassName('myBarter')[0] != undefined) // страница мои бартеры
+    {
+      document.getElementsByClassName('container')[0].style.gridTemplateRows ="max-content  minmax(90vh, max-content) 10rem "
+      document.getElementsByClassName('footer')[0].style.gridRow = '3 / 4'
+    }
+    if (document.getElementsByClassName('newBarter')[0] != undefined) // страница изменить и создать бартер
+    {
+      document.getElementsByClassName('container')[0].style.gridTemplateRows ="max-content minmax(90vh, max-content) 10rem "
+      document.getElementsByClassName('footer')[0].style.gridRow = '3 / 4'
+    }
+    if (document.getElementsByClassName('registration')[0] != undefined) // страница регистрация
+    {
+      document.getElementsByClassName('container')[0].style.gridTemplateRows ="max-content minmax(80vh, max-content) 10rem "
+      document.getElementsByClassName('footer')[0].style.gridRow = '3 / 4'
+    }
+    if (document.getElementsByClassName('recoverPassword')[0] != undefined) // страница востановить пароль
+    {
+      document.getElementsByClassName('container')[0].style.gridTemplateRows ="max-content 15rem minmax(70vh, max-content) 10rem "
+      document.getElementsByClassName('footer')[0].style.gridRow = '4 / 5'
+    }
+    
+    if (document.getElementsByClassName('messanger')[0] != undefined) // страница мессанджер
+    {
+      document.getElementsByClassName('container')[0].style.gridTemplateRows ="max-content 87vh "
+      //document.getElementsByClassName('footer')[0].style.gridRow = '3 / 4'
+    }
     getImportantData().then(function(result){
         result=JSON.parse(result);
         cookieUserId=Number(result.cookieUserId);

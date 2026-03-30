@@ -37,7 +37,12 @@ if (resultItemNode!=undefined)
             title.innerText='В этом городе бартеров нет!'
 
           }
+         
           viewsBarterArr(response);
+          if (response.length < quantityResultBarter )
+          {
+            buttonViewsMore.style.display = 'none'
+          }
         }
       });
       buttonViewsMore.addEventListener('click', function(){
