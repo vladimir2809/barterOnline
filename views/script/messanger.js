@@ -84,7 +84,7 @@ function addEventSelectContact()
 }
 function clearSelectContacts()
 {
-    console.log('Clear Select Contacts');
+    //console.log('Clear Select Contacts');
     for (let j=0; j < contacts.length;j++)
     {
         contacts[j].style.backgroundColor='#FFF';
@@ -92,7 +92,7 @@ function clearSelectContacts()
 }
 function moveToCorrespondence(index)
 {       
-    console.log(index)
+    //console.log(index)
     selectContactData={
         barter_id: contactsData[index].barter_id,
         recipient_id: contactsData[index].recipient_id,
@@ -129,7 +129,7 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
     }
     data=JSON.stringify(data);
     SendRequest('POST', '/getMessage/',`data=${data}`,function(request){   
-        console.log('LINE 105',request.response);
+        //console.log('LINE 105',request.response);
         if (request.response == null || request.response == '' ||
             request.response == undefined    )
         {
@@ -140,7 +140,7 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
         let response=JSON.parse(request.response);
         let messageList=response.messageList;
         let maxQuantityMessages=response.maxQuantityMessages;
-        console.log(messageList);
+        //console.log(messageList);
         // alert(cookieUserId);
 
         const params = new URLSearchParams(window.location.search);
@@ -156,7 +156,7 @@ function getMessageList(sender_id,recipient_id, barter_id, resetUnread=false)
 
 
         clearMessageDraw();
-        console.log('impjrtantDATA',maxQuantityMessages, quantityMessages)
+        //console.log('impjrtantDATA',maxQuantityMessages, quantityMessages)
         if (maxQuantityMessages > quantityMessages)
         {
             textBlockCont.append(moreMessagesButton);
@@ -179,10 +179,10 @@ function servisListMessage(messageList, flagMore=false)
         let time = new Date(messageList[i].time)
         let timeOld = null;
         if (i > 0) timeOld=new Date(messageList[i-1].time)
-        console.log(messageList[i].senderUserId)
+        //console.log(messageList[i].senderUserId)
         let side = (cookieUserId == Number(messageList[i].senderUserId)) ? 'aim' : 'noaim';
         if (i>0)
-        //   console.log('TIME COMPARE: '+ timeOld.getDate() +' '+ time.getDate() + " "+
+        //   //console.log('TIME COMPARE: '+ timeOld.getDate() +' '+ time.getDate() + " "+
         //         timeOld.getMonth() +' '+ time.getMonth() + ' '+
         //         timeOld.getFullYear() +' '+ time.getFullYear())
 
@@ -230,13 +230,13 @@ moreMessagesButton.addEventListener('click', function(){
     SendRequest('POST', '/getMoreMessage/',`data=${data}`,function(request){
         let response=JSON.parse(request.response);
         // let response = request.response;
-        console.log(response)
+        //console.log(response)
         let arrMes=servisListMessage(response, true);
         // textBlockCont.prepend(arrMes);
         textBlockCont.prepend(...arrMes);
         moreMessagesButton.scrollIntoView(true);
         moreMessagesButton.style.display='none';
-        console.log(arrMes);
+        //console.log(arrMes);
     });
 });
 function servisContactsList(data)
@@ -248,10 +248,10 @@ function servisContactsList(data)
     }
     for (let i=0;i < data.length;i++)
     {
-        console.log(cookieUserId)
+        //console.log(cookieUserId)
         if (Number(data[i].countUnread)!=0 && data[i].lastSenderId != null)
         {
-            console.log('LAST UNREAD',data[i].lastSenderId)
+            //console.log('LAST UNREAD',data[i].lastSenderId)
             if (cookieUserId != data[i].lastSenderId )
             {
                 servisItemContact(data[i], data[i].countUnread);
@@ -273,7 +273,7 @@ function servisContactsData()
         SendRequest('POST', '/getContactListMessanger/','',function(request){
         
             response=JSON.parse(request.response);
-            console.log(response);
+            //console.log(response);
             // let contact=document.getElementsByClassName('contact')[0];
             contact.style.display='none';
             for (let i=0;i < response.length;i++)
@@ -281,7 +281,7 @@ function servisContactsData()
                 contactsData.push(response[i]);
             }
             contactsData.sort(function(a, b){
-                console.log("a.time", a.time)
+                //console.log("a.time", a.time)
                 if (a.time > b.time)
                 {
                     return -1;
@@ -378,7 +378,7 @@ function servisItemContact(data, countMessage=0)
     addEventSelectContact();
     addEventClickContact();
     document.getElementById('buttonSendMessage').style.display='block';
-    console.log(contactsData);
+    //console.log(contactsData);
 }
 function checkInContactData(sender_id, recipient_id, barter_id)
 {
@@ -397,8 +397,8 @@ function checkInContactData(sender_id, recipient_id, barter_id)
 function servisContactMessageNow(userSenderId)
 {
     const params = new URLSearchParams(window.location.search);
-    console.log('COOKIE USER ID', userSenderId)
-    console.log('CONTACT LIST', contactsData)
+    //console.log('COOKIE USER ID', userSenderId)
+    //console.log('CONTACT LIST', contactsData)
     servisContactsData().then(function(){
         let index=checkInContactData(Number(userSenderId), 
                                 Number(params.get('recipient_id')),
@@ -420,9 +420,9 @@ function servisContactMessageNow(userSenderId)
                 barter_id: params.get('barter_id')
             }
             data=JSON.stringify(data)
-            console.log('NOW YES')
+            //console.log('NOW YES')
             SendRequest('POST', '/getDataNewRecipient/',`data=${data}`,function(request){ 
-                console.log('NEW RECIPIENT', request.response)
+                //console.log('NEW RECIPIENT', request.response)
                 let response=JSON.parse(request.response);
                 data=JSON.parse(data);
                 let literal=response.namesurname.toUpperCase()[0];
@@ -459,7 +459,7 @@ setInterval(function(){
         let resultData=JSON.parse(request.response);
         if (resultData != null)
         {
-            console.log(resultData);
+            //console.log(resultData);
             if (resultData.lastSender != cookieUserId)
             {
 
@@ -605,7 +605,7 @@ setInterval(function(){
         addHeight = heightInput - heightElemOld;
         heightElemOld = heightInput;
         textBlockContHidden.scrollTop += addHeight;
-        // console.log (addHeight)
+        // //console.log (addHeight)
 
     }
     
@@ -678,9 +678,9 @@ buttonSendMessage.addEventListener('click', function(){
                 'recipient' : params.get('recipient_id'),
                 'barter_id' : params.get('barter_id'),
             }); 
-            console.log(dataMessage);
+            //console.log(dataMessage);
             SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
-                console.log('сообшение отправленно')
+                //console.log('сообшение отправленно')
                 
             })
         }
@@ -695,9 +695,9 @@ buttonSendMessage.addEventListener('click', function(){
                 'recipient' : selectContactData.recipient_id,
                 'barter_id' : selectContactData.barter_id,
             });
-            console.log(dataMessage);
+            //console.log(dataMessage);
             SendRequest('POST', '/newMessage/', `data=${dataMessage}`,function(request){
-                console.log('сообшение отправленно')
+                //console.log('сообшение отправленно')
                 
             })
         }
@@ -722,7 +722,7 @@ function insertMessage(message, sideSend, timeParam=null, flagMore=false)
     //insertDay(new Date())
     if (message=='')
     {
-        console.log('сообщение пустое');
+        //console.log('сообщение пустое');
         return false;
     }
     textItem.classList.remove('aim-send');
@@ -739,7 +739,7 @@ function insertMessage(message, sideSend, timeParam=null, flagMore=false)
     }
     else
     {
-        console.log('У сообшения нет класса стороны')
+        //console.log('У сообшения нет класса стороны')
     }
     
     textItem.getElementsByClassName('text-item__message')[0].innerHTML=message;
@@ -781,7 +781,7 @@ function insertDay(date, flagMore=false)
         case 11: month = 'декабря'; break;
     }
     let dayStr=date.getDate() + ' ' + month + ' '+date.getFullYear();
-    // console.log (dayStr);
+    // //console.log (dayStr);
     dayElem.style.display='flex';
     dayElem.getElementsByClassName('day-item__value')[0].innerText=dayStr;
     if (flagMore == false)

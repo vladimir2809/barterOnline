@@ -113,7 +113,7 @@ function capitalizeFirstLetter(str) {
     if (!str) return str; // Обработка пустой строки
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
-//console.log(capitalizeFirstLetter('gecko'));
+////console.log(capitalizeFirstLetter('gecko'));
 /*
 Функция посылки запроса к файлу на сервере
 r_method  - тип запроса: GET или POST
@@ -184,7 +184,7 @@ function distinguishTextYellow(strSearch, originalString)
     stringToInsert = "</mark>";
     index = index+strSearch.length+6;
     result = insertTextToPos(result, stringToInsert, index);
-    console.log(result); // Выведет: Привет, JavaScript! мир!
+    //console.log(result); // Выведет: Привет, JavaScript! мир!
     return result;
 }
 function insertTextToPos(originalString, stringToInsert, index)
@@ -225,6 +225,6 @@ function getRandomColor() {
     let G=rand == 1 ? '00' : func();
     let B=rand == 2 ? '00' : func();
     const randomColor=`#${R}${G}${B}`
-    console.log(randomColor);
+    //console.log(randomColor);
     return randomColor;
 }

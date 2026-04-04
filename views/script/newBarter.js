@@ -194,8 +194,8 @@ if (newBarterForm!=undefined)
 
           }
           imgPreloadStuff.src="img/category"+categoryStuff.value+".png";
-          console.log("give="+hiddenFlagImgCategoryGive.value)
-          console.log("get="+hiddenFlagImgCategoryGet.value)
+          //console.log("give="+hiddenFlagImgCategoryGive.value)
+          //console.log("get="+hiddenFlagImgCategoryGet.value)
           
 
           
@@ -231,8 +231,8 @@ function createEventLoadImage()
             hiddenFlagImgCategoryGet.value = 0;
             hiddenFlagChangeImgGet.value='true';
           }
-          console.log("give="+hiddenFlagImgCategoryGive.value)
-          console.log("get="+hiddenFlagImgCategoryGet.value)
+          //console.log("give="+hiddenFlagImgCategoryGive.value)
+          //console.log("get="+hiddenFlagImgCategoryGet.value)
         }
         else
         {
@@ -251,8 +251,8 @@ function previewFile(preview, file) {
   
     reader.onloadend = function () {
       preview.src = reader.result;
-      console.log(formatByteSize(file.size))
-      console.log('path', file.name);
+      //console.log(formatByteSize(file.size))
+      //console.log('path', file.name);
     }
     
     if (file) {

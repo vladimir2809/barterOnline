@@ -31,7 +31,7 @@ if (resultItemNode!=undefined)
         if (request.response!='')
         {      
           let response=JSON.parse(request.response);
-          console.log(response)
+          //console.log(response)
           if (response.length==0)
           {
             title.innerText='В этом городе бартеров нет!'
@@ -56,7 +56,7 @@ if (resultItemNode!=undefined)
           if (request.response!='')
           {      
             let response=JSON.parse(request.response);
-            console.log(response)
+            //console.log(response)
             if (response.length > 0)
             {
               viewsBarterArr(response, '', false);
@@ -102,7 +102,7 @@ if (resultItemNode!=undefined)
                                           freeGet: checkboxFree })
             SendRequest('post',"/querySearch/",`data=${dataSearch}`,function(request){
               let response=JSON.parse(request.response);
-              console.log(response);
+              //console.log(response);
               if (response.length==0)
               {
                 title.innerText='По результату поиска бартеров нет!'
@@ -157,7 +157,7 @@ if (resultItemNode!=undefined)
       {
         if (dataSearch.nameGet!='')
         {
-          //console.log(getName.innerText);
+          ////console.log(getName.innerText);
           if (getName.innerText!='\u00A0')
           getName.innerHTML=distinguishTextYellow(dataSearch.nameGet, getName.innerText)
         }

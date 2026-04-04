@@ -21,7 +21,7 @@ var categoryListId=[];
 var listUnreadMessage=[];
 var cityList=[];
 var dataUser=[];
-var cityStart="Москва";
+var cityStart="Каменск-Уральский";
 
 const timeZoneOffset = new Date().getTimezoneOffset();
 

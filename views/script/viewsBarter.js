@@ -22,7 +22,7 @@ if (buttonDelete != undefined)
             }
             data=JSON.stringify(data);
             SendRequest('POST', '/deleteBarter/',`data=${data}`,function(request){   
-                console.log('LINE 25',request.response);
+                //console.log('LINE 25',request.response);
                 // let response = JSON.parse(request.response);
                 let response = request.response
                 if (response == 'success')
@@ -46,7 +46,7 @@ if (buttonAuthor!=undefined)
         }
     // SendRequest('POST', '/newRecipient/', `data=${data}`,function(request){
 
-        // console.log('сообшение отправленно ' + request.response)
+        // //console.log('сообшение отправленно ' + request.response)
         window.location.href=`/messanger?messageNow=true&recipient_id=${data.recipient_id}&barter_id=${data.barter_id}`;
         //});
         // alert (barterUserId)

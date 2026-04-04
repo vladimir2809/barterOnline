@@ -8,7 +8,7 @@
     {{/if}}
         <div class="newBarter__city-cont">
 
-            <h3 class="newBarter__city" id="newBarter-city">ооо</h3>
+            <h3 class="newBarter__city" id="newBarter-city"></h3>
             <div class="newBarter__change-city" id="newBarter-changeCity">Измениить</div>
         </div>
         <div class="newBarter-give new-stuff">
@@ -129,13 +129,13 @@
 
         SendRequest('post',"/querySearch/",`data=${dataSearch}`,function(request){
             let response=JSON.parse(request.response);
-            console.log(response)
+            //console.log(response)
             document.getElementById('newStuff__giveName').value=response[0].give.name;
-            //console.log(listCategoryId, typeof(listCategoryId))
+            ////console.log(listCategoryId, typeof(listCategoryId))
 
             let categoryGiveSelect=document.getElementById('category-load-give');
             setupOptionSelected(categoryGiveSelect, listCategoryId, response[0].give.category_id)
-            //console.log(categoryGiveSelect);
+            ////console.log(categoryGiveSelect);
             document.getElementById('img-give-preload').src=response[0].give.imagePath;
             document.getElementById('newBarter-give-description').innerHTML=response[0].give.description;
 

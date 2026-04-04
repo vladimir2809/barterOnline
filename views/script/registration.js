@@ -27,7 +27,7 @@ var changePasswordDouble=false;
         changePasswordDouble=true;
 
     })
-    console.log(userName)
+    //console.log(userName)
 //});
 setInterval(()=>{
     let count=0;
@@ -56,8 +56,8 @@ setInterval(()=>{
        submit.style.color="#AAA";
        submitReady=false;
     }
-    // console.log(password.value);
-    // console.log(passwordDouble.value);
+    // //console.log(password.value);
+    // //console.log(passwordDouble.value);
 },250);
 submit.onclick=(e)=>{
     if (submitReady==false)
@@ -70,8 +70,8 @@ form.addEventListener("submit",(e)=>{
     e.preventDefault();
     const formData = new FormData(form);
     let data = Object.fromEntries(formData);
-    // console.log(data);
-    // console.log(formData.get('registrationName'));
+    // //console.log(data);
+    // //console.log(formData.get('registrationName'));
     // let data={
     //     recipient_id: recipient_id,
     //     sender_id: sender_id,
@@ -81,11 +81,11 @@ form.addEventListener("submit",(e)=>{
     data.registrationPassword = xorCipher(data.registrationPassword, 'TURBOBIT');
     // data.password = xorCipher(data.password, '123456789');
     data.registrationPasswordDouble = xorCipher(data.registrationPasswordDouble, 'TURBOBIT');
-    console.log('registration DAta',data);
+    //console.log('registration DAta',data);
     data=JSON.stringify(data);
     SendRequest('POST', '/newUser/',`data=${data}`,function(request){ 
         let response=request.response;
-        console.log(response);
+        //console.log(response);
         if (response=="emailSecond")
         {
             alert('Пользователь с таким Email уже существует.');
@@ -109,7 +109,7 @@ formConfirmationEmail.addEventListener('submit', function(e){
     // alert(data)
     SendRequest('POST', '/confirmationEmail/',`data=${data}`,function(request){ 
         let response=request.response;
-        console.log(response);
+        //console.log(response);
         if (response=="registrationSuccess")
         {
             alert('Регистрация успешно пройдена');

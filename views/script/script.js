@@ -98,7 +98,7 @@ window.addEventListener('load',()=>{
         result=JSON.parse(result);
         cookieUserId=Number(result.cookieUserId);
     })
-    console.log (generateRandomName(10));
+    //console.log (generateRandomName(10));
     // resultNode=document.getElementsByClassName('result')[0];
     // resultItemNode=document.getElementsByClassName('result-item')[0];
     newStuffArr=document.querySelectorAll('.new-stuff');
@@ -155,8 +155,8 @@ window.addEventListener('load',()=>{
       // if (event.code == 'F9' )
       // {
       //   SendRequest('post','/clearCookie/',"",function(request){
-      //       console.log('clear Cookie');
-      //       console.log (document.cookie);
+      //       //console.log('clear Cookie');
+      //       //console.log (document.cookie);
       //   })
       //  // alert('Cookie Reset')
       // }
@@ -186,7 +186,7 @@ window.addEventListener('load',()=>{
 
 
 
-    console.log(resultItemNode);
+    //console.log(resultItemNode);
 
 
 
@@ -213,7 +213,7 @@ window.addEventListener('load',()=>{
     //     if (request.response!='')
     //     {      
     //       let response=JSON.parse(request.response);
-    //       console.log(response)
+    //       //console.log(response)
     //       for (let i=response.length-1;i >= 0; i--)
     //       {
     //         let cloneResultItem=resultItemNode.cloneNode(true);
@@ -248,8 +248,8 @@ window.addEventListener('load',()=>{
       
     //   //previewFile();
     // }
-    console.log('load funct end');
-    //console.log(document.getElementById("header"));
+    //console.log('load funct end');
+    ////console.log(document.getElementById("header"));
     document.getElementById("logo").addEventListener('click', ()=>{
       location.href='/';
     });
@@ -397,8 +397,8 @@ window.addEventListener('load',()=>{
 
     //       }
     //       imgPreloadStuff.src="img/category"+categoryStuff.value+".png";
-    //       console.log("give="+hiddenFlagImgCategoryGive.value)
-    //       console.log("get="+hiddenFlagImgCategoryGet.value)
+    //       //console.log("give="+hiddenFlagImgCategoryGive.value)
+    //       //console.log("get="+hiddenFlagImgCategoryGet.value)
           
 
           
@@ -418,7 +418,7 @@ window.addEventListener('load',()=>{
         mainMenu.style.display="block";
         
       }
-      // console.log(clickCloseMainMenu);
+      // //console.log(clickCloseMainMenu);
     });                    //close-main-menu
     document.getElementById("close-main-menu").addEventListener('click', function(e){
       //e.preventDefault();
@@ -430,13 +430,13 @@ window.addEventListener('load',()=>{
           clickCloseMainMenu=false; 
         },100);
       }
-      // console.log(clickCloseMainMenu);
+      // //console.log(clickCloseMainMenu);
     });
     // удаление подписи у иписание нового бартера
     let stuffDescr=document.getElementsByClassName("new-stuff__description");
     for (let i=0; i<stuffDescr.length; i++)
     {
-          console.log(i);
+          //console.log(i);
           stuffDescr[i].addEventListener("click", (event)=>{
             if (stuffDescr[i].innerText=="Разместите редактируемый текст здесь")
             {
@@ -465,14 +465,14 @@ window.addEventListener('load',()=>{
       //                           "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону"];
       let key = event.target.value//cityText.value;
       event.target.value = capitalizeFirstLetter(event.target.value);
-      console.log(key);
+      //console.log(key);
       // let cityListHTML=document.getElementById('city-block-list');
       if (key.length>0/*key!=null || key!=''*/)
       {
           key = capitalizeFirstLetter(key);
           //alert(key);
           SendRequest('POST','/listForCity/',"key=" + key,function(request){
-            console.log(request.response);
+            //console.log(request.response);
             if (request.response!='')
             {
               cityListHTML.style.display="block";
@@ -499,7 +499,7 @@ window.addEventListener('load',()=>{
     })
     SendRequest('POST', '/getColorAndDataUser/', '', function(request){
       let response=JSON.parse(request.response)
-      console.log(response);
+      //console.log(response);
       document.querySelector('.avatar__circleBorder span').innerHTML=response.dataUser;
       document.querySelector('.avatar__circleBorder').style.backgroundColor=response.color;
     });
@@ -551,7 +551,7 @@ function createHTMLListLiCity(arr)
         {
           result+=`<li class="city-block__item">${arr[i]}</li>`
         }
-        //console.log(result);
+        ////console.log(result);
         return result;
     }
 

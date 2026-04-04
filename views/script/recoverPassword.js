@@ -17,7 +17,7 @@ enterEmailForm.addEventListener('submit', function(e){
         //alert(data);
         SendRequest('POST', '/emailForRecoverPassword/',`data=${data}`,function(request){
             let response=request.response;
-            console.log(response);
+            //console.log(response);
             if (response == 'success')
             {
                 dataKey.email = JSON.parse(data).emailForRecover;
@@ -45,7 +45,7 @@ enterCodeForm.addEventListener('submit', function(e){
         data = JSON.stringify(data);
         SendRequest('POST', '/codeForRecoverPassword/',`data=${data}`,function(request){
             let response=request.response;
-            console.log(response);
+            //console.log(response);
             if (response == 'success')
             {
                 //alert('Правильный код')
@@ -72,7 +72,7 @@ newPasswordForm.addEventListener('submit', function(e){
         data = JSON.stringify(data);
         SendRequest('POST', '/newPassword/',`data=${data}`,function(request){
             let response=request.response;
-            console.log(response);
+            //console.log(response);
             if (response == 'success')
             {
                 alert('Запрос на изменения пароля принят!');

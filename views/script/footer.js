@@ -23,13 +23,13 @@ feedbackForm.addEventListener('submit',function(event){
     event.preventDefault();
     const formData = new FormData(feedbackForm);
     let data = Object.fromEntries(formData);
-    console.log (data)
+    //console.log (data)
     if (data.feedbackName != '' && data.feedbackText != '')
     {
         data=JSON.stringify(data);
         SendRequest('POST', '/feedback/',`data=${data}`,function(request){
             let response=request.response;
-            console.log(response);
+            //console.log(response);
             if (response == "success")
             {
                 feedbackForm.reset();
