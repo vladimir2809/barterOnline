@@ -2370,3 +2370,4 @@ const getLine = () => {
 // pg_dump -U myuser -d barter_online full_DB_barter-online.sql
 // pg_dump -U myuser -d barter_online -f C:\Users\koste\Desktop\barterOnline\full.sql
 // pg_dump -U myuser -d barter_online -s > C:\Users\koste\Desktop\barterOnline\tables.sql
+// как в timeweb cloud сделать так что бы с одного домена шел в nodejs другой в nginx

@@ -658,6 +658,8 @@ sendInput.addEventListener("focusout", function(){
 buttonSendMessage.addEventListener('click', function(){
     //insertMessage('AIM NO AIM SEND', 'noaim', false);
     // insertMessage(sendInput.innerText, 'aim');
+    noCorrespondenceElem.style.display='none';
+    flagNoCorrespondence=false;
     time=new Date();
     
     const params = new URLSearchParams(window.location.search);
@@ -708,6 +710,7 @@ buttonSendMessage.addEventListener('click', function(){
 });
 function insertMessage(message, sideSend, timeParam=null, flagMore=false)
 {
+    
     let textBlockContHidden=document.getElementsByClassName('text-block__cont-hidden')[0];
     let textItemOrigin = document.getElementsByClassName('text-item')[0];
     let textItem=textItemOrigin.cloneNode(true)
