@@ -499,9 +499,27 @@ app.post("/newUser/",(req, res)=>{
         if (result == 'success')
         {
           // res.render()
+          let data=JSON.parse(JSON.stringify(registrationDataList[index]));
           registrationDataList.splice(index, 1);
           //res.render('signIn');
-          res.send('registrationSuccess');
+          signInUser (res, data.registrationEmail, data.registrationPassword).then(function(result2){
+                                //success
+              if (result2.status == 'success')
+              {
+                res.cookie('user',`${result2.name}  ${result2.surname}`,{
+                          maxAge: 1000 * 60 * 60 * 24 *30,
+                });
+                res.cookie('userID',`${result2.userID}`,{
+                          maxAge: 1000 * 60 * 60 * 24 *30,
+                });
+                dataUser[0]=result2.name;
+                res.send('registrationSuccess');
+              }
+              else
+              {
+                res.send('error')
+              }
+          })
         }
         else
         {
@@ -737,46 +755,121 @@ setInterval(function(){
   Код отвечаюший за вход пользователя
 */
 app.post('/userIn/', function(req, res){
-    //console.log("Why inner", req.body.signInLogin);
-    pool.query(`SELECT * FROM tableuser
-                WHERE email='${req.body.signInLogin}'`,(err, resDB)=>{
-        // //console.log(resDB)
-        let flagError=true;
-        if (resDB.rowCount==1)
-        {
-          //console.log('req.body.signInPassword '+req.body.signInPassword)
-          let passwordNoXor = xorCipher(req.body.signInPassword, 'TURBOBIT');
-          //console.log('PASSWORD '+passwordNoXor)
-          let password=(SHA256(passwordNoXor).words.join(','))
-          let passwordDB=resDB.rows[0].password;
-          if (password==passwordDB)
+    signInUser (res, req.body.signInLogin, req.body.signInPassword).then(function(result){
+                              //success
+          if (result.status == 'success')
           {
-            
-            flagError=false;
-            res.cookie('user',`${resDB.rows[0].name}  ${resDB.rows[0].surname}`,{
+            res.cookie('user',`${result.name}  ${result.surname}`,{
                       maxAge: 1000 * 60 * 60 * 24 *30,
             });
-            res.cookie('userID',`${resDB.rows[0].id}`,{
+            res.cookie('userID',`${result.userID}`,{
                       maxAge: 1000 * 60 * 60 * 24 *30,
             });
-            dataUser[0]=resDB.rows[0].name;
-            route=req.route;
-            //res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+            dataUser[0]=result.name;
             res.render('index',{categoryList: categoryList, dataUser: dataUser, route:true})
-            // res.writeHead(200, '/index');
-            // res.end();
+          }
+          else
+          {
+            res.render('signIn',{flagSignInError: true})
+          }
+        })
+    })
+    //console.log("Why inner", req.body.signInLogin);
+    // pool.query(`SELECT * FROM tableuser
+    //             WHERE email='${req.body.signInLogin}'`,(err, resDB)=>{
+    //     // //console.log(resDB)
+    //     let flagError=true;
+    //     if (resDB.rowCount==1)
+    //     {
+    //       //console.log('req.body.signInPassword '+req.body.signInPassword)
+    //       let passwordNoXor = xorCipher(req.body.signInPassword, 'TURBOBIT');
+    //       //console.log('PASSWORD '+passwordNoXor)
+    //       let password=(SHA256(passwordNoXor).words.join(','))
+    //       let passwordDB=resDB.rows[0].password;
+    //       if (password==passwordDB)
+    //       {
+            
+    //         flagError=false;
+    //         res.cookie('user',`${resDB.rows[0].name}  ${resDB.rows[0].surname}`,{
+    //                   maxAge: 1000 * 60 * 60 * 24 *30,
+    //         });
+    //         res.cookie('userID',`${resDB.rows[0].id}`,{
+    //                   maxAge: 1000 * 60 * 60 * 24 *30,
+    //         });
+    //         dataUser[0]=resDB.rows[0].name;
+    //         route=req.route;
+    //         //res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+    //         res.render('index',{categoryList: categoryList, dataUser: dataUser, route:true})
+    //         // res.writeHead(200, '/index');
+    //         // res.end();
+
+    //       }
+
+    //     }
+    //     if (flagError==true)
+    //     {
+    //       //res.send(`неверный логин или пароль`);
+    //       res.render('signIn',{flagSignInError: true})
+    //     }
+    // });
+
+// });
+function signInUser (res, signInLogin, signInPassword, render=true)
+{
+  return new Promise((resolve, reject) => {
+      pool.query(`SELECT * FROM tableuser
+                  WHERE email='${/*req.body.*/signInLogin}'`,(err, resDB)=>{
+          // //console.log(resDB)
+          let flagError=true;
+          if (resDB.rowCount==1)
+          {
+            //console.log('req.body.signInPassword '+req.body.signInPassword)
+            let passwordNoXor = xorCipher(/*req.body.*/signInPassword, 'TURBOBIT');
+            //console.log('PASSWORD '+passwordNoXor)
+            let password=(SHA256(passwordNoXor).words.join(','))
+            let passwordDB=resDB.rows[0].password;
+            if (password==passwordDB)
+            {
+              
+              flagError=false;
+              resolve ({
+                  status: 'success',
+                  name: resDB.rows[0].name,
+                  syrname: resDB.rows[0].surname,
+                  userID: resDB.rows[0].id
+              })
+              // res.cookie('user',`${resDB.rows[0].name}  ${resDB.rows[0].surname}`,{
+              //           maxAge: 1000 * 60 * 60 * 24 *30,
+              // });
+              // res.cookie('userID',`${resDB.rows[0].id}`,{
+              //           maxAge: 1000 * 60 * 60 * 24 *30,
+              // });
+              // dataUser[0]=resDB.rows[0].name;
+              //route=req.route;
+              //res.send(`Добро пожаловать ${resDB.rows[0].name}  ${resDB.rows[0].surname}`);
+
+              // if (render == true)
+              // {
+              //   res.render('index',{categoryList: categoryList, dataUser: dataUser, route:true})
+              // }
+
+              // res.writeHead(200, '/index');
+              // res.end();
+
+            }
 
           }
-
-        }
-        if (flagError==true)
-        {
-          //res.send(`неверный логин или пароль`);
-          res.render('signIn',{flagSignInError: true})
-        }
-    });
-
-});
+          if (flagError==true )
+          {
+            //res.send(`неверный логин или пароль`);
+            resolve ({
+                status: 'error',
+            })
+            //res.render('signIn',{flagSignInError: true})
+          }
+      });
+  });
+}
 function getDataForRecordDb(req/*, files*/)
 {
   //let req={body: body, files: files};

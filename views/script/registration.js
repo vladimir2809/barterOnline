@@ -113,7 +113,7 @@ formConfirmationEmail.addEventListener('submit', function(e){
         if (response=="registrationSuccess")
         {
             alert('Регистрация успешно пройдена');
-            window.location.href='/signIn/';
+            window.location.href='/';
         }
         if (response=="error")
         {
