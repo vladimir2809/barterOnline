@@ -39,7 +39,8 @@ $colorInputMessage: #CCC
     min-width: 28.5rem
     width: 90%
     height: 5rem
-    // overflow: hidden
+    white-space: nowrap
+    overflow: hidden
    
     &__cont
         // overflow: hidden
@@ -62,6 +63,7 @@ $colorInputMessage: #CCC
         flex-grow: 2
     &__name
         margin-bottom: .7rem
+        max-height: 1rem
     &__preview-text
         font-size: 1.2em
         overflow: hidden
@@ -88,6 +90,8 @@ $colorInputMessage: #CCC
         justify-content: space-between
         height: 4rem
         background-color: #EEE
+        white-space: nowrap
+        overflow: hidden
         @include respond(messanger-min)
               justify-content: center
     &__info-back

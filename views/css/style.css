@@ -531,6 +531,8 @@ html {
   padding: 1rem;
   padding-top: 0.3rem;
   border: 1px solid gray;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .stuff__intension {
   font-size: 1.2rem;
@@ -616,6 +618,8 @@ html {
   min-width: 28.5rem;
   width: 90%;
   height: 5rem;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .contact__literal {
   width: 3.5rem;
@@ -635,6 +639,7 @@ html {
 }
 .contact__name {
   margin-bottom: 0.7rem;
+  max-height: 1rem;
 }
 .contact__preview-text {
   font-size: 1.2em;
@@ -665,6 +670,8 @@ html {
   justify-content: space-between;
   height: 4rem;
   background-color: #EEE;
+  white-space: nowrap;
+  overflow: hidden;
 }
 @media only screen and (min-width: 924px) {
   .text-block__info {

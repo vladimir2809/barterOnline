@@ -174,6 +174,8 @@ function servisListMessage(messageList, flagMore=false)
         //moreMessagesButton.style.display='none';
         
     }
+    let timeBegin = new Date(messageList[0].time)
+    insertDay(timeBegin);
     for (let i=0;i < messageList.length; i++)
     {
         let time = new Date(messageList[i].time)
